@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Core", "src\Archean.Core\Archean.Core.csproj", "{6C86D6D0-5126-4772-BD69-6579E06164EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Application", "src\Archean.Application\Archean.Application.csproj", "{FCCB0B71-5BB4-45BD-B03B-DAB4048D26D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Console", "src\Archean.Console\Archean.Console.csproj", "{740A4C45-DBD1-42F0-9B6A-045C5455A2DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Tests", "tests\Archean.Tests\Archean.Tests.csproj", "{4BD1F285-EA1C-4958-A27D-10095EAF54A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C86D6D0-5126-4772-BD69-6579E06164EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C86D6D0-5126-4772-BD69-6579E06164EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C86D6D0-5126-4772-BD69-6579E06164EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C86D6D0-5126-4772-BD69-6579E06164EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCCB0B71-5BB4-45BD-B03B-DAB4048D26D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCCB0B71-5BB4-45BD-B03B-DAB4048D26D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCCB0B71-5BB4-45BD-B03B-DAB4048D26D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCCB0B71-5BB4-45BD-B03B-DAB4048D26D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740A4C45-DBD1-42F0-9B6A-045C5455A2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740A4C45-DBD1-42F0-9B6A-045C5455A2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740A4C45-DBD1-42F0-9B6A-045C5455A2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740A4C45-DBD1-42F0-9B6A-045C5455A2DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BD1F285-EA1C-4958-A27D-10095EAF54A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BD1F285-EA1C-4958-A27D-10095EAF54A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BD1F285-EA1C-4958-A27D-10095EAF54A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BD1F285-EA1C-4958-A27D-10095EAF54A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5BF673E-1A0F-4227-9891-6BB9E8122FAA}
+	EndGlobalSection
+EndGlobal
