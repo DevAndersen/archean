@@ -1,5 +1,5 @@
-﻿using System.Buffers.Binary;
-using Archean.Application.Models.Networking;
+﻿using Archean.Application.Models.Networking;
+using System.Buffers.Binary;
 
 namespace Archean.Application.Services.Networking;
 

@@ -7,9 +7,9 @@ public class PacketWriterByteArrayTests
     private const int indexNotFound = -1;
     private const byte zeroByte = 0;
 
-    public static readonly byte[] shortByteArray;
-    public static readonly byte[] emptyByteArray;
-    public static readonly byte[] filledByteArray;
+    private static readonly byte[] shortByteArray;
+    private static readonly byte[] emptyByteArray;
+    private static readonly byte[] filledByteArray;
 
     public static TheoryData<byte[]> ValidInputData => new TheoryData<byte[]>
     {
@@ -93,8 +93,9 @@ public class PacketWriterByteArrayTests
     public void WriteByteArray_DataTooLong_ThrowsException()
     {
         // Setup
-        Memory<byte> undersizedBuffer = new byte[Constants.Networking.ByteArrayLength + 8];
-        byte[] value = new byte[Constants.Networking.ByteArrayLength + 2];
+        int extraBytes = 4;
+        Memory<byte> undersizedBuffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
+        byte[] value = new byte[Constants.Networking.ByteArrayLength + 1];
 
         // Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => PacketWriter.WriteByteArray(value, undersizedBuffer, out _));
