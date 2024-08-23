@@ -7,6 +7,13 @@ public class PacketReaderByteArrayTests
     private const int restBufferSize = 4;
     private const byte fillByte = 1;
 
+    private readonly PacketReader packetReader;
+
+    public PacketReaderByteArrayTests()
+    {
+        packetReader = new PacketReader();
+    }
+
     [Fact]
     public void ReadByteArray_ValidBuffer_ExpectedReadBytes()
     {
@@ -15,7 +22,7 @@ public class PacketReaderByteArrayTests
         buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
 
         // Action
-        byte[] readBytes = PacketReader.ReadByteArray(buffer, out _);
+        byte[] readBytes = packetReader.ReadByteArray(buffer, out _);
 
         // Assert
         byte[] expectedBytes = new byte[Constants.Networking.ByteArrayLength];
@@ -31,7 +38,7 @@ public class PacketReaderByteArrayTests
         buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
 
         // Action
-        PacketReader.ReadByteArray(buffer, out ReadOnlyMemory<byte> restBuffer);
+        packetReader.ReadByteArray(buffer, out ReadOnlyMemory<byte> restBuffer);
 
         // Assert
         Assert.Equal(restBufferSize, restBuffer.Length);
@@ -44,7 +51,7 @@ public class PacketReaderByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => PacketReader.ReadByteArray(buffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadByteArray(buffer, out _));
     }
 
     [Fact]
@@ -54,6 +61,6 @@ public class PacketReaderByteArrayTests
         Memory<byte> buffer = Array.Empty<byte>();
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => PacketReader.ReadByteArray(buffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadByteArray(buffer, out _));
     }
 }

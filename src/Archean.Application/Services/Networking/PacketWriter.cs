@@ -1,41 +1,42 @@
-﻿using Archean.Application.Models.Networking;
+﻿using Archean.Core.Models.Networking;
+using Archean.Core.Services.Networking;
 using System.Buffers.Binary;
 
 namespace Archean.Application.Services.Networking;
 
-internal static class PacketWriter
+public class PacketWriter : IPacketWriter
 {
-    public static void WriteByte(byte value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteByte(byte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = value;
         rest = memory.Slice(sizeof(byte));
     }
 
-    public static void WriteSByte(sbyte value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteSByte(sbyte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = (byte)value;
         rest = memory.Slice(sizeof(sbyte));
     }
 
-    public static void WriteShort(short value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteShort(short value, Memory<byte> memory, out Memory<byte> rest)
     {
         BinaryPrimitives.WriteInt16BigEndian(memory.Span, value);
         rest = memory.Slice(sizeof(short));
     }
 
-    public static void WriteFByte(FByte value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteFByte(FByte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = value.ToByte();
         rest = memory.Slice(sizeof(byte));
     }
 
-    public static void WriteFShort(FShort value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteFShort(FShort value, Memory<byte> memory, out Memory<byte> rest)
     {
         BinaryPrimitives.WriteUInt16BigEndian(memory.Span, value.ToUShort());
         rest = memory.Slice(sizeof(short));
     }
 
-    public static void WriteString(string value, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteString(string value, Memory<byte> memory, out Memory<byte> rest)
     {
         if (memory.Length < Constants.Networking.StringLength)
         {
@@ -54,7 +55,7 @@ internal static class PacketWriter
         rest = memory.Slice(Constants.Networking.StringLength);
     }
 
-    public static void WriteByteArray(byte[] bytes, Memory<byte> memory, out Memory<byte> rest)
+    public void WriteByteArray(byte[] bytes, Memory<byte> memory, out Memory<byte> rest)
     {
         if (memory.Length < Constants.Networking.ByteArrayLength)
         {

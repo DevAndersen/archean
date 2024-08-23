@@ -1,4 +1,4 @@
-﻿using Archean.Application.Models.Networking;
+﻿using Archean.Core.Models.Networking;
 
 namespace Archean.Tests.Networking;
 

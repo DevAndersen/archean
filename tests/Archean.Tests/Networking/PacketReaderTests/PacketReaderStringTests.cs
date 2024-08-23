@@ -20,6 +20,13 @@ public class PacketReaderStringTests
         { filledStringBuffer, filledString }
     };
 
+    private readonly PacketReader packetReader;
+
+    public PacketReaderStringTests()
+    {
+        packetReader = new PacketReader();
+    }
+
     static PacketReaderStringTests()
     {
         int bufferSize = Constants.Networking.StringLength + additionalBufferSize;
@@ -39,7 +46,7 @@ public class PacketReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        string readString = PacketReader.ReadString(buffer, out _);
+        string readString = packetReader.ReadString(buffer, out _);
 
         // Assert
         Assert.Equal(originalString, readString);
@@ -53,7 +60,7 @@ public class PacketReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        PacketReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
+        packetReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
 
         // Assert
         Assert.Equal(additionalBufferSize, restBuffer.Length);
@@ -66,6 +73,6 @@ public class PacketReaderStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => PacketReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
     }
 }

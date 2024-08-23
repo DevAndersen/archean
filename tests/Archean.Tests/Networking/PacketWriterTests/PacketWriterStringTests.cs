@@ -13,6 +13,13 @@ public class PacketWriterStringTests
     private const byte zeroByte = 0;
     private const byte spaceByte = (byte)' ';
 
+    private readonly PacketWriter packetWriter;
+
+    public PacketWriterStringTests()
+    {
+        packetWriter = new PacketWriter();
+    }
+
     [Theory]
     [InlineData(emptyString)]
     [InlineData(singleWordString)]
@@ -25,7 +32,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out _);
+        packetWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value);
@@ -45,7 +52,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        packetWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
         Assert.Equal(additionalBufferSize, restBuffer.Length);
@@ -63,7 +70,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        packetWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
         int firstNonZeroByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept((byte)0);
@@ -82,7 +89,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out _);
+        packetWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value);
@@ -100,7 +107,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out _);
+        packetWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value).AsMemory().Slice(0, Constants.Networking.StringLength);
@@ -117,7 +124,7 @@ public class PacketWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        PacketWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        packetWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
         int firstNonNullByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept(zeroByte);
@@ -132,6 +139,6 @@ public class PacketWriterStringTests
         string value = singleWordString;
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => PacketWriter.WriteString(value, undersizedBuffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetWriter.WriteString(value, undersizedBuffer, out _));
     }
 }
