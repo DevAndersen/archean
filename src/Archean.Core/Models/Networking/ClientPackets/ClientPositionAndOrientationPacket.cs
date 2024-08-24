@@ -1,6 +1,6 @@
 ﻿namespace Archean.Core.Models.Networking.ClientPackets;
 
-public class ClientPositionAndRotationPacket : IClientPacket
+public class ClientPositionAndOrientationPacket : IClientPacket
 {
     /// <summary>
     /// The size of the packet, in bytes.
