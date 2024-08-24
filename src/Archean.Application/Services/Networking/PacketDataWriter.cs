@@ -4,7 +4,7 @@ using System.Buffers.Binary;
 
 namespace Archean.Application.Services.Networking;
 
-public class PacketWriter : IPacketWriter
+public class PacketDataWriter : IPacketDataWriter
 {
     public void WriteByte(byte value, Memory<byte> memory, out Memory<byte> rest)
     {

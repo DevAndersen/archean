@@ -2,7 +2,7 @@
 
 namespace Archean.Core.Services.Networking;
 
-public interface IPacketReader
+public interface IPacketDataReader
 {
     public byte ReadByte(ReadOnlyMemory<byte> bytes, out ReadOnlyMemory<byte> rest);
 

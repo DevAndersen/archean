@@ -1,8 +1,8 @@
 ﻿using Archean.Application.Services.Networking;
 
-namespace Archean.Tests.Networking.PacketReaderTests;
+namespace Archean.Tests.Networking.PacketDataReaderTests;
 
-public class PacketReaderStringTests
+public class PacketDataReaderStringTests
 {
     private static readonly string shortString = "Test string";
     private static readonly string filledString = new string('A', 64);
@@ -20,14 +20,14 @@ public class PacketReaderStringTests
         { filledStringBuffer, filledString }
     };
 
-    private readonly PacketReader packetReader;
+    private readonly PacketDataReader packetDataReader;
 
-    public PacketReaderStringTests()
+    public PacketDataReaderStringTests()
     {
-        packetReader = new PacketReader();
+        packetDataReader = new PacketDataReader();
     }
 
-    static PacketReaderStringTests()
+    static PacketDataReaderStringTests()
     {
         int bufferSize = Constants.Networking.StringLength + additionalBufferSize;
         emptyStringBuffer = new byte[bufferSize];
@@ -46,7 +46,7 @@ public class PacketReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        string readString = packetReader.ReadString(buffer, out _);
+        string readString = packetDataReader.ReadString(buffer, out _);
 
         // Assert
         Assert.Equal(originalString, readString);
@@ -60,7 +60,7 @@ public class PacketReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        packetReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
+        packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
 
         // Assert
         Assert.Equal(additionalBufferSize, restBuffer.Length);
@@ -73,6 +73,6 @@ public class PacketReaderStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
     }
 }

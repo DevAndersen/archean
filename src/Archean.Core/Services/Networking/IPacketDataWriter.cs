@@ -2,7 +2,7 @@
 
 namespace Archean.Core.Services.Networking;
 
-public interface IPacketWriter
+public interface IPacketDataWriter
 {
     public void WriteByte(byte value, Memory<byte> memory, out Memory<byte> rest);
 

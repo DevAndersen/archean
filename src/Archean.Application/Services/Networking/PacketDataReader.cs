@@ -4,7 +4,7 @@ using System.Buffers.Binary;
 
 namespace Archean.Application.Services.Networking;
 
-public class PacketReader : IPacketReader
+public class PacketDataReader : IPacketDataReader
 {
     public byte ReadByte(ReadOnlyMemory<byte> bytes, out ReadOnlyMemory<byte> rest)
     {

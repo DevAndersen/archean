@@ -1,17 +1,17 @@
 ﻿using Archean.Application.Services.Networking;
 
-namespace Archean.Tests.Networking.PacketReaderTests;
+namespace Archean.Tests.Networking.PacketDataReaderTests;
 
-public class PacketReaderByteArrayTests
+public class PacketDataReaderByteArrayTests
 {
     private const int restBufferSize = 4;
     private const byte fillByte = 1;
 
-    private readonly PacketReader packetReader;
+    private readonly PacketDataReader packetDataReader;
 
-    public PacketReaderByteArrayTests()
+    public PacketDataReaderByteArrayTests()
     {
-        packetReader = new PacketReader();
+        packetDataReader = new PacketDataReader();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class PacketReaderByteArrayTests
         buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
 
         // Action
-        byte[] readBytes = packetReader.ReadByteArray(buffer, out _);
+        byte[] readBytes = packetDataReader.ReadByteArray(buffer, out _);
 
         // Assert
         byte[] expectedBytes = new byte[Constants.Networking.ByteArrayLength];
@@ -38,7 +38,7 @@ public class PacketReaderByteArrayTests
         buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
 
         // Action
-        packetReader.ReadByteArray(buffer, out ReadOnlyMemory<byte> restBuffer);
+        packetDataReader.ReadByteArray(buffer, out ReadOnlyMemory<byte> restBuffer);
 
         // Assert
         Assert.Equal(restBufferSize, restBuffer.Length);
@@ -51,7 +51,7 @@ public class PacketReaderByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadByteArray(buffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataReader.ReadByteArray(buffer, out _));
     }
 
     [Fact]
@@ -61,6 +61,6 @@ public class PacketReaderByteArrayTests
         Memory<byte> buffer = Array.Empty<byte>();
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetReader.ReadByteArray(buffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataReader.ReadByteArray(buffer, out _));
     }
 }
