@@ -9,7 +9,7 @@ public class ClientSetBlockPacket : IClientPacket
         = sizeof(short) // X
         + sizeof(short) // Y
         + sizeof(short) // Z
-        + sizeof(ClientSetBlockMode) // Mode
+        + sizeof(BlockChangeMode) // Mode
         + sizeof(Block); // Block
 
     public ClientPacketId PacketId => ClientPacketId.SetBlock;
@@ -20,7 +20,7 @@ public class ClientSetBlockPacket : IClientPacket
 
     public required short Z { get; init; }
 
-    public required ClientSetBlockMode Mode { get; init; }
+    public required BlockChangeMode Mode { get; init; }
 
     public required Block BlockType { get; init; }
 }
