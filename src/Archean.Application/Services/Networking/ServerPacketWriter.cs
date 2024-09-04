@@ -5,9 +5,9 @@ namespace Archean.Application.Services.Networking;
 
 public class ServerPacketWriter : IServerPacketWriter
 {
-    private readonly PacketDataWriter writer;
+    private readonly IPacketDataWriter writer;
 
-    public ServerPacketWriter(PacketDataWriter writer)
+    public ServerPacketWriter(IPacketDataWriter writer)
     {
         this.writer = writer;
     }

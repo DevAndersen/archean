@@ -16,6 +16,12 @@ public class Connection : IConnection
 
     public async Task<ReadOnlyMemory<byte>> ReadAsync()
     {
+        int readAttempts = 0;
+        while (socket.Available == 0 && readAttempts++ < 5)
+        {
+            await Task.Delay(10);
+        }
+
         Memory<byte> data = new byte[socket.Available];
         await socket.ReceiveAsync(data);
         return data;
@@ -27,6 +33,11 @@ public class Connection : IConnection
         {
             await socket.SendAsync(data);
         }
+    }
+
+    public void Disconnect()
+    {
+        socket.Close();
     }
 
     public void Dispose()

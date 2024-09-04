@@ -7,11 +7,39 @@ namespace Archean.Application.Services.Networking;
 
 public class ClientPacketReader : IClientPacketReader
 {
-    private readonly PacketDataReader reader;
+    private readonly IPacketDataReader reader;
 
-    public ClientPacketReader(PacketDataReader reader)
+    public ClientPacketReader(IPacketDataReader reader)
     {
         this.reader = reader;
+    }
+
+    public IClientPacket ReadClientPacket(ReadOnlyMemory<byte> buffer, out ReadOnlyMemory<byte> restBuffer)
+    {
+        ArgumentOutOfRangeException.ThrowIfZero(buffer.Length, nameof(buffer));
+
+        ClientPacketId packetId = (ClientPacketId)reader.ReadByte(buffer, out buffer);
+
+        IClientPacket packet = packetId switch
+        {
+            ClientPacketId.Identification => ReadIdentificationPacket(buffer),
+            ClientPacketId.SetBlock => ReadMessagePacket(buffer),
+            ClientPacketId.PositionAndOrientation => ReadPositionAndOrientationPacket(buffer),
+            ClientPacketId.Message => ReadSetBlockPacket(buffer),
+            _ => throw new NotImplementedException(),
+        };
+
+        int packetSize = packet switch
+        {
+            ClientIdentificationPacket => ClientIdentificationPacket.PacketSize,
+            ClientMessagePacket => ClientMessagePacket.PacketSize,
+            ClientPositionAndOrientationPacket => ClientPositionAndOrientationPacket.PacketSize,
+            ClientSetBlockPacket => ClientSetBlockPacket.PacketSize,
+            _ => throw new NotImplementedException(),
+        };
+
+        restBuffer = buffer.Slice(packetSize);
+        return packet;
     }
 
     public ClientIdentificationPacket ReadIdentificationPacket(ReadOnlyMemory<byte> memory)
