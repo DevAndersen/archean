@@ -1,6 +1,5 @@
 ﻿using Archean.Application.Models.Networking;
 using Archean.Core.Services.Networking;
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Sockets;
 

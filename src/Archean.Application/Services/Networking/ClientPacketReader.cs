@@ -26,7 +26,7 @@ public class ClientPacketReader : IClientPacketReader
             ClientPacketId.SetBlock => ReadMessagePacket(buffer),
             ClientPacketId.PositionAndOrientation => ReadPositionAndOrientationPacket(buffer),
             ClientPacketId.Message => ReadSetBlockPacket(buffer),
-            _ => throw new NotImplementedException(),
+            _ => throw new NotImplementedException() // Todo
         };
 
         int packetSize = packet switch
@@ -35,7 +35,7 @@ public class ClientPacketReader : IClientPacketReader
             ClientMessagePacket => ClientMessagePacket.PacketSize,
             ClientPositionAndOrientationPacket => ClientPositionAndOrientationPacket.PacketSize,
             ClientSetBlockPacket => ClientSetBlockPacket.PacketSize,
-            _ => throw new NotImplementedException(),
+            _ => throw new NotImplementedException() // Todo
         };
 
         restBuffer = buffer.Slice(packetSize);

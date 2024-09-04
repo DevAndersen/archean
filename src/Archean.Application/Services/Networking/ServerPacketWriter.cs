@@ -31,7 +31,7 @@ public class ServerPacketWriter : IServerPacketWriter
             ServerSetBlockPacket p => WriteSetBlockPacket(p),
             ServerSpawnPlayerPacket p => WriteSpawnPlayerPacket(p),
             ServerUpdatePlayerTypePacket p => WriteUpdatePlayerTypePacket(p),
-            _ => throw new InvalidOperationException()
+            _ => throw new InvalidOperationException() // Todo
         };
     }
 

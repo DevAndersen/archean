@@ -1,7 +1,6 @@
 ﻿using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Services.Networking;
-using Microsoft.Extensions.Logging;
 
 namespace Archean.Application.Services.Networking;
 
