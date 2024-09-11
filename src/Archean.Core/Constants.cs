@@ -26,5 +26,15 @@ public static class Constants
         /// The maximum size of byte arrays.
         /// </summary>
         public const int ByteArrayLength = 1024;
+
+        /// <summary>
+        /// The player ID used to refer to the current player.
+        /// </summary>
+        public const sbyte PlayerSelfId = -1;
+
+        /// <summary>
+        /// The version of the networking protocol used by the server, and expected to be used by clients.
+        /// </summary>
+        public const byte ProtocolVersion = 7;
     }
 }
