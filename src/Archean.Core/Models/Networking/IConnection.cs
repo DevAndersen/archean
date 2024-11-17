@@ -6,7 +6,7 @@ public interface IConnection : IDisposable
 
     public Task SendAsync(ReadOnlyMemory<byte> data);
 
-    public Task<ReadOnlyMemory<byte>> ReadAsync();
+    public Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
 
     public void Disconnect();
 }

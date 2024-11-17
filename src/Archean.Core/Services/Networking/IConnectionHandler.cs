@@ -4,5 +4,5 @@ namespace Archean.Core.Services.Networking;
 
 public interface IConnectionHandler
 {
-    public Task HandleNewConnectionAsync(IConnection connection);
+    public Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken);
 }

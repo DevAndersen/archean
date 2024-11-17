@@ -14,16 +14,16 @@ public class Connection : IConnection
         this.socket = socket;
     }
 
-    public async Task<ReadOnlyMemory<byte>> ReadAsync()
+    public async Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken)
     {
         int readAttempts = 0;
         while (socket.Available == 0 && readAttempts++ < 5)
         {
-            await Task.Delay(10);
+            await Task.Delay(10, cancellationToken);
         }
 
         Memory<byte> data = new byte[socket.Available];
-        await socket.ReceiveAsync(data);
+        await socket.ReceiveAsync(data, cancellationToken);
         return data;
     }
 

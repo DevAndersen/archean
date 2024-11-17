@@ -75,9 +75,9 @@ public class SocketServer : ISocketServer
         {
             while (Running && !serverRunningCancellationTokenSource.IsCancellationRequested)
             {
-                Socket clientSocket = await serverSocket.AcceptAsync(serverRunningCancellationTokenSource.Token);
+                Socket clientSocket = await serverSocket.AcceptAsync(ServerRunningCancellationToken);
                 Connection connection = new Connection(clientSocket);
-                await connectionHandler.HandleNewConnectionAsync(connection);
+                await connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
             }
         }
         catch (OperationCanceledException) // Catch and suppress the OperationCanceledException that may be thrown when the server is stopped.
