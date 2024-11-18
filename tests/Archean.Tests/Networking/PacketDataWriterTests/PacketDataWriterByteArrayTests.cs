@@ -45,7 +45,7 @@ public class PacketDataWriterByteArrayTests
         packetDataWriter.WriteByteArray(data, buffer, out _);
 
         // Assert
-        Assert.Equal(data, buffer.Slice(0, data.Length));
+        Assert.Equal(data, buffer[..data.Length]);
     }
 
     [Theory]
@@ -91,7 +91,7 @@ public class PacketDataWriterByteArrayTests
         packetDataWriter.WriteByteArray(data, buffer, out _);
 
         // Assert
-        Memory<byte> unwrittenBufferArea = buffer.Slice(data.Length, Constants.Networking.ByteArrayLength - data.Length);
+        Memory<byte> unwrittenBufferArea = buffer[data.Length..Constants.Networking.ByteArrayLength];
         int firstNonZeroByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(zeroByte);
         Assert.Equal(indexNotFound, firstNonZeroByteInUnwrittenBuffer);
     }

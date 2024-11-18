@@ -35,7 +35,7 @@ public class ClientPacketReader : IClientPacketReader
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientMessagePacket.PacketSize, nameof(memory));
 
         // Skip the first byte, which represents the player ID (always 0xFF).
-        string message = reader.ReadString(memory.Slice(1), out _);
+        string message = reader.ReadString(memory[1..], out _);
 
         return new ClientMessagePacket
         {
@@ -48,7 +48,7 @@ public class ClientPacketReader : IClientPacketReader
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientPositionAndOrientationPacket.PacketSize, nameof(memory));
 
         // Skip the first byte, which represents the player ID (always 0xFF).
-        FShort x = reader.ReadFShort(memory.Slice(1), out memory);
+        FShort x = reader.ReadFShort(memory[1..], out memory);
         FShort y = reader.ReadFShort(memory, out memory);
         FShort z = reader.ReadFShort(memory, out memory);
         byte yaw = reader.ReadByte(memory, out memory);

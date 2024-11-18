@@ -19,7 +19,7 @@ public class PacketDataReaderByteArrayTests
     {
         // Setup
         byte[] buffer = new byte[Constants.Networking.ByteArrayLength + restBufferSize];
-        buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
+        buffer.AsSpan()[..Constants.Networking.ByteArrayLength].Fill(fillByte);
 
         // Action
         byte[] readBytes = packetDataReader.ReadByteArray(buffer, out _);
@@ -35,7 +35,7 @@ public class PacketDataReaderByteArrayTests
     {
         // Setup
         byte[] buffer = new byte[Constants.Networking.ByteArrayLength + restBufferSize];
-        buffer.AsSpan().Slice(0, Constants.Networking.ByteArrayLength).Fill(fillByte);
+        buffer.AsSpan()[..Constants.Networking.ByteArrayLength].Fill(fillByte);
 
         // Action
         packetDataReader.ReadByteArray(buffer, out ReadOnlyMemory<byte> restBuffer);

@@ -9,31 +9,31 @@ public class PacketDataWriter : IPacketDataWriter
     public void WriteByte(byte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = value;
-        rest = memory.Slice(sizeof(byte));
+        rest = memory[sizeof(byte)..];
     }
 
     public void WriteSByte(sbyte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = (byte)value;
-        rest = memory.Slice(sizeof(sbyte));
+        rest = memory[sizeof(sbyte)..];
     }
 
     public void WriteShort(short value, Memory<byte> memory, out Memory<byte> rest)
     {
         BinaryPrimitives.WriteInt16BigEndian(memory.Span, value);
-        rest = memory.Slice(sizeof(short));
+        rest = memory[sizeof(short)..];
     }
 
     public void WriteFByte(FByte value, Memory<byte> memory, out Memory<byte> rest)
     {
         memory.Span[0] = value.ToByte();
-        rest = memory.Slice(sizeof(byte));
+        rest = memory[sizeof(byte)..];
     }
 
     public void WriteFShort(FShort value, Memory<byte> memory, out Memory<byte> rest)
     {
         BinaryPrimitives.WriteUInt16BigEndian(memory.Span, value.ToUShort());
-        rest = memory.Slice(sizeof(short));
+        rest = memory[sizeof(short)..];
     }
 
     public void WriteString(string value, Memory<byte> memory, out Memory<byte> rest)
@@ -45,14 +45,14 @@ public class PacketDataWriter : IPacketDataWriter
 
         if (value.Length > Constants.Networking.StringLength)
         {
-            Encoding.ASCII.GetBytes(value.AsSpan().Slice(0, Constants.Networking.StringLength), memory.Span);
+            Encoding.ASCII.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], memory.Span);
         }
         else
         {
             Encoding.ASCII.GetBytes(value, memory.Span);
-            memory.Slice(value.Length, Constants.Networking.StringLength - value.Length).Span.Fill((byte)' ');
+            memory[value.Length..Constants.Networking.StringLength].Span.Fill((byte)' ');
         }
-        rest = memory.Slice(Constants.Networking.StringLength);
+        rest = memory[Constants.Networking.StringLength..];
     }
 
     public void WriteByteArray(byte[] bytes, Memory<byte> memory, out Memory<byte> rest)
@@ -68,6 +68,6 @@ public class PacketDataWriter : IPacketDataWriter
         }
 
         bytes.CopyTo(memory);
-        rest = memory.Slice(Constants.Networking.ByteArrayLength);
+        rest = memory[Constants.Networking.ByteArrayLength..];
     }
 }

@@ -94,28 +94,28 @@ public class ConnectionHandler : IConnectionHandler
                     ClientPacketId packetId = (ClientPacketId)buffer.Span[0];
 
                     // Slice the packet ID byte off.
-                    buffer = buffer.Slice(1);
+                    buffer = buffer[1..];
 
                     switch (packetId)
                     {
                         // Block update packet.
                         case ClientPacketId.SetBlock:
-                            ClientSetBlockPacket setBlockPacket = clientPacketReader.ReadSetBlockPacket(buffer.Slice(0, ClientSetBlockPacket.PacketSize));
-                            buffer = buffer.Slice(ClientSetBlockPacket.PacketSize);
+                            ClientSetBlockPacket setBlockPacket = clientPacketReader.ReadSetBlockPacket(buffer[..ClientSetBlockPacket.PacketSize]);
+                            buffer = buffer[ClientSetBlockPacket.PacketSize..];
                             await packetHandler.HandleSetBlockPacketAsync(setBlockPacket);
                             break;
 
                         // Pose packet.
                         case ClientPacketId.PositionAndOrientation:
-                            ClientPositionAndOrientationPacket positionAndOrientationPacket = clientPacketReader.ReadPositionAndOrientationPacket(buffer.Slice(0, ClientPositionAndOrientationPacket.PacketSize));
-                            buffer = buffer.Slice(ClientPositionAndOrientationPacket.PacketSize);
+                            ClientPositionAndOrientationPacket positionAndOrientationPacket = clientPacketReader.ReadPositionAndOrientationPacket(buffer[..ClientPositionAndOrientationPacket.PacketSize]);
+                            buffer = buffer[ClientPositionAndOrientationPacket.PacketSize..];
                             await packetHandler.HandlePositionAndOrientationPacketAsync(positionAndOrientationPacket);
                             break;
 
                         // Message packet.
                         case ClientPacketId.Message:
-                            ClientMessagePacket messagePacket = clientPacketReader.ReadMessagePacket(buffer.Slice(0, ClientMessagePacket.PacketSize));
-                            buffer = buffer.Slice(ClientMessagePacket.PacketSize);
+                            ClientMessagePacket messagePacket = clientPacketReader.ReadMessagePacket(buffer[..ClientMessagePacket.PacketSize]);
+                            buffer = buffer[ClientMessagePacket.PacketSize..];
                             await packetHandler.HandleMessagePacketAsync(messagePacket);
                             break;
 
@@ -125,7 +125,7 @@ public class ConnectionHandler : IConnectionHandler
                                 packetId,
                                 "Todo"); // Todo
 
-                            buffer = buffer.Slice(buffer.Length);
+                            buffer = buffer[buffer.Length..];
                             break;
                     }
                 }
