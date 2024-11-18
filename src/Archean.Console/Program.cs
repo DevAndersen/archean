@@ -15,6 +15,7 @@ ServiceProvider serviceProvider = new ServiceCollection()
     .AddSingleton<ISocketServer, SocketServer>()
     .AddSingleton<IConnectionRepository, ConnectionRepository>()
     .AddSingleton<IBlockDictionary, BlockDictionary>()
+    .AddSingleton<IClientPacketHandler, ClientPacketHandler>()
     .BuildServiceProvider();
 
 ISocketServer server = serviceProvider.GetRequiredService<ISocketServer>();

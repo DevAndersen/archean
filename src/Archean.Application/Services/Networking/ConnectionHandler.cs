@@ -3,6 +3,7 @@ using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Services.Networking;
+using Microsoft.Extensions.DependencyInjection;
 using System.Buffers.Binary;
 using System.Net.Sockets;
 
@@ -15,14 +16,22 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IPacketDataReader packetDataReader;
     private readonly IServerPacketWriter serverPacketWriter;
     private readonly ILogger<ConnectionHandler> logger;
+    private readonly IServiceProvider provider;
 
-    public ConnectionHandler(IClientPacketReader clientPacketReader, IConnectionRepository connectionRepository, IPacketDataReader packetDataReader, IServerPacketWriter serverPacketWriter, ILogger<ConnectionHandler> logger)
+    public ConnectionHandler(
+        IClientPacketReader clientPacketReader,
+        IConnectionRepository connectionRepository,
+        IPacketDataReader packetDataReader,
+        IServerPacketWriter serverPacketWriter,
+        ILogger<ConnectionHandler> logger,
+        IServiceProvider provider)
     {
         this.clientPacketReader = clientPacketReader;
         this.connectionRepository = connectionRepository;
         this.packetDataReader = packetDataReader;
         this.serverPacketWriter = serverPacketWriter;
         this.logger = logger;
+        this.provider = provider;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
@@ -72,6 +81,8 @@ public class ConnectionHandler : IConnectionHandler
 
     private async Task ReceiveFromClientAsync(IConnection connection, CancellationToken cancellationToken)
     {
+        using IServiceScope scope = provider.CreateScope();
+        IClientPacketHandler packetHandler = scope.ServiceProvider.GetRequiredService<IClientPacketHandler>();
         try
         {
             while (!cancellationToken.IsCancellationRequested && connection.IsConnected)
@@ -89,17 +100,23 @@ public class ConnectionHandler : IConnectionHandler
                     {
                         // Block update packet.
                         case ClientPacketId.SetBlock:
+                            ClientSetBlockPacket setBlockPacket = clientPacketReader.ReadSetBlockPacket(buffer.Slice(0, ClientSetBlockPacket.PacketSize));
                             buffer = buffer.Slice(ClientSetBlockPacket.PacketSize);
+                            await packetHandler.HandleSetBlockPacketAsync(setBlockPacket);
                             break;
 
                         // Pose packet.
                         case ClientPacketId.PositionAndOrientation:
+                            ClientPositionAndOrientationPacket positionAndOrientationPacket = clientPacketReader.ReadPositionAndOrientationPacket(buffer.Slice(0, ClientPositionAndOrientationPacket.PacketSize));
                             buffer = buffer.Slice(ClientPositionAndOrientationPacket.PacketSize);
+                            await packetHandler.HandlePositionAndOrientationPacketAsync(positionAndOrientationPacket);
                             break;
 
                         // Message packet.
                         case ClientPacketId.Message:
+                            ClientMessagePacket messagePacket = clientPacketReader.ReadMessagePacket(buffer.Slice(0, ClientMessagePacket.PacketSize));
                             buffer = buffer.Slice(ClientMessagePacket.PacketSize);
+                            await packetHandler.HandleMessagePacketAsync(messagePacket);
                             break;
 
                         // Unknown packet type.
