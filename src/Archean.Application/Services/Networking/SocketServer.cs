@@ -43,9 +43,9 @@ public class SocketServer : ISocketServer
             throw new InvalidOperationException("The socket server is already running");
         }
 
+        Running = true;
         serverSocket.Listen(listenBacklogSize);
         socketThread.Start();
-        Running = true;
 
         logger.LogInformation("Socket server started on port {port} with backlog size {listenBacklogSize}",
             port,
