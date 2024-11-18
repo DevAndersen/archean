@@ -14,34 +14,6 @@ public class ClientPacketReader : IClientPacketReader
         this.reader = reader;
     }
 
-    public IClientPacket ReadClientPacket(ReadOnlyMemory<byte> buffer, out ReadOnlyMemory<byte> restBuffer)
-    {
-        ArgumentOutOfRangeException.ThrowIfZero(buffer.Length, nameof(buffer));
-
-        ClientPacketId packetId = (ClientPacketId)reader.ReadByte(buffer, out buffer);
-
-        IClientPacket packet = packetId switch
-        {
-            ClientPacketId.Identification => ReadIdentificationPacket(buffer),
-            ClientPacketId.SetBlock => ReadMessagePacket(buffer),
-            ClientPacketId.PositionAndOrientation => ReadPositionAndOrientationPacket(buffer),
-            ClientPacketId.Message => ReadSetBlockPacket(buffer),
-            _ => throw new NotImplementedException() // Todo
-        };
-
-        int packetSize = packet switch
-        {
-            ClientIdentificationPacket => ClientIdentificationPacket.PacketSize,
-            ClientMessagePacket => ClientMessagePacket.PacketSize,
-            ClientPositionAndOrientationPacket => ClientPositionAndOrientationPacket.PacketSize,
-            ClientSetBlockPacket => ClientSetBlockPacket.PacketSize,
-            _ => throw new NotImplementedException() // Todo
-        };
-
-        restBuffer = buffer.Slice(packetSize);
-        return packet;
-    }
-
     public ClientIdentificationPacket ReadIdentificationPacket(ReadOnlyMemory<byte> memory)
     {
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientIdentificationPacket.PacketSize, nameof(memory));
