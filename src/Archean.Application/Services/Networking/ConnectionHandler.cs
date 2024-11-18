@@ -147,8 +147,6 @@ public class ConnectionHandler : IConnectionHandler
             logger.LogError(e, "Unexpected {exceptionType} thrown while receiving data from connection {connectionIdentity}",
                 e.GetType().FullName,
                 "Todo"); // Todo
-
-            throw;
         }
         finally
         {
