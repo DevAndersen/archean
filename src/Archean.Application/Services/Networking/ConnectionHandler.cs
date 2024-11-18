@@ -82,7 +82,13 @@ public class ConnectionHandler : IConnectionHandler
     private async Task ReceiveFromClientAsync(IConnection connection, CancellationToken cancellationToken)
     {
         using IServiceScope scope = provider.CreateScope();
+
+        // Set the connection of the current scope.
+        IConnectionService connectionService = scope.ServiceProvider.GetRequiredService<IConnectionService>();
+        connectionService.SetConnection(connection);
+
         IClientPacketHandler packetHandler = scope.ServiceProvider.GetRequiredService<IClientPacketHandler>();
+
         try
         {
             while (!cancellationToken.IsCancellationRequested && connection.IsConnected)

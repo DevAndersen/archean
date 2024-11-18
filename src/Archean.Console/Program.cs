@@ -12,10 +12,11 @@ ServiceProvider serviceProvider = new ServiceCollection()
     .AddScoped<IServerPacketWriter, ServerPacketWriter>()
     .AddScoped<IPacketDataReader, PacketDataReader>()
     .AddScoped<IPacketDataWriter, PacketDataWriter>()
+    .AddScoped<IConnectionService, ConnectionService>()
+    .AddScoped<IClientPacketHandler, ClientPacketHandler>()
     .AddSingleton<ISocketServer, SocketServer>()
     .AddSingleton<IConnectionRepository, ConnectionRepository>()
     .AddSingleton<IBlockDictionary, BlockDictionary>()
-    .AddSingleton<IClientPacketHandler, ClientPacketHandler>()
     .BuildServiceProvider();
 
 ISocketServer server = serviceProvider.GetRequiredService<ISocketServer>();
