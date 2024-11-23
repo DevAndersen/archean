@@ -1,7 +1,9 @@
-﻿using Archean.Application.Services.Networking;
-using Archean.Application.Services;
-using Archean.Core.Services.Networking;
+﻿using Archean.Application.Services;
+using Archean.Application.Services.Events;
+using Archean.Application.Services.Networking;
 using Archean.Core.Services;
+using Archean.Core.Services.Events;
+using Archean.Core.Services.Networking;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Archean.Application;
@@ -23,8 +25,11 @@ public static class Extensions
             .AddScoped<IPacketDataWriter, PacketDataWriter>()
             .AddScoped<IConnectionService, ConnectionService>()
             .AddScoped<IClientPacketHandler, ClientPacketHandler>()
+            .AddScoped<IEventListener, EventListener>()
+            .AddScoped<IEventBus, EventBus>()
             .AddSingleton<ISocketServer, SocketServer>()
             .AddSingleton<IConnectionRepository, ConnectionRepository>()
+            .AddSingleton<IGlobalEventBus, EventBus>()
             .AddSingleton<IBlockDictionary, BlockDictionary>();
     }
 }
