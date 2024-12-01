@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using Archean.Core.Models;
 using Archean.Core.Models.World;
 
@@ -8,13 +9,28 @@ public class BlockMapTests
     [Fact]
     public void Constructor_ValidData_ExpectedDimensions()
     {
-        // Action
+        // Setup
         BlockMap blockMap = new BlockMap(4, 5, 6);
 
         // Assert
         Assert.Equal(4, blockMap.Width);
         Assert.Equal(5, blockMap.Height);
         Assert.Equal(6, blockMap.Depth);
+    }
+
+    [Fact]
+    public void Constructor_ValidData_ExpectedBufferLength()
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(4, 5, 6);
+
+        // Action
+        ReadOnlyMemory<byte> buffer = blockMap.AsMemory();
+        int blockBufferLength = BinaryPrimitives.ReadInt32BigEndian(buffer.Span);
+
+        // Assert
+        Assert.Equal(4 * 5 * 6 + sizeof(int), buffer.Length);
+        Assert.Equal(4 * 5 * 6, blockBufferLength);
     }
 
     [Fact]
