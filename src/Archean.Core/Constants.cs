@@ -15,6 +15,14 @@ public static class Constants
         public const Block HighestValidBlockId = Block.Obsidian;
     }
 
+    public static class Worlds
+    {
+        /// <summary>
+        /// The largest size of the dimensions of a world.
+        /// </summary>
+        public const int MaxWorldDimensionSize = 1023;
+    }
+
     public static class Networking
     {
         /// <summary>
