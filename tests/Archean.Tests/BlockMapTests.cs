@@ -1,6 +1,7 @@
-using System.Buffers.Binary;
 using Archean.Core.Models;
-using Archean.Core.Models.World;
+using Archean.Core.Models.Worlds;
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 
 namespace Archean.Tests;
 
@@ -55,6 +56,30 @@ public class BlockMapTests
     }
 
     [Fact]
+    public void Constructor_ValidBlockData_ExpectedSuccess()
+    {
+        // Setup
+        ReadOnlySpan<byte> blockByteData = [1, 2, 3, 4];
+        ReadOnlySpan<Block> blockData = MemoryMarshal.Cast<byte, Block>(blockByteData);
+
+        // Action
+        BlockMap blockMap = new BlockMap(2, 2, 1, blockData);
+
+        // Assert
+        Assert.NotNull(blockMap);
+    }
+
+    [Fact]
+    public void Constructor_MismatchingDimensions_ThrowsException()
+    {
+        // Setup
+        Block[] blockData = [(Block)1, (Block)2, (Block)3, (Block)4];
+
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(2, 1, 1, blockData.AsSpan()));
+    }
+
+    [Fact]
     public void GetBlock_ValidCoordinates_ReturnsBlock()
     {
         // Setup
@@ -65,5 +90,59 @@ public class BlockMapTests
 
         // Assert
         Assert.Equal(Block.Stone, blockMap[1, 2, 3]);
+    }
+
+    [Fact]
+    public void AsMemory_ValidData_ExpectedBlockBytes()
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(2, 2, 1);
+
+        // Action
+        blockMap[0, 0, 0] = Block.Stone;
+        blockMap[1, 1, 0] = Block.Dirt;
+
+        // Assert
+        byte[] expectedBytes = [(byte)Block.Stone, 0, 0, (byte)Block.Dirt];
+        Assert.Equal(blockMap.AsMemory().Span[sizeof(int)..], expectedBytes);
+    }
+
+    [Theory]
+    [InlineData(2, 2, 1, 2 * 2 * 1)]
+    [InlineData(100, 44, 54, 100 * 44 * 54)]
+    public void AsMemory_ValidData_ExpectedLengthBytes(short width, short height, short depth, int expectedLength)
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(width, height, depth);
+
+        // Action
+        ReadOnlySpan<byte> lengthBytes = blockMap.AsMemory().Span[..sizeof(int)];
+        int length = BinaryPrimitives.ReadInt32BigEndian(lengthBytes);
+
+        // Assert
+        Assert.Equal(expectedLength, length);
+    }
+
+    [Fact]
+    public void IsValidBlockPosition_ValidInput_ExpectedSuccess()
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(3, 3, 3);
+
+        // Assert
+        Assert.True(blockMap.IsValidBlockPosition(0, 0, 0));
+        Assert.True(blockMap.IsValidBlockPosition(1, 1, 1));
+        Assert.True(blockMap.IsValidBlockPosition(2, 2, 2));
+    }
+
+    [Fact]
+    public void IsValidBlockPosition_InvalidInput_ExpectedFailure()
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(3, 3, 3);
+
+        // Assert
+        Assert.False(blockMap.IsValidBlockPosition(-1, -1, -1));
+        Assert.False(blockMap.IsValidBlockPosition(3, 3, 3));
     }
 }

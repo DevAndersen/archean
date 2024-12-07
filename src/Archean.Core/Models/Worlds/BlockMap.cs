@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
-namespace Archean.Core.Models.World;
+namespace Archean.Core.Models.Worlds;
 
 /// <summary>
 /// Contains the blocks of a map.
