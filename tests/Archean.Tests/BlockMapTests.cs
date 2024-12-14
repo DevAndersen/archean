@@ -145,4 +145,47 @@ public class BlockMapTests
         Assert.False(blockMap.IsValidBlockPosition(-1, -1, -1));
         Assert.False(blockMap.IsValidBlockPosition(3, 3, 3));
     }
+
+    [Theory]
+    [InlineData(0, 0, 0, 0)]
+    [InlineData(1, 0, 0, 1)]
+    [InlineData(15, 0, 0, 15)]
+    [InlineData(0, 1, 0, 256)]
+    [InlineData(0, 15, 0, 3840)]
+    [InlineData(0, 0, 1, 16)]
+    [InlineData(0, 0, 15, 240)]
+    [InlineData(15, 15, 15, 4095)]
+    public void TryGetBlockIndex_ValidInput_ExpectedOutput(int x, int y, int z, int expectedIndex)
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(16, 16, 16);
+
+        // Action
+        bool isValidIndex = blockMap.TryGetBlockIndex(x, y, z, out int actualIndex);
+
+        // Assert
+        Assert.True(isValidIndex);
+        Assert.Equal(expectedIndex, actualIndex);
+    }
+
+    [Theory]
+    [InlineData(-1, 0, 0)]
+    [InlineData(0, -1, 0)]
+    [InlineData(0, 0, -1)]
+    [InlineData(-1, -1, -1)]
+    [InlineData(16, 15, 15)]
+    [InlineData(15, 16, 15)]
+    [InlineData(15, 15, 16)]
+    [InlineData(16, 16, 16)]
+    public void TryGetBlockIndex_InputOutOfRange_ExpectedFailure(int x, int y, int z)
+    {
+        // Setup
+        BlockMap blockMap = new BlockMap(16, 16, 16);
+
+        // Action
+        bool isValidIndex = blockMap.TryGetBlockIndex(x, y, z, out _);
+
+        // Assert
+        Assert.False(isValidIndex);
+    }
 }

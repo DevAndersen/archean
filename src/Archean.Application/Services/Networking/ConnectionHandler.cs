@@ -2,9 +2,9 @@
 using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Models.Worlds;
 using Archean.Core.Services.Networking;
 using Microsoft.Extensions.DependencyInjection;
-using System.Buffers.Binary;
 using System.Net.Sockets;
 
 namespace Archean.Application.Services.Networking;
@@ -165,14 +165,35 @@ public class ConnectionHandler : IConnectionHandler
             ServerName = "Server name",
         }));
 
+        short width = 16;
+        short height = 16;
+        short depth = 16;
+        int blockCount = width * height * depth;
+        Block[] blocks = new Block[blockCount];
+
+        BlockMap blockMap = new BlockMap(width, height, depth, blocks);
+
+        for (int x = 0; x < blockMap.Width; x++)
+        {
+            for (int z = 0; z < blockMap.Depth; z++)
+            {
+                for (int y = 0; y < 7; y++)
+                {
+                    blockMap[x, y, z] = Block.Dirt;
+                }
+
+                blockMap[x, 7, z] = Block.Grass;
+            }
+        }
+
         await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelInitializePacket()));
-        await SendLevelTestAsync(connection);
+        await SendLevelTestAsync(blockMap, connection);
 
         await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelFinalizePacket
         {
-            XSize = 128,
-            YSize = 64,
-            ZSize = 128,
+            XSize = blockMap.Width,
+            YSize = blockMap.Height,
+            ZSize = blockMap.Depth,
         }));
 
         await connection.SendAsync(serverPacketWriter.WritePacket(new ServerSpawnPlayerPacket
@@ -180,22 +201,44 @@ public class ConnectionHandler : IConnectionHandler
             PlayerId = Constants.Networking.PlayerSelfId,
             PlayerName = clientIdentificationPacket.Username,
             X = new FShort(4F),
-            Y = new FShort(4F),
+            Y = new FShort(height + 3),
             Z = new FShort(4F),
             Pitch = 0,
             Yaw = 0
         }));
     }
 
-    private async Task SendLevelTestAsync(IConnection connection)
+    private async Task SendLevelTestAsync(BlockMap blockMap, IConnection connection)
     {
-        int blockCount = 128 * 64 * 128;
-        byte[] blocks = new byte[blockCount + sizeof(int)];
+        byte[] blockGZipBuffer = GZipHelper.Compress(blockMap.AsMemory().Span);
 
-        BinaryPrimitives.WriteInt32BigEndian(blocks, blockCount);
-        blocks[4] = (byte)Block.Bedrock;
+        int start = 0;
 
-        byte[] blockGZipBuffer = GZipHelper.Compress(blocks);
+        do
+        {
+            int end = start + Math.Min(blockGZipBuffer.Length - start, Constants.Networking.ByteArrayLength);
+            int length = end - start;
+
+            Memory<byte> chunk = blockGZipBuffer
+                .AsMemory()
+                .Slice(start, end);
+
+            Memory<byte> buffer;
+            if (length < Constants.Networking.ByteArrayLength)
+            {
+                buffer = new byte[Constants.Networking.ByteArrayLength];
+                chunk.CopyTo(chunk);
+            }
+            else
+            {
+                buffer = chunk;
+            }
+
+            // Todo
+
+            start += Constants.Networking.ByteArrayLength;
+        }
+        while (start < blockGZipBuffer.Length);
 
         byte[][] chunks = blockGZipBuffer.Chunk(Constants.Networking.ByteArrayLength).ToArray();
         for (int i = 0; i < chunks.Length; i++)

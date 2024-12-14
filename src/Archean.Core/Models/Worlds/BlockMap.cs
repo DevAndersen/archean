@@ -26,7 +26,7 @@ public class BlockMap
     /// <summary>
     /// Provides positional read-write access to the blocks of the block map.
     /// </summary>
-    public Block this[short x, short y, short z]
+    public Block this[int x, int y, int z]
     {
         get => GetBlock(x, y, z);
         set => SetBlock(value, x, y, z);
@@ -73,7 +73,7 @@ public class BlockMap
     /// <summary>
     /// Get the block at the specified position.
     /// </summary>
-    public Block GetBlock(short x, short y, short z)
+    public Block GetBlock(int x, int y, int z)
     {
         if (TryGetBlockIndex(x, y, z, out int index))
         {
@@ -86,7 +86,7 @@ public class BlockMap
     /// <summary>
     /// Set the block at the specified position.
     /// </summary>
-    public void SetBlock(Block block, short x, short y, short z)
+    public void SetBlock(Block block, int x, int y, int z)
     {
         if (TryGetBlockIndex(x, y, z, out int index))
         {
@@ -97,11 +97,11 @@ public class BlockMap
     /// <summary>
     /// Attempt to get the one-dimensional index of the specified block coordinate.
     /// </summary>
-    private bool TryGetBlockIndex(short x, short y, short z, out int index)
+    public bool TryGetBlockIndex(int x, int y, int z, out int index)
     {
         if (IsValidBlockPosition(x, y, z))
         {
-            index = x + (y * Width) + (z * Width * Height);
+            index = x + (y * Width * Depth) + (z * Width);
             return true;
         }
 
@@ -112,7 +112,7 @@ public class BlockMap
     /// <summary>
     /// Determine if the coordinates are within the block area of the block map.
     /// </summary>
-    public bool IsValidBlockPosition(short x, short y, short z)
+    public bool IsValidBlockPosition(int x, int y, int z)
     {
         return !(x < 0 || x > Width - 1
             || y < 0 || y > Height - 1
