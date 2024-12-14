@@ -209,13 +209,14 @@ public class ConnectionHandler : IConnectionHandler
     private async Task SendLevelTestAsync(BlockMap blockMap, IConnection connection)
     {
         byte[] blockGZipBuffer = GZipHelper.Compress(blockMap.AsMemory().Span);
+        int chunkCount = (blockGZipBuffer.Length / Constants.Networking.ByteArrayLength) + 1;
 
-        int start = 0;
-
-        do
+        for (int i = 0; i < chunkCount; i++)
         {
-            int end = start + Math.Min(blockGZipBuffer.Length - start, Constants.Networking.ByteArrayLength);
+            int start = i * Constants.Networking.ByteArrayLength;
+            int end = Math.Min(blockGZipBuffer.Length - start, Constants.Networking.ByteArrayLength);
             int length = end - start;
+            byte percent = (byte)((i + 1) / (float)chunkCount * 100);
 
             Memory<byte> chunk = blockGZipBuffer
                 .AsMemory()
@@ -225,26 +226,12 @@ public class ConnectionHandler : IConnectionHandler
             if (length < Constants.Networking.ByteArrayLength)
             {
                 buffer = new byte[Constants.Networking.ByteArrayLength];
-                chunk.CopyTo(chunk);
+                chunk.CopyTo(buffer);
             }
             else
             {
                 buffer = chunk;
             }
-
-            // Todo
-
-            start += Constants.Networking.ByteArrayLength;
-        }
-        while (start < blockGZipBuffer.Length);
-
-        byte[][] chunks = blockGZipBuffer.Chunk(Constants.Networking.ByteArrayLength).ToArray();
-        for (int i = 0; i < chunks.Length; i++)
-        {
-            Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength];
-
-            chunks[i].CopyTo(buffer);
-            byte percent = (byte)((i + 1) / (float)chunks.Length * 100);
 
             await connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
             {
@@ -257,7 +244,7 @@ public class ConnectionHandler : IConnectionHandler
             await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelDataChunkPacket
             {
                 ChunkData = buffer.ToArray(),
-                ChunkLength = (short)chunks[i].Length,
+                ChunkLength = (short)length,
                 PercentageComplete = percent
             }));
         }
