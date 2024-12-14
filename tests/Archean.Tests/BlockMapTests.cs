@@ -1,7 +1,6 @@
 using Archean.Core.Models;
 using Archean.Core.Models.Worlds;
 using System.Buffers.Binary;
-using System.Runtime.InteropServices;
 
 namespace Archean.Tests;
 
@@ -11,59 +10,73 @@ public class BlockMapTests
     public void Constructor_ValidData_ExpectedDimensions()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(4, 5, 6);
+        BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
-        Assert.Equal(4, blockMap.Width);
-        Assert.Equal(5, blockMap.Height);
-        Assert.Equal(6, blockMap.Depth);
+        Assert.Equal(16, blockMap.Width);
+        Assert.Equal(32, blockMap.Height);
+        Assert.Equal(48, blockMap.Depth);
     }
 
     [Fact]
     public void Constructor_ValidData_ExpectedBufferLength()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(4, 5, 6);
+        BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Action
         ReadOnlyMemory<byte> buffer = blockMap.AsMemory();
         int blockBufferLength = BinaryPrimitives.ReadInt32BigEndian(buffer.Span);
+        int expectedBlockCount = 16 * 32 * 48;
 
         // Assert
-        Assert.Equal(4 * 5 * 6 + sizeof(int), buffer.Length);
-        Assert.Equal(4 * 5 * 6, blockBufferLength);
+        Assert.Equal(expectedBlockCount + sizeof(int), buffer.Length);
+        Assert.Equal(expectedBlockCount, blockBufferLength);
     }
 
     [Fact]
     public void Constructor_ZeroSize_ThrowsException()
     {
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(0, 1, 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(0, 32, 48));
     }
 
     [Fact]
     public void Constructor_NegativeSize_ThrowsException()
     {
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(-1, 1, 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(-1, 32, 48));
+    }
+
+    [Theory]
+    [InlineData(15, 16, 16)]
+    [InlineData(16, 15, 16)]
+    [InlineData(16, 16, 15)]
+    public void Constructor_DimensionsTooSmall_ThrowsException(int width, int height, int depth)
+    {
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(width, height, depth));
     }
 
     [Fact]
     public void Constructor_DimensionTooBig_ThrowsException()
     {
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(Constants.Worlds.MaxWorldDimensionSize + 4, 1, 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(Constants.Worlds.MaxWorldDimensionSize + 4, 32, 48));
     }
 
     [Fact]
     public void Constructor_ValidBlockData_ExpectedSuccess()
     {
         // Setup
-        ReadOnlySpan<byte> blockByteData = [1, 2, 3, 4];
-        ReadOnlySpan<Block> blockData = MemoryMarshal.Cast<byte, Block>(blockByteData);
+        int width = 16;
+        int height = 32;
+        int depth = 48;
+        int blockDataLength = width * height * depth;
+        Block[] blockData = new Block[blockDataLength];
 
         // Action
-        BlockMap blockMap = new BlockMap(2, 2, 1, blockData);
+        BlockMap blockMap = new BlockMap(width, depth, height, blockData);
 
         // Assert
         Assert.NotNull(blockMap);
@@ -73,17 +86,31 @@ public class BlockMapTests
     public void Constructor_MismatchingDimensions_ThrowsException()
     {
         // Setup
-        Block[] blockData = [(Block)1, (Block)2, (Block)3, (Block)4];
+        int width = 16;
+        int height = 32;
+        int depth = 48;
+        int blockDataLength = width * height * depth;
+        Block[] blockData = new Block[blockDataLength];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(2, 1, 1, blockData.AsSpan()));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BlockMap(width + 16, depth, height, blockData.AsSpan()));
+    }
+
+    [Theory]
+    [InlineData(31, 32, 32)]
+    [InlineData(32, 31, 32)]
+    [InlineData(32, 32, 31)]
+    public void Constructor_DimensionsNotEvenlyDivisible_ThrowsException(int width, int height, int depth)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() => new BlockMap(width, depth, height));
     }
 
     [Fact]
     public void GetBlock_ValidCoordinates_ReturnsBlock()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(4, 4, 4);
+        BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Action
         blockMap[1, 2, 3] = Block.Stone;
@@ -96,21 +123,28 @@ public class BlockMapTests
     public void AsMemory_ValidData_ExpectedBlockBytes()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(2, 2, 1);
+        int width = 16;
+        int height = 32;
+        int depth = 48;
+        int blockDataLength = width * height * depth;
+        BlockMap blockMap = new BlockMap(width, depth, height);
 
         // Action
         blockMap[0, 0, 0] = Block.Stone;
-        blockMap[1, 1, 0] = Block.Dirt;
+        blockMap[1, 0, 0] = Block.Dirt;
+        blockMap[0, 0, 1] = Block.Grass;
 
         // Assert
-        byte[] expectedBytes = [(byte)Block.Stone, 0, 0, (byte)Block.Dirt];
+        byte[] expectedBytes = new byte[blockDataLength];
+        expectedBytes[0] = (byte)Block.Stone;
+        expectedBytes[1] = (byte)Block.Dirt;
+        expectedBytes[16] = (byte)Block.Grass;
         Assert.Equal(blockMap.AsMemory().Span[sizeof(int)..], expectedBytes);
     }
 
     [Theory]
-    [InlineData(2, 2, 1, 2 * 2 * 1)]
-    [InlineData(100, 44, 54, 100 * 44 * 54)]
-    public void AsMemory_ValidData_ExpectedLengthBytes(short width, short height, short depth, int expectedLength)
+    [InlineData(16, 32, 48, 16 * 32 * 48)]
+    public void AsMemory_ValidData_ExpectedLengthBytes(int width, int height, int depth, int expectedLength)
     {
         // Setup
         BlockMap blockMap = new BlockMap(width, height, depth);
@@ -127,23 +161,24 @@ public class BlockMapTests
     public void IsValidBlockPosition_ValidInput_ExpectedSuccess()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(3, 3, 3);
+        BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
         Assert.True(blockMap.IsValidBlockPosition(0, 0, 0));
         Assert.True(blockMap.IsValidBlockPosition(1, 1, 1));
         Assert.True(blockMap.IsValidBlockPosition(2, 2, 2));
+        Assert.True(blockMap.IsValidBlockPosition(15, 31, 47));
     }
 
     [Fact]
     public void IsValidBlockPosition_InvalidInput_ExpectedFailure()
     {
         // Setup
-        BlockMap blockMap = new BlockMap(3, 3, 3);
+        BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
         Assert.False(blockMap.IsValidBlockPosition(-1, -1, -1));
-        Assert.False(blockMap.IsValidBlockPosition(3, 3, 3));
+        Assert.False(blockMap.IsValidBlockPosition(16, 32, 48));
     }
 
     [Theory]

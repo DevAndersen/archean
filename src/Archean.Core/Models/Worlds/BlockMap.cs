@@ -8,6 +8,8 @@ namespace Archean.Core.Models.Worlds;
 /// </summary>
 public class BlockMap
 {
+    private static readonly string unevenDimensionDivisibilityExceptionMessage = $"Width of BlockMap must be even evenly divisible by {Constants.Worlds.WorldDimensionIncrement}";
+
     /// <summary>
     /// The size of the X-dimension of the block map.
     /// </summary>
@@ -40,19 +42,32 @@ public class BlockMap
     /// <summary>
     /// Create a new map with the specified dimensions.
     /// </summary>
-    public BlockMap(short width, short height, short depth)
+    public BlockMap(int width, int height, int depth)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(width, 0, nameof(width));
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(height, 0, nameof(height));
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(depth, 0, nameof(depth));
+        ArgumentOutOfRangeException.ThrowIfLessThan(width, Constants.Worlds.MinWorldDimensionSize, nameof(width));
+        ArgumentOutOfRangeException.ThrowIfLessThan(height, Constants.Worlds.MinWorldDimensionSize, nameof(height));
+        ArgumentOutOfRangeException.ThrowIfLessThan(depth, Constants.Worlds.MinWorldDimensionSize, nameof(depth));
 
         ArgumentOutOfRangeException.ThrowIfGreaterThan(width, Constants.Worlds.MaxWorldDimensionSize, nameof(width));
         ArgumentOutOfRangeException.ThrowIfGreaterThan(height, Constants.Worlds.MaxWorldDimensionSize, nameof(height));
         ArgumentOutOfRangeException.ThrowIfGreaterThan(depth, Constants.Worlds.MaxWorldDimensionSize, nameof(depth));
 
-        Width = width;
-        Height = height;
-        Depth = depth;
+        if (width % Constants.Worlds.WorldDimensionIncrement != 0)
+        {
+            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(width));
+        }
+        else if (height % Constants.Worlds.WorldDimensionIncrement != 0)
+        {
+            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(height));
+        }
+        else if (depth % Constants.Worlds.WorldDimensionIncrement != 0)
+        {
+            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(depth));
+        }
+
+        Width = (short)width;
+        Height = (short)height;
+        Depth = (short)depth;
 
         int blockCount = width * height * depth;
         data = new byte[sizeof(int) + blockCount];
@@ -64,7 +79,7 @@ public class BlockMap
     /// <summary>
     /// Create a new map with the specified dimensions.
     /// </summary>
-    public BlockMap(short width, short height, short depth, ReadOnlySpan<Block> blocks) : this(width, height, depth)
+    public BlockMap(int width, int height, int depth, ReadOnlySpan<Block> blocks) : this(width, height, depth)
     {
         ArgumentOutOfRangeException.ThrowIfNotEqual(blocks.Length, width * height * depth, nameof(blocks));
         blocks.CopyTo(GetBlockBuffer());

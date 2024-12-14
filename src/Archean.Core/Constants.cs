@@ -18,9 +18,19 @@ public static class Constants
     public static class Worlds
     {
         /// <summary>
+        /// The smallest size of the dimensions of a world.
+        /// </summary>
+        public const int MinWorldDimensionSize = 16;
+
+        /// <summary>
         /// The largest size of the dimensions of a world.
         /// </summary>
         public const int MaxWorldDimensionSize = 1023;
+
+        /// <summary>
+        /// The dimensions of a world must be evenly divisible by this value.
+        /// </summary>
+        public const int WorldDimensionIncrement = 16;
     }
 
     public static class Networking

@@ -168,10 +168,8 @@ public class ConnectionHandler : IConnectionHandler
         short width = 16;
         short height = 16;
         short depth = 16;
-        int blockCount = width * height * depth;
-        Block[] blocks = new Block[blockCount];
 
-        BlockMap blockMap = new BlockMap(width, height, depth, blocks);
+        BlockMap blockMap = new BlockMap(width, height, depth);
 
         for (int x = 0; x < blockMap.Width; x++)
         {
