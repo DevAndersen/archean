@@ -39,7 +39,7 @@ public class ClientPacketHandler : IClientPacketHandler
                 packet = new ServerMessagePacket
                 {
                     Message = $"{arg.PlayerSender.DisplayName}: {arg.Message}",
-                    PlayerId = 0 // Todo: Get player ID.
+                    PlayerId = arg.PlayerSender.Id
                 };
             }
             else

@@ -1,44 +1,73 @@
 ﻿using Archean.Core.Models;
 using Archean.Core.Models.Networking;
 using Archean.Core.Services.Networking;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Archean.Application.Services.Networking;
 
 public class PlayerRegistry : IPlayerRegistry
 {
+    private readonly Lock lockObject;
     private readonly List<IPlayer> players;
     private readonly ILogger<PlayerRegistry> logger;
 
     public PlayerRegistry(ILogger<PlayerRegistry> logger)
     {
-        players = [];
         this.logger = logger;
+        players = [];
+        lockObject = new Lock();
     }
 
     public IEnumerable<IPlayer> GetAll()
     {
-        return players;
+        lock (lockObject)
+        {
+            return players;
+        }
     }
 
     public void Remove(IPlayer player)
     {
-        players.Remove(player);
+        lock (lockObject)
+        {
+            players.Remove(player);
+        }
     }
 
     public void Remove(IConnection connection)
     {
-        players.RemoveAll(x => x.Connection == connection);
+        lock (lockObject)
+        {
+            players.RemoveAll(x => x.Connection == connection);
+        }
     }
 
-    public bool TryAdd(IPlayer player, [NotNullWhen(false)] out string? errorMessage)
+    public bool TryAdd(IPlayer player)
     {
-        // Todo
-        players.Add(player);
-        errorMessage = null;
+        lock (lockObject)
+        {
+            sbyte? availablePlayerId = TryGetAvailablePlayerId();
 
-        logger.LogInformation("Added player {username} to player registry", player.Username);
+            if (availablePlayerId.HasValue)
+            {
+                players.Add(player);
+                player.Id = availablePlayerId.Value;
+            }
 
-        return true;
+            return availablePlayerId != null;
+        }
+    }
+
+    private sbyte? TryGetAvailablePlayerId()
+    {
+        sbyte[] playerIdsInUse = players.Select(x => x.Id).ToArray();
+
+        for (sbyte i = 0; i <= Constants.Players.HighestPlayerId; i++)
+        {
+            if (!playerIdsInUse.Contains(i))
+            {
+                return i;
+            }
+        }
+        return null;
     }
 }

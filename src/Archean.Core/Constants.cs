@@ -55,4 +55,9 @@ public static class Constants
         /// </summary>
         public const byte ProtocolVersion = 7;
     }
+
+    public static class Players
+    {
+        public const sbyte HighestPlayerId = sbyte.MaxValue;
+    }
 }

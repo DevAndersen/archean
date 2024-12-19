@@ -76,18 +76,21 @@ public class ConnectionHandler : IConnectionHandler
 
         IPlayer player = new Player(connection, clientIdentificationPacket.Username);
 
-        if (playerRegistry.TryAdd(player, out string? errorMessage))
+        if (playerRegistry.TryAdd(player))
         {
+            logger.LogInformation("Player {username} assigned ID {playerId}",
+                player.Username,
+                player.Id);
+
             await SendJoinServerTestAsync(connection, clientIdentificationPacket);
             new Thread(async () => await ReceiveFromClientAsync(player, cancellationToken)).Start();
         }
         else
         {
-            logger.LogError("Unable to register player {username}, {errorMessage}",
-                player.Username,
-                errorMessage);
+            logger.LogError("Unable to register player {username}, server is full",
+                player.Username);
 
-            await connection.DisconnectAsync(errorMessage);
+            await connection.DisconnectAsync("The server is full");
         }
     }
 

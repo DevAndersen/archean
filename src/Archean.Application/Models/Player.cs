@@ -5,6 +5,8 @@ namespace Archean.Application.Models;
 
 public class Player : IPlayer
 {
+    public sbyte Id { get; set; }
+
     public IConnection Connection { get; }
 
     public string Username { get; }
