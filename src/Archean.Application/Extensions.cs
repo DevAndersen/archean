@@ -23,7 +23,7 @@ public static class Extensions
             .AddScoped<IServerPacketWriter, ServerPacketWriter>()
             .AddScoped<IPacketDataReader, PacketDataReader>()
             .AddScoped<IPacketDataWriter, PacketDataWriter>()
-            .AddScoped<IConnectionService, ConnectionService>()
+            .AddScoped<IPlayerService, PlayerService>()
             .AddScoped<IClientPacketHandler, ClientPacketHandler>()
             .AddScoped<IEventListener, EventListener>()
             .AddScoped<IEventBus, EventBus>()

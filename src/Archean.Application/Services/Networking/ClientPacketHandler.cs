@@ -11,15 +11,15 @@ namespace Archean.Application.Services.Networking;
 public class ClientPacketHandler : IClientPacketHandler
 {
     private readonly ILogger<ClientPacketHandler> logger;
-    private readonly IConnectionService connectionService;
+    private readonly IPlayerService playerService;
     private readonly IGlobalEventBus globalEventBus;
     private readonly IEventListener eventListener;
     private readonly IServerPacketWriter serverPacketWriter;
 
-    public ClientPacketHandler(ILogger<ClientPacketHandler> logger, IConnectionService connectionService, IGlobalEventBus globalEventBus, IEventListener eventListener, IServerPacketWriter serverPacketWriter)
+    public ClientPacketHandler(ILogger<ClientPacketHandler> logger, IPlayerService playerService, IGlobalEventBus globalEventBus, IEventListener eventListener, IServerPacketWriter serverPacketWriter)
     {
         this.logger = logger;
-        this.connectionService = connectionService;
+        this.playerService = playerService;
         this.globalEventBus = globalEventBus;
         this.eventListener = eventListener;
 
@@ -30,21 +30,35 @@ public class ClientPacketHandler : IClientPacketHandler
 
     private async Task ReceiveMessage(MessageEvent arg)
     {
-        if (connectionService.TryGetConnection(out IConnection? connection))
+        if (playerService.TryGetPlayer(out IPlayer? player))
         {
-            await connection.SendAsync(serverPacketWriter.WriteMessagePacket(new ServerMessagePacket
+            ServerMessagePacket packet;
+
+            if (arg.PlayerSender != null)
             {
-                Message = arg.Message,
-                PlayerId = 0
-            }));
+                packet = new ServerMessagePacket
+                {
+                    Message = $"{arg.PlayerSender.DisplayName}: {arg.Message}",
+                    PlayerId = 0 // Todo: Get player ID.
+                };
+            }
+            else
+            {
+                packet = new ServerMessagePacket
+                {
+                    Message = arg.Message,
+                    PlayerId = 0
+                };
+            }
+            await player.Connection.SendAsync(serverPacketWriter.WriteMessagePacket(packet));
         }
     }
 
     private async Task ReceiveSetBlock(SetBlockEvent arg)
     {
-        if (connectionService.TryGetConnection(out IConnection? connection))
+        if (playerService.TryGetPlayer(out IPlayer? player))
         {
-            await connection.SendAsync(serverPacketWriter.WriteSetBlockPacket(new ServerSetBlockPacket
+            await player.Connection.SendAsync(serverPacketWriter.WriteSetBlockPacket(new ServerSetBlockPacket
             {
                 BlockType = arg.Mode == BlockChangeMode.Break ? Block.Air : arg.BlockType,
                 X = arg.X,
@@ -56,10 +70,14 @@ public class ClientPacketHandler : IClientPacketHandler
 
     public async Task HandleMessagePacketAsync(ClientMessagePacket packet)
     {
-        await globalEventBus.InvokeEventAsync(new MessageEvent
+        if (playerService.TryGetPlayer(out IPlayer? player))
         {
-            Message = packet.Message
-        });
+            await globalEventBus.InvokeEventAsync(new MessageEvent
+            {
+                PlayerSender = player,
+                Message = packet.Message
+            });
+        }
     }
 
     public Task HandlePositionAndOrientationPacketAsync(ClientPositionAndOrientationPacket packet)

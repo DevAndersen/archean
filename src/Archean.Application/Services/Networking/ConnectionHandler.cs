@@ -79,7 +79,7 @@ public class ConnectionHandler : IConnectionHandler
         if (playerRegistry.TryAdd(player, out string? errorMessage))
         {
             await SendJoinServerTestAsync(connection, clientIdentificationPacket);
-            new Thread(async () => await ReceiveFromClientAsync(connection, cancellationToken)).Start();
+            new Thread(async () => await ReceiveFromClientAsync(player, cancellationToken)).Start();
         }
         else
         {
@@ -91,13 +91,15 @@ public class ConnectionHandler : IConnectionHandler
         }
     }
 
-    private async Task ReceiveFromClientAsync(IConnection connection, CancellationToken cancellationToken)
+    private async Task ReceiveFromClientAsync(IPlayer player, CancellationToken cancellationToken)
     {
+        IConnection connection = player.Connection;
+
         using IServiceScope scope = provider.CreateScope();
 
-        // Set the connection of the current scope.
-        IConnectionService connectionService = scope.ServiceProvider.GetRequiredService<IConnectionService>();
-        connectionService.SetConnection(connection);
+        // Set the player of the current scope.
+        IPlayerService playerService = scope.ServiceProvider.GetRequiredService<IPlayerService>();
+        playerService.SetPlayer(player);
 
         IClientPacketHandler packetHandler = scope.ServiceProvider.GetRequiredService<IClientPacketHandler>();
 
