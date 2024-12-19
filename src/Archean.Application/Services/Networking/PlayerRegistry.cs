@@ -8,11 +8,9 @@ public class PlayerRegistry : IPlayerRegistry
 {
     private readonly Lock lockObject;
     private readonly List<IPlayer> players;
-    private readonly ILogger<PlayerRegistry> logger;
 
-    public PlayerRegistry(ILogger<PlayerRegistry> logger)
+    public PlayerRegistry()
     {
-        this.logger = logger;
         players = [];
         lockObject = new Lock();
     }
@@ -61,11 +59,12 @@ public class PlayerRegistry : IPlayerRegistry
     {
         sbyte[] playerIdsInUse = players.Select(x => x.Id).ToArray();
 
-        for (sbyte i = 0; i <= Constants.Players.HighestPlayerId; i++)
+        for (int i = 0; i <= Constants.Players.HighestPlayerId; i++)
         {
-            if (!playerIdsInUse.Contains(i))
+            sbyte sb = (sbyte)i;
+            if (!playerIdsInUse.Contains(sb))
             {
-                return i;
+                return sb;
             }
         }
         return null;
