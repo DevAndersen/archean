@@ -44,6 +44,13 @@ public class Connection : IConnection
         return Task.CompletedTask;
     }
 
+    public Task DisconnectAsync(string message)
+    {
+        // Todo: Send a ServerDisconnectPlayerPacket before closing the connection.
+        socket.Close();
+        return Task.CompletedTask;
+    }
+
     public void Dispose()
     {
         socket.Dispose();

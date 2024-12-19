@@ -87,7 +87,7 @@ public class ConnectionHandler : IConnectionHandler
                 player.Username,
                 errorMessage);
 
-            await connection.DisconnectAsync();
+            await connection.DisconnectAsync(errorMessage);
         }
     }
 
