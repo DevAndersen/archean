@@ -38,9 +38,10 @@ public class Connection : IConnection
         }
     }
 
-    public void Disconnect()
+    public Task DisconnectAsync()
     {
         socket.Close();
+        return Task.CompletedTask;
     }
 
     public void Dispose()

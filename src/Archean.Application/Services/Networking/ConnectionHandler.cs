@@ -52,7 +52,7 @@ public class ConnectionHandler : IConnectionHandler
                 Message = $"Invalid client identification packet ID {(byte)packetId}"
             }));
 
-            connection.Disconnect();
+            await connection.DisconnectAsync();
             return;
         }
 
@@ -70,7 +70,7 @@ public class ConnectionHandler : IConnectionHandler
                 Message = $"Invalid client protocol version {clientIdentificationPacket.ProtocolVersion}"
             }));
 
-            connection.Disconnect();
+            await connection.DisconnectAsync();
             return;
         }
 
@@ -87,7 +87,7 @@ public class ConnectionHandler : IConnectionHandler
                 player.Username,
                 errorMessage);
 
-            connection.Disconnect();
+            await connection.DisconnectAsync();
         }
     }
 
@@ -164,7 +164,7 @@ public class ConnectionHandler : IConnectionHandler
         {
             playerRegistry.Remove(connection);
             // Todo: Player disconnect event.
-            connection.Disconnect();
+            await connection.DisconnectAsync();
         }
     }
 

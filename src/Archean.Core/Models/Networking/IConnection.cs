@@ -10,5 +10,5 @@ public interface IConnection : IDisposable
 
     public Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
 
-    public void Disconnect();
+    public Task DisconnectAsync();
 }
