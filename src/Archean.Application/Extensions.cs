@@ -30,6 +30,7 @@ public static class Extensions
             .AddSingleton<ISocketServer, SocketServer>()
             .AddSingleton<IPlayerRegistry, PlayerRegistry>()
             .AddSingleton<IGlobalEventBus, EventBus>()
-            .AddSingleton<IBlockDictionary, BlockDictionary>();
+            .AddSingleton<IBlockDictionary, BlockDictionary>()
+            .AddHostedService<ArcheanHostedService>();
     }
 }
