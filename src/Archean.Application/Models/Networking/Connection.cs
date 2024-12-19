@@ -7,10 +7,13 @@ public class Connection : IConnection
 {
     private readonly Socket socket;
 
+    public Guid Id { get; }
+
     public bool IsConnected => socket.Connected;
 
-    public Connection(Socket socket)
+    public Connection(Guid id, Socket socket)
     {
+        Id = id;
         this.socket = socket;
     }
 

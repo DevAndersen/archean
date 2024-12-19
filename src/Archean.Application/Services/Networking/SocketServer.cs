@@ -76,7 +76,8 @@ public class SocketServer : ISocketServer
             while (Running && !serverRunningCancellationTokenSource.IsCancellationRequested)
             {
                 Socket clientSocket = await serverSocket.AcceptAsync(ServerRunningCancellationToken);
-                Connection connection = new Connection(clientSocket);
+                Connection connection = new Connection(Guid.NewGuid(), clientSocket);
+
                 await connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
             }
         }

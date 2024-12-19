@@ -2,6 +2,8 @@
 
 public interface IConnection : IDisposable
 {
+    public Guid Id { get; }
+
     public bool IsConnected { get; }
 
     public Task SendAsync(ReadOnlyMemory<byte> data);

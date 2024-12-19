@@ -44,7 +44,7 @@ public class ConnectionHandler : IConnectionHandler
         {
             logger.LogError("Unexpected first packet ID {packetId} from connection {connectionId}",
                 packetId,
-                "todo"); // Todo
+                connection.Id);
 
             await connection.SendAsync(serverPacketWriter.WriteDisconnectPlayerPacket(new ServerDisconnectPlayerPacket
             {
@@ -61,7 +61,7 @@ public class ConnectionHandler : IConnectionHandler
         if (clientIdentificationPacket.ProtocolVersion != Constants.Networking.ProtocolVersion)
         {
             logger.LogError("Connection {connectionId} specified unexpected protocol version {protocolVersion}",
-                "todo", // Todo
+                connection.Id,
                 clientIdentificationPacket.ProtocolVersion);
 
             await connection.SendAsync(serverPacketWriter.WriteDisconnectPlayerPacket(new ServerDisconnectPlayerPacket
@@ -127,9 +127,9 @@ public class ConnectionHandler : IConnectionHandler
 
                         // Unknown packet type.
                         default:
-                            logger.LogWarning("Unexpected packet {packetId} receives from {connectionIdentity}, flushing buffer",
+                            logger.LogWarning("Unexpected packet {packetId} receives from {connectionId}, flushing buffer",
                                 packetId,
-                                "Todo"); // Todo
+                                connection.Id);
 
                             buffer = buffer[buffer.Length..];
                             break;
@@ -139,14 +139,14 @@ public class ConnectionHandler : IConnectionHandler
         }
         catch (SocketException e) when (e.SocketErrorCode == SocketError.ConnectionReset)
         {
-            logger.LogInformation("{connectionIdentity} disconnected",
-                "Todo"); // Todo
+            logger.LogInformation("Connection {connectionId} disconnected",
+                connection.Id);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Unexpected {exceptionType} thrown while receiving data from connection {connectionIdentity}",
+            logger.LogError(e, "Unexpected {exceptionType} thrown while receiving data from connection {connectionId}",
                 e.GetType().FullName,
-                "Todo"); // Todo
+                connection.Id);
         }
         finally
         {
