@@ -28,7 +28,7 @@ public static class Extensions
             .AddScoped<IEventListener, EventListener>()
             .AddScoped<IEventBus, EventBus>()
             .AddSingleton<ISocketServer, SocketServer>()
-            .AddSingleton<IConnectionRepository, ConnectionRepository>()
+            .AddSingleton<IPlayerRegistry, PlayerRegistry>()
             .AddSingleton<IGlobalEventBus, EventBus>()
             .AddSingleton<IBlockDictionary, BlockDictionary>();
     }

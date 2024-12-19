@@ -1,4 +1,5 @@
-﻿using Archean.Core.Models;
+﻿using Archean.Application.Models;
+using Archean.Core.Models;
 using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Models.Networking.ServerPackets;
@@ -12,7 +13,7 @@ namespace Archean.Application.Services.Networking;
 public class ConnectionHandler : IConnectionHandler
 {
     private readonly IClientPacketReader clientPacketReader;
-    private readonly IConnectionRepository connectionRepository;
+    private readonly IPlayerRegistry playerRegistry;
     private readonly IPacketDataReader packetDataReader;
     private readonly IServerPacketWriter serverPacketWriter;
     private readonly ILogger<ConnectionHandler> logger;
@@ -20,14 +21,14 @@ public class ConnectionHandler : IConnectionHandler
 
     public ConnectionHandler(
         IClientPacketReader clientPacketReader,
-        IConnectionRepository connectionRepository,
+        IPlayerRegistry playerRegistry,
         IPacketDataReader packetDataReader,
         IServerPacketWriter serverPacketWriter,
         ILogger<ConnectionHandler> logger,
         IServiceProvider provider)
     {
         this.clientPacketReader = clientPacketReader;
-        this.connectionRepository = connectionRepository;
+        this.playerRegistry = playerRegistry;
         this.packetDataReader = packetDataReader;
         this.serverPacketWriter = serverPacketWriter;
         this.logger = logger;
@@ -73,10 +74,21 @@ public class ConnectionHandler : IConnectionHandler
             return;
         }
 
-        connectionRepository.TryAddConnection(connection);
+        IPlayer player = new Player(connection, clientIdentificationPacket.Username);
 
-        await SendJoinServerTestAsync(connection, clientIdentificationPacket);
-        new Thread(async () => await ReceiveFromClientAsync(connection, cancellationToken)).Start();
+        if (playerRegistry.TryAdd(player, out string? errorMessage))
+        {
+            await SendJoinServerTestAsync(connection, clientIdentificationPacket);
+            new Thread(async () => await ReceiveFromClientAsync(connection, cancellationToken)).Start();
+        }
+        else
+        {
+            logger.LogError("Unable to register player {username}, {errorMessage}",
+                player.Username,
+                errorMessage);
+
+            connection.Disconnect();
+        }
     }
 
     private async Task ReceiveFromClientAsync(IConnection connection, CancellationToken cancellationToken)
@@ -150,7 +162,8 @@ public class ConnectionHandler : IConnectionHandler
         }
         finally
         {
-            connectionRepository.Remove(connection);
+            playerRegistry.Remove(connection);
+            // Todo: Player disconnect event.
             connection.Disconnect();
         }
     }
