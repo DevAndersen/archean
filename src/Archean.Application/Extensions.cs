@@ -18,19 +18,27 @@ public static class Extensions
     public static IServiceCollection AddArcheanDefaultServices(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddScoped<IConnectionHandler, ConnectionHandler>()
-            .AddScoped<IClientPacketReader, ClientPacketReader>()
-            .AddScoped<IServerPacketWriter, ServerPacketWriter>()
-            .AddScoped<IPacketDataReader, PacketDataReader>()
-            .AddScoped<IPacketDataWriter, PacketDataWriter>()
-            .AddScoped<IPlayerService, PlayerService>()
-            .AddScoped<IClientPacketHandler, ClientPacketHandler>()
-            .AddScoped<IEventListener, EventListener>()
-            .AddScoped<IEventBus, EventBus>()
+
+            // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
+            .AddSingleton<IConnectionHandler, ConnectionHandler>()
+            .AddSingleton<IClientPacketReader, ClientPacketReader>()
+            .AddSingleton<IServerPacketWriter, ServerPacketWriter>()
+            .AddSingleton<IPacketDataReader, PacketDataReader>()
+            .AddSingleton<IPacketDataWriter, PacketDataWriter>()
             .AddSingleton<IPlayerRegistry, PlayerRegistry>()
+            .AddScoped<IClientPacketHandler, ClientPacketHandler>()
+
+            // Events
+            .AddScoped<IEventBus, EventBus>()
+            .AddScoped<IEventListener, EventListener>()
             .AddSingleton<IGlobalEventBus, EventBus>()
+
+            // Gameplay
+            .AddScoped<IPlayerService, PlayerService>()
             .AddSingleton<IBlockDictionary, BlockDictionary>()
+
+            // Hosted service
             .AddHostedService<ArcheanHostedService>();
     }
 }
