@@ -2,7 +2,7 @@
 
 namespace Archean.Core.Services.Events;
 
-public interface IEventListener
+public interface IEventListener : IDisposable
 {
     public void Subscribe<TEvent>(Action<TEvent> action) where TEvent : Event;
 
