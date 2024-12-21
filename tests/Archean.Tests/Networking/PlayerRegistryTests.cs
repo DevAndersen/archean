@@ -1,5 +1,4 @@
-﻿using Archean.Application.Models;
-using Archean.Application.Services.Networking;
+﻿using Archean.Application.Services.Networking;
 using Archean.Core.Models;
 using Archean.Core.Services.Networking;
 using NSubstitute;
