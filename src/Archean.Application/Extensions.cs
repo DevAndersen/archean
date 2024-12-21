@@ -27,9 +27,10 @@ public static class Extensions
             .AddSingleton<IPacketDataReader, PacketDataReader>()
             .AddSingleton<IPacketDataWriter, PacketDataWriter>()
             .AddSingleton<IPlayerRegistry, PlayerRegistry>()
-            .AddScoped<IClientPacketHandler, ClientPacketHandler>()
 
             // Events
+            .AddScoped<IClientPacketHandler, ClientPacketHandler>()
+            .AddScoped<IClientEventHandler, ClientEventHandler>()
             .AddScoped<IEventBus, EventBus>()
             .AddScoped<IEventListener, EventListener>()
             .AddSingleton<IGlobalEventBus, EventBus>()

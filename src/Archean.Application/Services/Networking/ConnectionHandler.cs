@@ -104,6 +104,10 @@ public class ConnectionHandler : IConnectionHandler
         IPlayerService playerService = scope.ServiceProvider.GetRequiredService<IPlayerService>();
         playerService.SetPlayer(player);
 
+        // Register event subscriptions.
+        IClientEventHandler eventHandler = scope.ServiceProvider.GetRequiredService<IClientEventHandler>();
+        eventHandler.RegisterEventSubscriptions();
+
         IClientPacketHandler packetHandler = scope.ServiceProvider.GetRequiredService<IClientPacketHandler>();
 
         try

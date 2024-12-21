@@ -1,8 +1,6 @@
 ﻿using Archean.Core.Models;
 using Archean.Core.Models.Events;
-using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
-using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 
@@ -12,60 +10,13 @@ public class ClientPacketHandler : IClientPacketHandler
 {
     private readonly IPlayerService playerService;
     private readonly IGlobalEventBus globalEventBus;
-    private readonly IServerPacketWriter serverPacketWriter;
 
     public ClientPacketHandler(
         IPlayerService playerService,
-        IGlobalEventBus globalEventBus,
-        IServerPacketWriter serverPacketWriter,
-        IEventListener eventListener)
+        IGlobalEventBus globalEventBus)
     {
         this.playerService = playerService;
         this.globalEventBus = globalEventBus;
-        this.serverPacketWriter = serverPacketWriter;
-
-        eventListener.Subscribe<MessageEvent>(ReceiveMessage);
-        eventListener.Subscribe<SetBlockEvent>(ReceiveSetBlock);
-    }
-
-    private async Task ReceiveMessage(MessageEvent arg)
-    {
-        if (playerService.TryGetPlayer(out IPlayer? player))
-        {
-            ServerMessagePacket packet;
-
-            if (arg.PlayerSender != null)
-            {
-                packet = new ServerMessagePacket
-                {
-                    Message = $"{arg.PlayerSender.DisplayName}: {arg.Message}",
-                    PlayerId = arg.PlayerSender.Id
-                };
-            }
-            else
-            {
-                packet = new ServerMessagePacket
-                {
-                    Message = arg.Message,
-                    PlayerId = 0
-                };
-            }
-            await player.Connection.SendAsync(serverPacketWriter.WriteMessagePacket(packet));
-        }
-    }
-
-    private async Task ReceiveSetBlock(SetBlockEvent arg)
-    {
-        if (playerService.TryGetPlayer(out IPlayer? player))
-        {
-            await player.Connection.SendAsync(serverPacketWriter.WriteSetBlockPacket(new ServerSetBlockPacket
-            {
-                BlockType = arg.Mode == BlockChangeMode.Break ? Block.Air : arg.BlockType,
-                X = arg.X,
-                Y = arg.Y,
-                Z = arg.Z
-            }));
-        }
     }
 
     public async Task HandleMessagePacketAsync(ClientMessagePacket packet)
