@@ -13,7 +13,6 @@ public class ClientPacketHandler : IClientPacketHandler
     private readonly ILogger<ClientPacketHandler> logger;
     private readonly IPlayerService playerService;
     private readonly IGlobalEventBus globalEventBus;
-    private readonly IEventListener eventListener;
     private readonly IServerPacketWriter serverPacketWriter;
 
     public ClientPacketHandler(ILogger<ClientPacketHandler> logger, IPlayerService playerService, IGlobalEventBus globalEventBus, IEventListener eventListener, IServerPacketWriter serverPacketWriter)
@@ -21,7 +20,6 @@ public class ClientPacketHandler : IClientPacketHandler
         this.logger = logger;
         this.playerService = playerService;
         this.globalEventBus = globalEventBus;
-        this.eventListener = eventListener;
 
         eventListener.Subscribe<MessageEvent>(ReceiveMessage);
         eventListener.Subscribe<SetBlockEvent>(ReceiveSetBlock);
