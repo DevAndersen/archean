@@ -64,7 +64,7 @@ public class SocketServer : ISocketServer
         logger.LogInformation("Socket server running on port {port} has been stopped", port);
 
         Running = false;
-        serverRunningCancellationTokenSource.Cancel();
+        await serverRunningCancellationTokenSource.CancelAsync();
 
         serverSocket.Close();
     }
