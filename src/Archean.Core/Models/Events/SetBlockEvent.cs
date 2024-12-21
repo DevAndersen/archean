@@ -4,6 +4,8 @@ namespace Archean.Core.Models.Events;
 
 public class SetBlockEvent : Event
 {
+    public IPlayer? Player { get; init; }
+
     public required short X { get; init; }
 
     public required short Y { get; init; }

@@ -10,20 +10,22 @@ namespace Archean.Application.Services.Networking;
 
 public class ClientPacketHandler : IClientPacketHandler
 {
-    private readonly ILogger<ClientPacketHandler> logger;
     private readonly IPlayerService playerService;
     private readonly IGlobalEventBus globalEventBus;
     private readonly IServerPacketWriter serverPacketWriter;
 
-    public ClientPacketHandler(ILogger<ClientPacketHandler> logger, IPlayerService playerService, IGlobalEventBus globalEventBus, IEventListener eventListener, IServerPacketWriter serverPacketWriter)
+    public ClientPacketHandler(
+        IPlayerService playerService,
+        IGlobalEventBus globalEventBus,
+        IServerPacketWriter serverPacketWriter,
+        IEventListener eventListener)
     {
-        this.logger = logger;
         this.playerService = playerService;
         this.globalEventBus = globalEventBus;
+        this.serverPacketWriter = serverPacketWriter;
 
         eventListener.Subscribe<MessageEvent>(ReceiveMessage);
         eventListener.Subscribe<SetBlockEvent>(ReceiveSetBlock);
-        this.serverPacketWriter = serverPacketWriter;
     }
 
     private async Task ReceiveMessage(MessageEvent arg)
@@ -78,21 +80,35 @@ public class ClientPacketHandler : IClientPacketHandler
         }
     }
 
-    public Task HandlePositionAndOrientationPacketAsync(ClientPositionAndOrientationPacket packet)
+    public async Task HandlePositionAndOrientationPacketAsync(ClientPositionAndOrientationPacket packet)
     {
-        //logger.LogInformation("{x}:{y}:{z}", packet.X, packet.Y, packet.Z);
-        return Task.CompletedTask;
+        if (playerService.TryGetPlayer(out IPlayer? player))
+        {
+            await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+            {
+                Player = player,
+                X = packet.X.ToFloat(),
+                Y = packet.Y.ToFloat(),
+                Z = packet.Z.ToFloat(),
+                Yaw = packet.Yaw,
+                Pitch = packet.Pitch
+            });
+        }
     }
 
     public async Task HandleSetBlockPacketAsync(ClientSetBlockPacket packet)
     {
-        await globalEventBus.InvokeEventAsync(new SetBlockEvent
+        if (playerService.TryGetPlayer(out IPlayer? player))
         {
-            X = packet.X,
-            Y = packet.Y,
-            Z = packet.Z,
-            Mode = packet.Mode,
-            BlockType = packet.BlockType,
-        });
+            await globalEventBus.InvokeEventAsync(new SetBlockEvent
+            {
+                Player = player,
+                X = packet.X,
+                Y = packet.Y,
+                Z = packet.Z,
+                Mode = packet.Mode,
+                BlockType = packet.BlockType,
+            });
+        }
     }
 }
