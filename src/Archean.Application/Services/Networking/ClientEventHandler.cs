@@ -1,6 +1,5 @@
 ﻿using Archean.Core.Models;
 using Archean.Core.Models.Events;
-using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
@@ -26,7 +25,6 @@ public class ClientEventHandler : IClientEventHandler
     public void RegisterEventSubscriptions()
     {
         eventListener.Subscribe<MessageEvent>(ReceiveMessage);
-        eventListener.Subscribe<SetBlockEvent>(ReceiveSetBlock);
     }
 
     private async Task ReceiveMessage(MessageEvent arg)
@@ -52,20 +50,6 @@ public class ClientEventHandler : IClientEventHandler
                 };
             }
             await player.Connection.SendAsync(serverPacketWriter.WriteMessagePacket(packet));
-        }
-    }
-
-    private async Task ReceiveSetBlock(SetBlockEvent arg)
-    {
-        if (playerService.TryGetPlayer(out IPlayer? player))
-        {
-            await player.Connection.SendAsync(serverPacketWriter.WriteSetBlockPacket(new ServerSetBlockPacket
-            {
-                BlockType = arg.Mode == BlockChangeMode.Break ? Block.Air : arg.BlockType,
-                X = arg.X,
-                Y = arg.Y,
-                Z = arg.Z
-            }));
         }
     }
 }

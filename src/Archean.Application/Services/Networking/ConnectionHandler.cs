@@ -3,8 +3,8 @@ using Archean.Core.Models;
 using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Models.Networking.ServerPackets;
-using Archean.Core.Models.Worlds;
 using Archean.Core.Services.Networking;
+using Archean.Core.Services.Worlds;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Sockets;
 
@@ -18,6 +18,7 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IServerPacketWriter serverPacketWriter;
     private readonly ILogger<ConnectionHandler> logger;
     private readonly IServiceProvider provider;
+    private readonly IWorldRegistry worldRegistry;
 
     public ConnectionHandler(
         IClientPacketReader clientPacketReader,
@@ -25,7 +26,8 @@ public class ConnectionHandler : IConnectionHandler
         IPacketDataReader packetDataReader,
         IServerPacketWriter serverPacketWriter,
         ILogger<ConnectionHandler> logger,
-        IServiceProvider provider)
+        IServiceProvider provider,
+        IWorldRegistry worldRegistry)
     {
         this.clientPacketReader = clientPacketReader;
         this.playerRegistry = playerRegistry;
@@ -33,6 +35,7 @@ public class ConnectionHandler : IConnectionHandler
         this.serverPacketWriter = serverPacketWriter;
         this.logger = logger;
         this.provider = provider;
+        this.worldRegistry = worldRegistry;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
@@ -82,7 +85,7 @@ public class ConnectionHandler : IConnectionHandler
                 player.Username,
                 player.Id);
 
-            await SendJoinServerTestAsync(connection, clientIdentificationPacket);
+            await SendJoinServerTestAsync(player, clientIdentificationPacket);
             new Thread(async () => await ReceiveFromClientAsync(player, cancellationToken)).Start();
         }
         else
@@ -177,9 +180,9 @@ public class ConnectionHandler : IConnectionHandler
         }
     }
 
-    private async Task SendJoinServerTestAsync(IConnection connection, ClientIdentificationPacket clientIdentificationPacket)
+    private async Task SendJoinServerTestAsync(IPlayer player, ClientIdentificationPacket clientIdentificationPacket)
     {
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
+        await player.Connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
         {
             PlayerType = PlayerType.Normal,
             ProtocolVersion = Constants.Networking.ProtocolVersion,
@@ -187,88 +190,6 @@ public class ConnectionHandler : IConnectionHandler
             ServerName = "Server name",
         }));
 
-        short width = 16;
-        short height = 16;
-        short depth = 16;
-
-        BlockMap blockMap = new BlockMap(width, height, depth);
-
-        for (int x = 0; x < blockMap.Width; x++)
-        {
-            for (int z = 0; z < blockMap.Depth; z++)
-            {
-                for (int y = 0; y < 7; y++)
-                {
-                    blockMap[x, y, z] = Block.Dirt;
-                }
-
-                blockMap[x, 7, z] = Block.Grass;
-            }
-        }
-
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelInitializePacket()));
-        await SendLevelTestAsync(blockMap, connection);
-
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelFinalizePacket
-        {
-            XSize = blockMap.Width,
-            YSize = blockMap.Height,
-            ZSize = blockMap.Depth,
-        }));
-
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerSpawnPlayerPacket
-        {
-            PlayerId = Constants.Networking.PlayerSelfId,
-            PlayerName = clientIdentificationPacket.Username,
-            X = new FShort(4F),
-            Y = new FShort(height + 3),
-            Z = new FShort(4F),
-            Pitch = 0,
-            Yaw = 0
-        }));
-    }
-
-    private async Task SendLevelTestAsync(BlockMap blockMap, IConnection connection)
-    {
-        byte[] blockGZipBuffer = GZipHelper.Compress(blockMap.AsMemory().Span);
-        int chunkCount = (blockGZipBuffer.Length / Constants.Networking.ByteArrayLength) + 1;
-
-        for (int i = 0; i < chunkCount; i++)
-        {
-            int start = i * Constants.Networking.ByteArrayLength;
-            int end = Math.Min(blockGZipBuffer.Length - start, Constants.Networking.ByteArrayLength);
-            int length = end - start;
-            byte percent = (byte)((i + 1) / (float)chunkCount * 100);
-
-            Memory<byte> chunk = blockGZipBuffer
-                .AsMemory()
-                .Slice(start, end);
-
-            Memory<byte> buffer;
-            if (length < Constants.Networking.ByteArrayLength)
-            {
-                buffer = new byte[Constants.Networking.ByteArrayLength];
-                chunk.CopyTo(buffer);
-            }
-            else
-            {
-                buffer = chunk;
-            }
-
-            await connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
-            {
-                PlayerType = PlayerType.Op,
-                ProtocolVersion = Constants.Networking.ProtocolVersion,
-                ServerMotd = $"You are {percent}% done",
-                ServerName = "Server name",
-            }));
-
-            await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelDataChunkPacket
-            {
-                ChunkData = buffer.ToArray(),
-                ChunkLength = (short)length,
-                PercentageComplete = percent
-            }));
-        }
+        await worldRegistry.GetDefaultWorld().JoinAsync(player);
     }
 }

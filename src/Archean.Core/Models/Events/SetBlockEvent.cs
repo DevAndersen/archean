@@ -14,5 +14,7 @@ public class SetBlockEvent : Event
 
     public required BlockChangeMode Mode { get; init; }
 
-    public required Block BlockType { get; init; }
+    public required Block Block { get; init; }
+
+    public required Block HeldBlock { get; init; }
 }

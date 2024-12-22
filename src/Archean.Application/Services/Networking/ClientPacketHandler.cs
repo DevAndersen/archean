@@ -1,5 +1,6 @@
 ﻿using Archean.Core.Models;
 using Archean.Core.Models.Events;
+using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
@@ -58,7 +59,8 @@ public class ClientPacketHandler : IClientPacketHandler
                 Y = packet.Y,
                 Z = packet.Z,
                 Mode = packet.Mode,
-                BlockType = packet.BlockType,
+                Block = packet.Mode == BlockChangeMode.Place ? packet.BlockType : Block.Air,
+                HeldBlock = packet.BlockType,
             });
         }
     }

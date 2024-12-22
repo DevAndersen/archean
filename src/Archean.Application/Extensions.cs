@@ -1,9 +1,11 @@
 ﻿using Archean.Application.Services;
 using Archean.Application.Services.Events;
 using Archean.Application.Services.Networking;
+using Archean.Application.Services.Worlds;
 using Archean.Core.Services;
 using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
+using Archean.Core.Services.Worlds;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Archean.Application;
@@ -38,6 +40,9 @@ public static class Extensions
             // Gameplay
             .AddScoped<IPlayerService, PlayerService>()
             .AddSingleton<IBlockDictionary, BlockDictionary>()
+
+            // Worlds
+            .AddSingleton<IWorldRegistry, WorldRegistry>()
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();
