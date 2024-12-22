@@ -10,16 +10,13 @@ public class ClientEventHandler : IClientEventHandler
 {
     private readonly IEventListener eventListener;
     private readonly IPlayerService playerService;
-    private readonly IServerPacketWriter serverPacketWriter;
 
     public ClientEventHandler(
         IEventListener eventListener,
-        IPlayerService playerService,
-        IServerPacketWriter serverPacketWriter)
+        IPlayerService playerService)
     {
         this.eventListener = eventListener;
         this.playerService = playerService;
-        this.serverPacketWriter = serverPacketWriter;
     }
 
     public void RegisterEventSubscriptions()
@@ -49,7 +46,7 @@ public class ClientEventHandler : IClientEventHandler
                     PlayerId = 0
                 };
             }
-            await player.Connection.SendAsync(serverPacketWriter.WriteMessagePacket(packet));
+            await player.Connection.SendAsync(packet);
         }
     }
 }

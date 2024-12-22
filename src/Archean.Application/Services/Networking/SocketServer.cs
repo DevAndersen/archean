@@ -9,6 +9,7 @@ public class SocketServer : ISocketServer
 {
     private readonly IConnectionHandler connectionHandler;
     private readonly ILogger<SocketServer> logger;
+    private readonly IServerPacketWriter serverPacketWriter;
 
     private readonly CancellationTokenSource serverRunningCancellationTokenSource;
     private readonly Socket serverSocket;
@@ -21,10 +22,14 @@ public class SocketServer : ISocketServer
 
     public CancellationToken ServerRunningCancellationToken => serverRunningCancellationTokenSource.Token;
 
-    public SocketServer(IConnectionHandler connectionHandler, ILogger<SocketServer> logger)
+    public SocketServer(
+        IConnectionHandler connectionHandler,
+        ILogger<SocketServer> logger,
+        IServerPacketWriter serverPacketWriter)
     {
         this.connectionHandler = connectionHandler;
         this.logger = logger;
+        this.serverPacketWriter = serverPacketWriter;
 
         port = 25565; // Todo
         listenBacklogSize = 3; // Todo
@@ -76,7 +81,11 @@ public class SocketServer : ISocketServer
             while (Running && !serverRunningCancellationTokenSource.IsCancellationRequested)
             {
                 Socket clientSocket = await serverSocket.AcceptAsync(ServerRunningCancellationToken);
-                Connection connection = new Connection(Guid.NewGuid(), clientSocket);
+
+                Connection connection = new Connection(
+                    Guid.NewGuid(),
+                    clientSocket,
+                    serverPacketWriter);
 
                 await connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
             }

@@ -1,4 +1,6 @@
 ﻿using Archean.Core.Models.Networking;
+using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Services.Networking;
 using System.Net.Sockets;
 
 namespace Archean.Application.Models.Networking;
@@ -6,15 +8,17 @@ namespace Archean.Application.Models.Networking;
 public class Connection : IConnection
 {
     private readonly Socket socket;
+    private readonly IServerPacketWriter serverPacketWriter;
 
     public Guid Id { get; }
 
     public bool IsConnected => socket.Connected;
 
-    public Connection(Guid id, Socket socket)
+    public Connection(Guid id, Socket socket, IServerPacketWriter serverPacketWriter)
     {
         Id = id;
         this.socket = socket;
+        this.serverPacketWriter = serverPacketWriter;
     }
 
     public async Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken)
@@ -30,11 +34,17 @@ public class Connection : IConnection
         return data;
     }
 
-    public async Task SendAsync(ReadOnlyMemory<byte> data)
+    public async Task SendAsync(params IEnumerable<IServerPacket> packets)
     {
-        if (IsConnected)
+        foreach (IServerPacket packet in packets)
         {
-            await socket.SendAsync(data);
+            if (!IsConnected)
+            {
+                return;
+            }
+
+            ReadOnlyMemory<byte> bytes = serverPacketWriter.WritePacket(packet);
+            await socket.SendAsync(bytes);
         }
     }
 

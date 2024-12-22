@@ -15,7 +15,6 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IClientPacketReader clientPacketReader;
     private readonly IPlayerRegistry playerRegistry;
     private readonly IPacketDataReader packetDataReader;
-    private readonly IServerPacketWriter serverPacketWriter;
     private readonly ILogger<ConnectionHandler> logger;
     private readonly IServiceProvider provider;
     private readonly IWorldRegistry worldRegistry;
@@ -24,7 +23,6 @@ public class ConnectionHandler : IConnectionHandler
         IClientPacketReader clientPacketReader,
         IPlayerRegistry playerRegistry,
         IPacketDataReader packetDataReader,
-        IServerPacketWriter serverPacketWriter,
         ILogger<ConnectionHandler> logger,
         IServiceProvider provider,
         IWorldRegistry worldRegistry)
@@ -32,7 +30,6 @@ public class ConnectionHandler : IConnectionHandler
         this.clientPacketReader = clientPacketReader;
         this.playerRegistry = playerRegistry;
         this.packetDataReader = packetDataReader;
-        this.serverPacketWriter = serverPacketWriter;
         this.logger = logger;
         this.provider = provider;
         this.worldRegistry = worldRegistry;
@@ -50,10 +47,10 @@ public class ConnectionHandler : IConnectionHandler
                 packetId,
                 connection.Id);
 
-            await connection.SendAsync(serverPacketWriter.WriteDisconnectPlayerPacket(new ServerDisconnectPlayerPacket
+            await connection.SendAsync(new ServerDisconnectPlayerPacket
             {
                 Message = $"Invalid client identification packet ID {(byte)packetId}"
-            }));
+            });
 
             await connection.DisconnectAsync();
             return;
@@ -68,10 +65,10 @@ public class ConnectionHandler : IConnectionHandler
                 connection.Id,
                 clientIdentificationPacket.ProtocolVersion);
 
-            await connection.SendAsync(serverPacketWriter.WriteDisconnectPlayerPacket(new ServerDisconnectPlayerPacket
+            await connection.SendAsync(new ServerDisconnectPlayerPacket
             {
                 Message = $"Invalid client protocol version {clientIdentificationPacket.ProtocolVersion}"
-            }));
+            });
 
             await connection.DisconnectAsync();
             return;
@@ -182,13 +179,13 @@ public class ConnectionHandler : IConnectionHandler
 
     private async Task SendJoinServerTestAsync(IPlayer player, ClientIdentificationPacket clientIdentificationPacket)
     {
-        await player.Connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
+        await player.Connection.SendAsync(new ServerIdentificationPacket
         {
             PlayerType = PlayerType.Normal,
             ProtocolVersion = Constants.Networking.ProtocolVersion,
             ServerMotd = "Server MOTD",
             ServerName = "Server name",
-        }));
+        });
 
         await worldRegistry.GetDefaultWorld().JoinAsync(player);
     }

@@ -86,17 +86,17 @@ public class TestWorld : IWorld
     {
         IConnection connection = player.Connection;
 
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelInitializePacket()));
+        await connection.SendAsync(new ServerLevelInitializePacket());
         await SendLevelTestAsync(blockMap, connection);
 
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelFinalizePacket
+        await connection.SendAsync(new ServerLevelFinalizePacket
         {
             XSize = blockMap.Width,
             YSize = blockMap.Height,
             ZSize = blockMap.Depth,
-        }));
+        });
 
-        await connection.SendAsync(serverPacketWriter.WritePacket(new ServerSpawnPlayerPacket
+        await connection.SendAsync(new ServerSpawnPlayerPacket
         {
             PlayerId = Constants.Networking.PlayerSelfId,
             PlayerName = "Todo", // Todo
@@ -105,7 +105,7 @@ public class TestWorld : IWorld
             Z = new FShort(4F),
             Pitch = 0,
             Yaw = 0
-        }));
+        });
     }
 
     private async Task SendLevelTestAsync(BlockMap blockMap, IConnection connection)
@@ -135,20 +135,20 @@ public class TestWorld : IWorld
                 buffer = chunk;
             }
 
-            await connection.SendAsync(serverPacketWriter.WritePacket(new ServerIdentificationPacket
+            await connection.SendAsync(new ServerIdentificationPacket
             {
                 PlayerType = PlayerType.Op,
                 ProtocolVersion = Constants.Networking.ProtocolVersion,
                 ServerMotd = $"You are {percent}% done",
                 ServerName = "Server name",
-            }));
+            });
 
-            await connection.SendAsync(serverPacketWriter.WritePacket(new ServerLevelDataChunkPacket
+            await connection.SendAsync(new ServerLevelDataChunkPacket
             {
                 ChunkData = buffer.ToArray(),
                 ChunkLength = (short)length,
                 PercentageComplete = percent
-            }));
+            });
         }
     }
 
@@ -179,13 +179,13 @@ public class TestWorld : IWorld
 
             foreach (IPlayer? otherPlayer in players.Except([arg.Player]))
             {
-                await otherPlayer.Connection.SendAsync(serverPacketWriter.WriteSetBlockPacket(new ServerSetBlockPacket
+                await otherPlayer.Connection.SendAsync(new ServerSetBlockPacket
                 {
                     BlockType = arg.Mode == BlockChangeMode.Break ? Block.Air : arg.Block,
                     X = arg.X,
                     Y = arg.Y,
                     Z = arg.Z
-                }));
+                });
             }
         }
     }

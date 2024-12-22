@@ -8,7 +8,7 @@ public interface IConnection : IDisposable
 
     public bool IsConnected { get; }
 
-    public Task SendAsync(ReadOnlyMemory<byte> data);
+    public Task SendAsync(params IEnumerable<IServerPacket> packets);
 
     public Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
 
