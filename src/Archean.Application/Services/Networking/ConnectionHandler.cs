@@ -1,8 +1,10 @@
 ﻿using Archean.Application.Models;
 using Archean.Core.Models;
+using Archean.Core.Models.Events;
 using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ClientPackets;
 using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 using Archean.Core.Services.Worlds;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ public class ConnectionHandler : IConnectionHandler
     private readonly ILogger<ConnectionHandler> logger;
     private readonly IServiceProvider provider;
     private readonly IWorldRegistry worldRegistry;
+    private readonly IGlobalEventBus globalEventBus;
 
     public ConnectionHandler(
         IClientPacketReader clientPacketReader,
@@ -25,7 +28,8 @@ public class ConnectionHandler : IConnectionHandler
         IPacketDataReader packetDataReader,
         ILogger<ConnectionHandler> logger,
         IServiceProvider provider,
-        IWorldRegistry worldRegistry)
+        IWorldRegistry worldRegistry,
+        IGlobalEventBus globalEventBus)
     {
         this.clientPacketReader = clientPacketReader;
         this.playerRegistry = playerRegistry;
@@ -33,6 +37,7 @@ public class ConnectionHandler : IConnectionHandler
         this.logger = logger;
         this.provider = provider;
         this.worldRegistry = worldRegistry;
+        this.globalEventBus = globalEventBus;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
@@ -74,7 +79,10 @@ public class ConnectionHandler : IConnectionHandler
             return;
         }
 
-        IPlayer player = new Player(connection, clientIdentificationPacket.Username);
+        IPlayer player = new Player(
+            connection,
+            clientIdentificationPacket.Username,
+            globalEventBus);
 
         if (playerRegistry.TryAdd(player))
         {
@@ -172,7 +180,12 @@ public class ConnectionHandler : IConnectionHandler
         finally
         {
             playerRegistry.Remove(connection);
-            // Todo: Player disconnect event.
+
+            await globalEventBus.InvokeEventAsync(new PlayerDisconnectEvent
+            {
+                Player = player
+            });
+
             await connection.DisconnectAsync();
         }
     }

@@ -4,14 +4,12 @@ using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Models.Worlds;
 using Archean.Core.Services.Events;
-using Archean.Core.Services.Networking;
 
 namespace Archean.Application.Models.Worlds;
 
 public class TestWorld : IWorld
 {
     private readonly ILogger logger;
-    private readonly IServerPacketWriter serverPacketWriter;
     private readonly IEventListener eventListener;
 
     private readonly BlockMap blockMap;
@@ -23,11 +21,9 @@ public class TestWorld : IWorld
 
     public TestWorld(
         ILogger logger,
-        IServerPacketWriter serverPacketWriter,
         IEventListener eventListener)
     {
         this.logger = logger;
-        this.serverPacketWriter = serverPacketWriter;
         this.eventListener = eventListener;
 
         short width = 16;
@@ -53,7 +49,8 @@ public class TestWorld : IWorld
     public Task LoadAsync()
     {
         eventListener.Subscribe<SetBlockEvent>(OnSetBlockAsync);
-        eventListener.Subscribe<SetBlockEvent>(ReceiveSetBlock);
+        eventListener.Subscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
+        eventListener.Subscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
 
         return Task.CompletedTask;
     }
@@ -70,16 +67,33 @@ public class TestWorld : IWorld
             Name);
 
         await SendJoinServerTestAsync(player);
-        players.Add(player);
-    }
 
-    private Task OnSetBlockAsync(SetBlockEvent eventArgs)
-    {
-        if (eventArgs.Player != null && players.Contains(eventArgs.Player))
+        foreach (IPlayer otherPlayer in players)
         {
-            blockMap[eventArgs.X, eventArgs.Y, eventArgs.Z] = eventArgs.Block;
+            await player.Connection.SendAsync(new ServerSpawnPlayerPacket
+            {
+                PlayerId = otherPlayer.Id,
+                PlayerName = otherPlayer.DisplayName,
+                X = new FShort(otherPlayer.PosX),
+                Y = new FShort(otherPlayer.PosY),
+                Z = new FShort(otherPlayer.PosZ),
+                Pitch = otherPlayer.Pitch,
+                Yaw = otherPlayer.Yaw
+            });
+
+            await otherPlayer.Connection.SendAsync(new ServerSpawnPlayerPacket
+            {
+                PlayerId = player.Id,
+                PlayerName = player.DisplayName,
+                X = new FShort(player.PosX),
+                Y = new FShort(player.PosY),
+                Z = new FShort(player.PosZ),
+                Pitch = player.Pitch,
+                Yaw = player.Yaw
+            });
         }
-        return Task.CompletedTask;
+
+        players.Add(player);
     }
 
     private async Task SendJoinServerTestAsync(IPlayer player)
@@ -99,7 +113,7 @@ public class TestWorld : IWorld
         await connection.SendAsync(new ServerSpawnPlayerPacket
         {
             PlayerId = Constants.Networking.PlayerSelfId,
-            PlayerName = "Todo", // Todo
+            PlayerName = player.Username,
             X = new FShort(4F),
             Y = new FShort(blockMap.Height + 3),
             Z = new FShort(4F),
@@ -152,7 +166,7 @@ public class TestWorld : IWorld
         }
     }
 
-    public Task LeaveAsync(IPlayer player)
+    public async Task LeaveAsync(IPlayer player)
     {
         logger.LogInformation("Player {username} leaving world {world}",
             player.Username,
@@ -161,17 +175,21 @@ public class TestWorld : IWorld
         IPlayer? matchingPlayer = players.FirstOrDefault(x => x == player);
         if (matchingPlayer == null)
         {
-            // Todo: Log unexpected error finding player.
-            return Task.CompletedTask;
+            return;
         }
 
         players.Remove(matchingPlayer);
 
-        // Todo
-        return Task.CompletedTask;
+        foreach (IPlayer otherPlayer in players)
+        {
+            await otherPlayer.Connection.SendAsync(new ServerDespawnPlayerPacket
+            {
+                PlayerId = player.Id
+            });
+        }
     }
 
-    private async Task ReceiveSetBlock(SetBlockEvent arg)
+    private async Task OnSetBlockAsync(SetBlockEvent arg)
     {
         if (arg.Player != null && players.Contains(arg.Player))
         {
@@ -188,5 +206,26 @@ public class TestWorld : IWorld
                 });
             }
         }
+    }
+
+    private async Task OnPlayerMoveAsync(PositionAndOrientationEvent arg)
+    {
+        foreach (IPlayer? otherPlayer in players.Except([arg.Player]))
+        {
+            await otherPlayer.Connection.SendAsync(new ServerAbsolutePositionAndOrientationPacket
+            {
+                PlayerId = arg.Player.Id,
+                X = new FShort(arg.X),
+                Y = new FShort(arg.Y),
+                Z = new FShort(arg.Z),
+                Pitch = arg.Pitch,
+                Yaw = arg.Yaw
+            });
+        }
+    }
+
+    private async Task OnPlayerLeaveAsync(PlayerDisconnectEvent arg)
+    {
+        await LeaveAsync(arg.Player);
     }
 }

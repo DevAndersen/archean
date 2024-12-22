@@ -1,6 +1,8 @@
-﻿namespace Archean.Core.Models.Networking;
+﻿using System.Numerics;
 
-public readonly struct FByte
+namespace Archean.Core.Models.Networking;
+
+public readonly struct FByte : IEqualityOperators<FByte, FByte, bool>
 {
     public const int Size = sizeof(byte);
     public const float MinValue = -4;
@@ -52,5 +54,26 @@ public readonly struct FByte
     public override string ToString()
     {
         return ToFloat().ToString();
+    }
+
+    public static bool operator ==(FByte left, FByte right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(FByte left, FByte right)
+    {
+        return !left.Equals(right);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is FByte other
+            && other.value == value;
+    }
+
+    public override int GetHashCode()
+    {
+        return value;
     }
 }

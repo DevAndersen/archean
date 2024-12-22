@@ -12,6 +12,12 @@ public class ClientPacketHandler : IClientPacketHandler
     private readonly IPlayerService playerService;
     private readonly IGlobalEventBus globalEventBus;
 
+    private FShort x;
+    private FShort y;
+    private FShort z;
+    private byte yaw;
+    private byte pitch;
+
     public ClientPacketHandler(
         IPlayerService playerService,
         IGlobalEventBus globalEventBus)
@@ -36,15 +42,35 @@ public class ClientPacketHandler : IClientPacketHandler
     {
         if (playerService.TryGetPlayer(out IPlayer? player))
         {
-            await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+            if (packet.X != x
+                || packet.Y != y
+                || packet.Z != z
+                || packet.Pitch != pitch
+                || packet.Yaw != yaw)
             {
-                Player = player,
-                X = packet.X.ToFloat(),
-                Y = packet.Y.ToFloat(),
-                Z = packet.Z.ToFloat(),
-                Yaw = packet.Yaw,
-                Pitch = packet.Pitch
-            });
+                x = packet.X;
+                y = packet.Y;
+                z = packet.Z;
+                pitch = packet.Pitch;
+                yaw = packet.Yaw;
+
+                player.UpdatePositionAndRotation(
+                    packet.X.ToFloat(),
+                    packet.Y.ToFloat(),
+                    packet.Z.ToFloat(),
+                    packet.Pitch,
+                    packet.Yaw);
+
+                await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+                {
+                    Player = player,
+                    X = packet.X.ToFloat(),
+                    Y = packet.Y.ToFloat(),
+                    Z = packet.Z.ToFloat(),
+                    Pitch = packet.Pitch,
+                    Yaw = packet.Yaw
+                });
+            }
         }
     }
 

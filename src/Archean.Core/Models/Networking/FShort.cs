@@ -1,6 +1,8 @@
-﻿namespace Archean.Core.Models.Networking;
+﻿using System.Numerics;
 
-public readonly struct FShort
+namespace Archean.Core.Models.Networking;
+
+public readonly struct FShort : IEqualityOperators<FShort, FShort, bool>
 {
     public const int Size = sizeof(ushort);
     public const float MinValue = -1024;
@@ -52,5 +54,26 @@ public readonly struct FShort
     public override string ToString()
     {
         return ToFloat().ToString();
+    }
+
+    public static bool operator ==(FShort left, FShort right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(FShort left, FShort right)
+    {
+        return !left.Equals(right);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is FShort other
+            && other.value == value;
+    }
+
+    public override int GetHashCode()
+    {
+        return value;
     }
 }
