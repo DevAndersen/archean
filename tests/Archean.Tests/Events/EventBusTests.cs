@@ -1,0 +1,59 @@
+﻿using Archean.Application.Services.Events;
+using Archean.Core.Models.Events;
+using Archean.Core.Services.Events;
+
+namespace Archean.Tests.Events;
+
+public class EventBusTests
+{
+    [Fact]
+    public async Task InvokeEventAsync_SubscribedEvent_ExpectedEventInvocation()
+    {
+        // Setup
+        bool hasEventBeenInvoked = false;
+        IEventBus bus = new EventBus();
+        Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
+        bus.Subscribe(eventHandle, default);
+
+        // Action
+        await bus.InvokeEventAsync(new TestEvent());
+
+        // Assert
+        Assert.True(hasEventBeenInvoked);
+    }
+
+    [Fact]
+    public async Task InvokeEventAsync_NotSubscribedEvent_ExpectedNoEventInvocation()
+    {
+        // Setup
+        bool hasEventBeenInvoked = false;
+        IEventBus bus = new EventBus();
+
+        // Action
+        await bus.InvokeEventAsync(new TestEvent());
+
+        // Assert
+        Assert.False(hasEventBeenInvoked);
+    }
+
+    [Fact]
+    public async Task InvokeEventAsync_UnsubscribedEvent_ExpectedNoEventInvocation()
+    {
+        // Setup
+        bool hasEventBeenInvoked = false;
+        IEventBus bus = new EventBus();
+        Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
+        bus.Subscribe(eventHandle, default);
+        bus.Unsubscribe<TestEvent>(eventHandle);
+
+        // Action
+        await bus.InvokeEventAsync(new TestEvent());
+
+        // Assert
+        Assert.False(hasEventBeenInvoked);
+    }
+
+    private class TestEvent : Event
+    {
+    }
+}

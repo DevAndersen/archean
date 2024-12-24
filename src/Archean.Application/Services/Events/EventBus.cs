@@ -6,6 +6,7 @@ namespace Archean.Application.Services.Events;
 
 public class EventBus : IGlobalEventBus
 {
+    private readonly ReversePriorityComparer reversePriorityComparer = new ReversePriorityComparer();
     private readonly SemaphoreSlim subscriptionSemaphore = new SemaphoreSlim(1);
     private readonly ConcurrentDictionary<Type, SortedDictionary<EventPriority, List<Delegate>>> eventDictionary = [];
 
@@ -61,7 +62,7 @@ public class EventBus : IGlobalEventBus
             Type eventArgsType = typeof(TEvent);
             if (!eventDictionary.TryGetValue(eventArgsType, out SortedDictionary<EventPriority, List<Delegate>>? eventLists))
             {
-                eventLists = eventDictionary[eventArgsType] = [];
+                eventLists = eventDictionary[eventArgsType] = new SortedDictionary<EventPriority, List<Delegate>>(reversePriorityComparer);
             }
 
             if (!eventLists.TryGetValue(priorityValue, out List<Delegate>? eventsForIndex))
@@ -99,6 +100,14 @@ public class EventBus : IGlobalEventBus
         finally
         {
             subscriptionSemaphore.Release();
+        }
+    }
+
+    private class ReversePriorityComparer : IComparer<EventPriority>
+    {
+        public int Compare(EventPriority x, EventPriority y)
+        {
+            return -x.CompareTo(y);
         }
     }
 }
