@@ -28,7 +28,7 @@ public class PacketDataReader : IPacketDataReader
     {
         const int read = Constants.Networking.StringLength;
         rest = bytes[read..];
-        return Encoding.ASCII.GetString(bytes.Span[..read]).TrimEnd().TrimEnd((char)0);
+        return Encoding.UTF8.GetString(bytes.Span[..read]).TrimEnd().TrimEnd((char)0);
     }
 
     public byte[] ReadByteArray(ReadOnlyMemory<byte> bytes, out ReadOnlyMemory<byte> rest)

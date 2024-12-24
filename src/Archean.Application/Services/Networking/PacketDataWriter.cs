@@ -45,11 +45,11 @@ public class PacketDataWriter : IPacketDataWriter
 
         if (value.Length > Constants.Networking.StringLength)
         {
-            Encoding.ASCII.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], memory.Span);
+            Encoding.UTF8.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], memory.Span);
         }
         else
         {
-            Encoding.ASCII.GetBytes(value, memory.Span);
+            Encoding.UTF8.GetBytes(value, memory.Span);
             memory[value.Length..Constants.Networking.StringLength].Span.Fill((byte)' ');
         }
         rest = memory[Constants.Networking.StringLength..];

@@ -35,7 +35,7 @@ public class PacketDataWriterStringTests
         packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
-        Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value);
+        Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value);
         Memory<byte> writtenBufferArea = buffer[..expectedStringBytes.Length];
         Assert.Equal(expectedStringBytes, writtenBufferArea);
     }
@@ -92,7 +92,7 @@ public class PacketDataWriterStringTests
         packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
-        Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value);
+        Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value);
         Memory<byte> unwrittenBufferArea = buffer[expectedStringBytes.Length..Constants.Networking.StringLength];
         int firstNonSpaceByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(spaceByte);
         Assert.Equal(indexNotFound, firstNonSpaceByteInUnwrittenBuffer);
@@ -110,7 +110,7 @@ public class PacketDataWriterStringTests
         packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
-        Memory<byte> expectedStringBytes = Encoding.ASCII.GetBytes(value).AsMemory()[..Constants.Networking.StringLength];
+        Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value).AsMemory()[..Constants.Networking.StringLength];
         Memory<byte> writtenBufferArea = buffer[..expectedStringBytes.Length];
         Assert.Equal(expectedStringBytes, writtenBufferArea);
     }
