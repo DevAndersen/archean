@@ -17,22 +17,22 @@ public class EventListener : IEventListener
 
     public void Subscribe<TEvent>(Action<TEvent> action) where TEvent : Event
     {
-        Subscribe(action, null);
+        Subscribe(action, default);
     }
 
     public void Subscribe<TEvent>(Func<TEvent, Task> action) where TEvent : Event
     {
-        Subscribe(action, null);
+        Subscribe(action, default);
     }
 
-    public void Subscribe<TEvent>(Action<TEvent> action, int? priority) where TEvent : Event
+    public void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority) where TEvent : Event
     {
         eventDictionary.Add((typeof(TEvent), action));
         scopedEventBus.Subscribe(action, priority);
         globalEventBus.Subscribe(action, priority);
     }
 
-    public void Subscribe<TEvent>(Func<TEvent, Task> action, int? priority) where TEvent : Event
+    public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority) where TEvent : Event
     {
         eventDictionary.Add((typeof(TEvent), action));
         scopedEventBus.Subscribe(action, priority);
