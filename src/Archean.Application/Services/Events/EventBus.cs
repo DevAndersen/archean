@@ -1,6 +1,4 @@
-﻿using Archean.Core.Models.Events;
-using Archean.Core.Services.Events;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace Archean.Application.Services.Events;
 

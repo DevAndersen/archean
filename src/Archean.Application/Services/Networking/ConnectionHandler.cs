@@ -1,12 +1,4 @@
 ﻿using Archean.Application.Models;
-using Archean.Core.Models;
-using Archean.Core.Models.Events;
-using Archean.Core.Models.Networking;
-using Archean.Core.Models.Networking.ClientPackets;
-using Archean.Core.Models.Networking.ServerPackets;
-using Archean.Core.Services.Events;
-using Archean.Core.Services.Networking;
-using Archean.Core.Services.Worlds;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Sockets;
 

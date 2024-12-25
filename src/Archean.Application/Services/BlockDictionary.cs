@@ -1,5 +1,4 @@
-﻿using Archean.Core.Models;
-using Archean.Core.Services;
+﻿using Archean.Core.Services;
 
 namespace Archean.Application.Services;
 

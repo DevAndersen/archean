@@ -1,5 +1,4 @@
-﻿using Archean.Core.Services.Networking;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 
 namespace Archean.Application;
 

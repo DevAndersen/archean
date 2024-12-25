@@ -1,7 +1,4 @@
-﻿using Archean.Core.Models.Events;
-using Archean.Core.Services.Events;
-
-namespace Archean.Application.Services.Events;
+﻿namespace Archean.Application.Services.Events;
 
 public class EventListener : IEventListener
 {

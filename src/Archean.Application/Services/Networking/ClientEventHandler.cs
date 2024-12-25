@@ -1,10 +1,4 @@
-﻿using Archean.Core.Models;
-using Archean.Core.Models.Events;
-using Archean.Core.Models.Networking.ServerPackets;
-using Archean.Core.Services.Events;
-using Archean.Core.Services.Networking;
-
-namespace Archean.Application.Services.Networking;
+﻿namespace Archean.Application.Services.Networking;
 
 public class ClientEventHandler : IClientEventHandler
 {
