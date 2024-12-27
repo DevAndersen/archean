@@ -31,4 +31,9 @@ public class ServerSettings
     /// </list>
     /// </remarks>
     public required string WorldLoadingMotd { get; init; }
+
+    /// <summary>
+    /// The disconnect message sent to the client when, when attempting to join the server while it is full.
+    /// </summary>
+    public required string ServerFullMessage { get; init; }
 }
