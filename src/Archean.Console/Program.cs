@@ -6,6 +6,6 @@ using Microsoft.Extensions.Logging;
 Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(c => c.AddJsonFile("appsettings.json"))
     .ConfigureLogging(l => l.AddConsole())
-    .ConfigureServices(s => s.AddArcheanDefaultServices())
+    .ConfigureServices((context, services) => services.AddArcheanDefaultServices(context.Configuration))
     .Build()
     .Run();

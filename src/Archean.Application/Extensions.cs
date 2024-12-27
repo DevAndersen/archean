@@ -2,7 +2,9 @@
 using Archean.Application.Services.Events;
 using Archean.Application.Services.Networking;
 using Archean.Application.Services.Worlds;
+using Archean.Application.Settings;
 using Archean.Core.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Archean.Application;
@@ -14,9 +16,12 @@ public static class Extensions
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddArcheanDefaultServices(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         return serviceCollection
+
+            // Settings
+            .Configure<ServerSettings>(configuration.GetSection("Server"))
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()

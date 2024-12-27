@@ -1,4 +1,6 @@
 ﻿using Archean.Application.Models.Networking;
+using Archean.Application.Settings;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Sockets;
 
@@ -24,14 +26,15 @@ public class SocketServer : ISocketServer
     public SocketServer(
         IConnectionHandler connectionHandler,
         ILogger<SocketServer> logger,
-        IServerPacketWriter serverPacketWriter)
+        IServerPacketWriter serverPacketWriter,
+        IOptions<ServerSettings> serverSettings)
     {
         this.connectionHandler = connectionHandler;
         this.logger = logger;
         this.serverPacketWriter = serverPacketWriter;
 
-        port = 25565; // Todo
-        listenBacklogSize = 3; // Todo
+        port = serverSettings.Value.Port;
+        listenBacklogSize = serverSettings.Value.Backlog;
 
         serverRunningCancellationTokenSource = new CancellationTokenSource();
 
@@ -51,9 +54,7 @@ public class SocketServer : ISocketServer
         serverSocket.Listen(listenBacklogSize);
         socketThread.Start();
 
-        logger.LogInformation("Socket server started on port {port} with backlog size {listenBacklogSize}",
-            port,
-            listenBacklogSize);
+        logger.LogInformation("Starting socket server on port {port}", port);
 
         return Task.CompletedTask;
     }
@@ -65,7 +66,7 @@ public class SocketServer : ISocketServer
             return;
         }
 
-        logger.LogInformation("Socket server running on port {port} has been stopped", port);
+        logger.LogInformation("Stopping socket server on port {port}", port);
 
         Running = false;
         await serverRunningCancellationTokenSource.CancelAsync();
