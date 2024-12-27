@@ -11,6 +11,7 @@ public class SocketServer : ISocketServer
     private readonly IConnectionHandler connectionHandler;
     private readonly ILogger<SocketServer> logger;
     private readonly IServerPacketWriter serverPacketWriter;
+    private readonly ServerSettings serverSettings;
 
     private readonly CancellationTokenSource serverRunningCancellationTokenSource;
     private readonly Socket serverSocket;
@@ -32,6 +33,7 @@ public class SocketServer : ISocketServer
         this.connectionHandler = connectionHandler;
         this.logger = logger;
         this.serverPacketWriter = serverPacketWriter;
+        serverSettings = serverSettingsOptions.Value;
 
         port = serverSettingsOptions.Value.Port;
         listenBacklogSize = serverSettingsOptions.Value.Backlog;
@@ -54,7 +56,9 @@ public class SocketServer : ISocketServer
         serverSocket.Listen(listenBacklogSize);
         socketThread.Start();
 
-        logger.LogInformation("Starting socket server on port {port}", port);
+        logger.LogInformation("Starting socket server on port {port}, with {maxPlayers} player slots",
+            port,
+            serverSettings.MaxPlayers);
 
         return Task.CompletedTask;
     }

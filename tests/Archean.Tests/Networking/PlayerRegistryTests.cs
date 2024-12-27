@@ -1,17 +1,30 @@
 ﻿using Archean.Application.Services.Networking;
+using Archean.Application.Settings;
 using Archean.Core.Models;
 using Archean.Core.Services.Networking;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 
 namespace Archean.Tests.Networking;
 
 public class PlayerRegistryTests
 {
+    private readonly ServerSettings defaultServerSettings;
+
+    public PlayerRegistryTests()
+    {
+        defaultServerSettings = Substitute.For<ServerSettings>();
+        defaultServerSettings.MaxPlayers.Returns((byte)Constants.Players.HighestPlayerId);
+    }
+
     [Fact]
     public void TryAdd_SinglePlayer_ExpectedGetAllResult()
     {
         // Setup
-        IPlayerRegistry playerRegistry = new PlayerRegistry();
+        IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
+        settings.Value.Returns(defaultServerSettings);
+
+        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer player = Substitute.For<IPlayer>();
 
         // Action
@@ -26,7 +39,10 @@ public class PlayerRegistryTests
     public void TryAdd_MultiplePlayers_ExpectedPlayerIds()
     {
         // Setup
-        IPlayerRegistry playerRegistry = new PlayerRegistry();
+        IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
+        settings.Value.Returns(defaultServerSettings);
+
+        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer playerA = Substitute.For<IPlayer>();
         IPlayer playerB = Substitute.For<IPlayer>();
         IPlayer playerC = Substitute.For<IPlayer>();
@@ -45,15 +61,23 @@ public class PlayerRegistryTests
         Assert.Equal(2, playerC.Id);
     }
 
-    [Fact]
-    public void TryAdd_ExceedingMaxPlayerCount_ExpectedFailure()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(20)]
+    [InlineData(Constants.Players.HighestPlayerId)]
+    public void TryAdd_ExceedingMaxPlayerCount_ExpectedFailure(byte maxPlayerCount)
     {
         // Setup
-        IPlayerRegistry playerRegistry = new PlayerRegistry();
+        IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
+        settings.Value.Returns(defaultServerSettings);
+        defaultServerSettings.MaxPlayers.Returns(maxPlayerCount);
+
+        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer exceedingPlayer = Substitute.For<IPlayer>();
 
         // Action
-        for (int i = 0; i <= Constants.Players.HighestPlayerId; i++)
+        for (int i = 0; i < maxPlayerCount; i++)
         {
             IPlayer player = Substitute.For<IPlayer>();
             bool wasPlayerAdded = playerRegistry.TryAdd(player);

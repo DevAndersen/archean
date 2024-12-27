@@ -1,12 +1,19 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Application.Settings;
+using Microsoft.Extensions.Options;
+
+namespace Archean.Application.Services.Networking;
 
 public class PlayerRegistry : IPlayerRegistry
 {
+    private readonly ServerSettings serverSettings;
+
     private readonly Lock lockObject;
     private readonly List<IPlayer> players;
 
-    public PlayerRegistry()
+    public PlayerRegistry(IOptions<ServerSettings> serverSettingsOptions)
     {
+        serverSettings = serverSettingsOptions.Value;
+
         players = [];
         lockObject = new Lock();
     }
@@ -53,9 +60,11 @@ public class PlayerRegistry : IPlayerRegistry
 
     private sbyte? TryGetAvailablePlayerId()
     {
+        int highestPlayerId = Math.Min(serverSettings.MaxPlayers - 1, Constants.Players.HighestPlayerId);
+
         sbyte[] playerIdsInUse = players.Select(x => x.Id).ToArray();
 
-        for (int i = 0; i <= Constants.Players.HighestPlayerId; i++)
+        for (int i = 0; i <= highestPlayerId; i++)
         {
             sbyte sb = (sbyte)i;
             if (!playerIdsInUse.Contains(sb))

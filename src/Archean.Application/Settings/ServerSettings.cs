@@ -36,4 +36,12 @@ public class ServerSettings
     /// The disconnect message sent to the client when, when attempting to join the server while it is full.
     /// </summary>
     public required string ServerFullMessage { get; init; }
+
+    /// <summary>
+    /// The maximum number of players that can be connected to the server.
+    /// </summary>
+    /// <remarks>
+    /// Values higher than <c>128</c> will be ignored.
+    /// </remarks>
+    public virtual required byte MaxPlayers { get; init; } = Constants.Players.HighestPlayerId + 1;
 }
