@@ -20,6 +20,9 @@ public static class Extensions
     {
         return serviceCollection
 
+            // General
+            .AddSingleton<ServerStartup>()
+
             // Settings
             .Configure<ServerSettings>(configuration.GetSection("Server"))
 
