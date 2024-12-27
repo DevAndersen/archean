@@ -6,37 +6,59 @@ namespace Archean.Tests;
 
 public class BlockDictionaryTests
 {
-    private readonly BlockDictionary dictionary;
+    private readonly BlockDictionary blockDictionary;
 
     public BlockDictionaryTests()
     {
         ILogger<BlockDictionary> logger = NSubstitute.Substitute.For<ILogger<BlockDictionary>>();
-        dictionary = new BlockDictionary(logger);
+        blockDictionary = new BlockDictionary(logger);
     }
 
     [Fact]
-    public void TryGetBlock_ValidIdentity_ExpectedValue()
+    public void TryGetBlock_ValidStandardIdentity_ExpectedValue()
     {
-        bool success = dictionary.TryGetBlock("Stone", out Block block);
+        // Setup
+        blockDictionary.RegisterStandardBlocks();
 
+        // Action
+        bool success = blockDictionary.TryGetBlock(nameof(Block.Stone), out Block block);
+
+        // Assert
         Assert.True(success);
         Assert.Equal(Block.Stone, block);
     }
 
     [Fact]
-    public void TryGetBlock_InvalidIdentity_Failure()
+    public void TryGetBlock_ValidStandardIdentityWithoutStandardRegistration_Failure()
     {
-        bool success = dictionary.TryGetBlock("Invalid", out _);
+        // Action
+        bool success = blockDictionary.TryGetBlock(nameof(Block.Stone), out Block _);
 
+        // Assert
+        Assert.False(success);
+    }
+
+    [Fact]
+    public void TryGetBlock_InvalidStandardIdentity_Failure()
+    {
+        // Setup
+        blockDictionary.RegisterStandardBlocks();
+
+        // Action
+        bool success = blockDictionary.TryGetBlock("Invalid", out _);
+
+        // Assert
         Assert.False(success);
     }
 
     [Fact]
     public void TryGetBlock_RegisteredBlock_Success()
     {
-        bool registerSuccess = dictionary.RegisterBlock("Rock", Block.Stone);
-        bool tryGetSuccess = dictionary.TryGetBlock("Rock", out Block block);
+        // Action
+        bool registerSuccess = blockDictionary.RegisterBlock("CustomBlockName", Block.Stone);
+        bool tryGetSuccess = blockDictionary.TryGetBlock("CustomBlockName", out Block block);
 
+        // Assert
         Assert.True(registerSuccess);
         Assert.True(tryGetSuccess);
         Assert.Equal(Block.Stone, block);
@@ -45,32 +67,40 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterBlock_ValidBlock_Success()
     {
-        bool success = dictionary.RegisterBlock("Rock", Block.Stone);
+        // Action
+        bool success = blockDictionary.RegisterBlock("CustomBlockName", Block.Stone);
 
+        // Assert
         Assert.True(success);
     }
 
     [Fact]
     public void RegisterBlock_InvalidBlock_Failure()
     {
-        bool success = dictionary.RegisterBlock("Rock", (Block)200);
+        // Action
+        bool success = blockDictionary.RegisterBlock("CustomBlockName", (Block)200);
 
+        // Assert
         Assert.False(success);
     }
 
     [Fact]
     public void RegisterBlock_EmptyIdentity_Failure()
     {
-        bool success = dictionary.RegisterBlock(string.Empty, Block.Stone);
+        // Action
+        bool success = blockDictionary.RegisterBlock(string.Empty, Block.Stone);
 
+        // Assert
         Assert.False(success);
     }
 
     [Fact]
     public void RegisterBlock_WhitespaceIdentity_Failure()
     {
-        bool success = dictionary.RegisterBlock(" ", Block.Stone);
+        // Action
+        bool success = blockDictionary.RegisterBlock(" ", Block.Stone);
 
+        // Assert
         Assert.False(success);
     }
 }
