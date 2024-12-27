@@ -8,6 +8,11 @@ namespace Archean.Core.Services;
 public interface IBlockDictionary
 {
     /// <summary>
+    /// Perform standard block registrations.
+    /// </summary>
+    public void RegisterStandardBlocks();
+
+    /// <summary>
     /// Register a block identity in the dictionary.
     /// </summary>
     /// <param name="identity"></param>

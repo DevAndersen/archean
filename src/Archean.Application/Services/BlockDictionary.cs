@@ -11,13 +11,18 @@ public class BlockDictionary : IBlockDictionary
     {
         this.logger = logger;
         dictionary = new Dictionary<string, Block>(StringComparer.OrdinalIgnoreCase);
+    }
 
-        // Add all defined Block values by their ID and name.
+    public void RegisterStandardBlocks()
+    {
+        // Register all defined Block values by their ID and name.
         foreach (Block block in Enum.GetValues<Block>())
         {
             RegisterBlock(((byte)block).ToString(), block);
             RegisterBlock(block.ToString(), block);
         }
+
+        logger.LogTrace("Registered {dictionarySize} standard block aliases", dictionary.Count);
     }
 
     public bool RegisterBlock(string identity, Block block)
