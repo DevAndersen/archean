@@ -1,5 +1,7 @@
 ﻿using Archean.Application.Models;
+using Archean.Application.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Net.Sockets;
 
 namespace Archean.Application.Services.Networking;
@@ -13,6 +15,7 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IServiceProvider provider;
     private readonly IWorldRegistry worldRegistry;
     private readonly IGlobalEventBus globalEventBus;
+    private readonly ServerSettings serverSettings;
 
     public ConnectionHandler(
         IClientPacketReader clientPacketReader,
@@ -21,7 +24,8 @@ public class ConnectionHandler : IConnectionHandler
         ILogger<ConnectionHandler> logger,
         IServiceProvider provider,
         IWorldRegistry worldRegistry,
-        IGlobalEventBus globalEventBus)
+        IGlobalEventBus globalEventBus,
+        IOptions<ServerSettings> serverSettingsOptions)
     {
         this.clientPacketReader = clientPacketReader;
         this.playerRegistry = playerRegistry;
@@ -30,6 +34,7 @@ public class ConnectionHandler : IConnectionHandler
         this.provider = provider;
         this.worldRegistry = worldRegistry;
         this.globalEventBus = globalEventBus;
+        this.serverSettings = serverSettingsOptions.Value;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
@@ -188,8 +193,8 @@ public class ConnectionHandler : IConnectionHandler
         {
             PlayerType = PlayerType.Normal,
             ProtocolVersion = Constants.Networking.ProtocolVersion,
-            ServerMotd = "Server MOTD",
-            ServerName = "Server name",
+            ServerMotd = serverSettings.Motd,
+            ServerName = serverSettings.Name,
         });
 
         await worldRegistry.GetDefaultWorld().JoinAsync(player);

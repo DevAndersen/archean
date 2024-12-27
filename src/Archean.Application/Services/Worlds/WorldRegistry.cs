@@ -1,5 +1,7 @@
 ﻿using Archean.Application.Models.Worlds;
+using Archean.Application.Settings;
 using Archean.Core.Models.Worlds;
+using Microsoft.Extensions.Options;
 
 namespace Archean.Application.Services.Worlds;
 
@@ -12,10 +14,11 @@ public class WorldRegistry : IWorldRegistry
 
     public WorldRegistry(
         ILogger<WorldRegistry> logger,
-        IEventListener eventListener)
+        IEventListener eventListener,
+        IOptions<ServerSettings> serverSettingsOptions)
     {
         this.logger = logger;
-        defaultWorld = new TestWorld(logger, eventListener);
+        defaultWorld = new TestWorld(logger, eventListener, serverSettingsOptions.Value);
         defaultWorld.LoadAsync().GetAwaiter().GetResult(); // Todo
         worlds.Add(defaultWorld);
     }

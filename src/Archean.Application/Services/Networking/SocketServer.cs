@@ -27,14 +27,14 @@ public class SocketServer : ISocketServer
         IConnectionHandler connectionHandler,
         ILogger<SocketServer> logger,
         IServerPacketWriter serverPacketWriter,
-        IOptions<ServerSettings> serverSettings)
+        IOptions<ServerSettings> serverSettingsOptions)
     {
         this.connectionHandler = connectionHandler;
         this.logger = logger;
         this.serverPacketWriter = serverPacketWriter;
 
-        port = serverSettings.Value.Port;
-        listenBacklogSize = serverSettings.Value.Backlog;
+        port = serverSettingsOptions.Value.Port;
+        listenBacklogSize = serverSettingsOptions.Value.Backlog;
 
         serverRunningCancellationTokenSource = new CancellationTokenSource();
 

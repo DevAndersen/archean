@@ -1,4 +1,5 @@
-﻿using Archean.Core.Models.Worlds;
+﻿using Archean.Application.Settings;
+using Archean.Core.Models.Worlds;
 
 namespace Archean.Application.Models.Worlds;
 
@@ -6,6 +7,7 @@ public class TestWorld : IWorld
 {
     private readonly ILogger logger;
     private readonly IEventListener eventListener;
+    private readonly ServerSettings serverSettings;
 
     private readonly BlockMap blockMap;
     private readonly List<IPlayer> players = [];
@@ -16,10 +18,12 @@ public class TestWorld : IWorld
 
     public TestWorld(
         ILogger logger,
-        IEventListener eventListener)
+        IEventListener eventListener,
+        ServerSettings serverSettings)
     {
         this.logger = logger;
         this.eventListener = eventListener;
+        this.serverSettings = serverSettings;
 
         short width = 16;
         short height = 16;
@@ -148,8 +152,8 @@ public class TestWorld : IWorld
             {
                 PlayerType = PlayerType.Op,
                 ProtocolVersion = Constants.Networking.ProtocolVersion,
-                ServerMotd = $"You are {percent}% done",
-                ServerName = "Server name",
+                ServerMotd = string.Format(serverSettings.WorldLoadingMotd, percent),
+                ServerName = serverSettings.Name,
             });
 
             await connection.SendAsync(new ServerLevelDataChunkPacket
