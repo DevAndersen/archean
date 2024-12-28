@@ -1,4 +1,6 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Core.Exceptions;
+
+namespace Archean.Application.Services.Networking;
 
 public class ServerPacketWriter : IServerPacketWriter
 {
@@ -28,7 +30,7 @@ public class ServerPacketWriter : IServerPacketWriter
             ServerSetBlockPacket p => WriteSetBlockPacket(p),
             ServerSpawnPlayerPacket p => WriteSpawnPlayerPacket(p),
             ServerUpdatePlayerTypePacket p => WriteUpdatePlayerTypePacket(p),
-            _ => throw new InvalidOperationException() // Todo
+            _ => throw new UnexpectedPacketTypeException(packet.GetType())
         };
     }
 
