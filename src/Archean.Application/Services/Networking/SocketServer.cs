@@ -1,6 +1,4 @@
 ﻿using Archean.Application.Models.Networking;
-using Archean.Application.Settings;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Sockets;
 

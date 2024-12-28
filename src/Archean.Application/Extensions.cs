@@ -2,7 +2,6 @@
 using Archean.Application.Services.Events;
 using Archean.Application.Services.Networking;
 using Archean.Application.Services.Worlds;
-using Archean.Application.Settings;
 using Archean.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

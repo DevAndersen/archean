@@ -1,7 +1,5 @@
 ﻿using Archean.Application.Models;
-using Archean.Application.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Net.Sockets;
 
 namespace Archean.Application.Services.Networking;

@@ -1,5 +1,4 @@
-﻿using Archean.Application.Settings;
-using Archean.Core.Models.Worlds;
+﻿using Archean.Core.Models.Worlds;
 
 namespace Archean.Application.Models.Worlds;
 
