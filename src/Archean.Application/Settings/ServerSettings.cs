@@ -27,7 +27,7 @@ public class ServerSettings
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item>Use "<c>{0}</c>" to show the world loading percentage.</item>
+    /// <item><c>{0}</c> will be replaced by the world loading percentage.</item>
     /// </list>
     /// </remarks>
     public required string WorldLoadingMotd { get; init; }
