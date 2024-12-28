@@ -87,7 +87,7 @@ public class ConnectionHandler : IConnectionHandler
                 player.Username,
                 player.Id);
 
-            await SendJoinServerTestAsync(player, clientIdentificationPacket);
+            await SendJoinServerTestAsync(player);
             new Thread(async () => await ReceiveFromClientAsync(player, cancellationToken)).Start();
         }
         else
@@ -187,7 +187,7 @@ public class ConnectionHandler : IConnectionHandler
         }
     }
 
-    private async Task SendJoinServerTestAsync(IPlayer player, ClientIdentificationPacket clientIdentificationPacket)
+    private async Task SendJoinServerTestAsync(IPlayer player)
     {
         await player.Connection.SendAsync(new ServerIdentificationPacket
         {
