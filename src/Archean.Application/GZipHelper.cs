@@ -14,4 +14,13 @@ public static class GZipHelper
 
         return output.ToArray();
     }
+
+    public static byte[] Decompress(byte[] bytes)
+    {
+        using MemoryStream input = new MemoryStream(bytes);
+        using MemoryStream output = new MemoryStream();
+        using GZipStream gZipStream = new GZipStream(input, CompressionMode.Decompress);
+        gZipStream.CopyTo(output);
+        return output.ToArray();
+    }
 }
