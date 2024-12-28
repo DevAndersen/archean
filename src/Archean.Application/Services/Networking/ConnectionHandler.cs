@@ -90,7 +90,7 @@ public class ConnectionHandler : IConnectionHandler
         }
         else
         {
-            logger.LogError("Unable to register player {username}, server is full",
+            logger.LogInformation("Unable to register player {username}, server is full",
                 player.Username);
 
             await connection.DisconnectAsync(serverSettings.ServerFullMessage);
