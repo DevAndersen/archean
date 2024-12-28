@@ -25,6 +25,7 @@ public static class Extensions
 
             // Settings
             .Configure<ServerSettings>(configuration.GetSection("Server"))
+            .Configure<ChatSettings>(configuration.GetSection("Chat"))
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()

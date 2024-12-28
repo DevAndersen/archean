@@ -1,16 +1,22 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Application.Settings;
+using Microsoft.Extensions.Options;
+
+namespace Archean.Application.Services.Networking;
 
 public class ClientEventHandler : IClientEventHandler
 {
     private readonly IEventListener eventListener;
     private readonly IPlayerService playerService;
+    private readonly ChatSettings chatSettings;
 
     public ClientEventHandler(
         IEventListener eventListener,
-        IPlayerService playerService)
+        IPlayerService playerService,
+        IOptions<ChatSettings> chatSettingsOptions)
     {
         this.eventListener = eventListener;
         this.playerService = playerService;
+        chatSettings = chatSettingsOptions.Value;
     }
 
     public void RegisterEventSubscriptions()
@@ -28,7 +34,7 @@ public class ClientEventHandler : IClientEventHandler
             {
                 packet = new ServerMessagePacket
                 {
-                    Message = $"{arg.PlayerSender.DisplayName}: {arg.Message}",
+                    Message = string.Format(chatSettings.ChatFormat, arg.Message, arg.PlayerSender.DisplayName),
                     PlayerId = arg.PlayerSender.Id
                 };
             }
@@ -36,7 +42,7 @@ public class ClientEventHandler : IClientEventHandler
             {
                 packet = new ServerMessagePacket
                 {
-                    Message = arg.Message,
+                    Message = string.Format(chatSettings.ServerChatFormat, arg.Message),
                     PlayerId = 0
                 };
             }
