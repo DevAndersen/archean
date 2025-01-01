@@ -20,7 +20,7 @@ public class EventListenerTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IEventListener listener = new EventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         listener.Subscribe(eventHandle, default);
@@ -37,7 +37,7 @@ public class EventListenerTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IEventListener listener = new EventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
 
@@ -53,7 +53,7 @@ public class EventListenerTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IEventListener listener = new EventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         listener.Subscribe(eventHandle, default);
@@ -70,7 +70,7 @@ public class EventListenerTests
     public async Task Subscribe_PrioritizedSubscriptions_ExpectedCallbackOrder()
     {
         // Setup
-        IEventListener listener = new EventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
 
         List<int> numbers = [];
         listener.Subscribe<TestEvent>(_ => numbers.Add(1), (EventPriority)1);
@@ -88,7 +88,7 @@ public class EventListenerTests
     public async Task Subscribe_EventCancellation_ExpectedCallbackOrder()
     {
         // Setup
-        IEventListener listener = new EventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
 
         List<int> numbers = [];
         listener.Subscribe<TestEvent>(_ => numbers.Add(1), (EventPriority)1);

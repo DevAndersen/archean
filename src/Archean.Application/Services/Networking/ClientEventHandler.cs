@@ -2,12 +2,12 @@
 
 public class ClientEventHandler : IClientEventHandler
 {
-    private readonly IEventListener eventListener;
+    private readonly IScopedEventListener eventListener;
     private readonly IPlayerService playerService;
     private readonly ChatSettings chatSettings;
 
     public ClientEventHandler(
-        IEventListener eventListener,
+        IScopedEventListener eventListener,
         IPlayerService playerService,
         IOptions<ChatSettings> chatSettingsOptions)
     {

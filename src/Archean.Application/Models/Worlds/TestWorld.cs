@@ -5,7 +5,7 @@ namespace Archean.Application.Models.Worlds;
 public class TestWorld : IWorld
 {
     private readonly ILogger logger;
-    private readonly IEventListener eventListener;
+    private readonly IGlobalEventListener eventListener;
     private readonly ServerSettings serverSettings;
 
     private readonly BlockMap blockMap;
@@ -17,7 +17,7 @@ public class TestWorld : IWorld
 
     public TestWorld(
         ILogger logger,
-        IEventListener eventListener,
+        IGlobalEventListener eventListener,
         ServerSettings serverSettings)
     {
         this.logger = logger;

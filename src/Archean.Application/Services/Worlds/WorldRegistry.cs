@@ -12,7 +12,7 @@ public class WorldRegistry : IWorldRegistry
 
     public WorldRegistry(
         ILogger<WorldRegistry> logger,
-        IEventListener eventListener,
+        IGlobalEventListener eventListener,
         IOptions<ServerSettings> serverSettingsOptions)
     {
         this.logger = logger;
