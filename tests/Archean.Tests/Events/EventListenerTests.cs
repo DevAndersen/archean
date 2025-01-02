@@ -6,7 +6,7 @@ namespace Archean.Tests.Events;
 
 public class EventListenerTests
 {
-    private IEventBus bus;
+    private IScopedEventBus bus;
     private IGlobalEventBus globalBus;
 
     public EventListenerTests()

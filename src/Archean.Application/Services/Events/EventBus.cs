@@ -2,7 +2,7 @@
 
 namespace Archean.Application.Services.Events;
 
-public class EventBus : IGlobalEventBus
+public class EventBus : IGlobalEventBus, IScopedEventBus
 {
     private readonly ReversePriorityComparer reversePriorityComparer = new ReversePriorityComparer();
     private readonly SemaphoreSlim subscriptionSemaphore = new SemaphoreSlim(1);

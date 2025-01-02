@@ -38,10 +38,10 @@ public static class Extensions
             // Events
             .AddScoped<IClientPacketHandler, ClientPacketHandler>()
             .AddScoped<IClientEventHandler, ClientEventHandler>()
-            .AddScoped<IEventBus, EventBus>()
+            .AddScoped<IScopedEventBus, EventBus>()
+            .AddSingleton<IGlobalEventBus, EventBus>()
             .AddScoped<IScopedEventListener, ScopedEventListener>()
             .AddSingleton<IGlobalEventListener, GlobalEventListener>()
-            .AddSingleton<IGlobalEventBus, EventBus>()
 
             // Gameplay
             .AddScoped<IPlayerService, PlayerService>()

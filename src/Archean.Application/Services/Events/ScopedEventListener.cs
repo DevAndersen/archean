@@ -2,11 +2,11 @@
 
 public class ScopedEventListener : IScopedEventListener
 {
-    private readonly IEventBus scopedEventBus;
+    private readonly IScopedEventBus scopedEventBus;
     private readonly IGlobalEventBus globalEventBus;
     private readonly List<(Type EventType, Delegate EventDelegate)> eventDictionary = [];
 
-    public ScopedEventListener(IEventBus scopedEventBus, IGlobalEventBus globalEventBus)
+    public ScopedEventListener(IScopedEventBus scopedEventBus, IGlobalEventBus globalEventBus)
     {
         this.scopedEventBus = scopedEventBus;
         this.globalEventBus = globalEventBus;
