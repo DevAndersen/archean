@@ -16,7 +16,7 @@ public class BlockDictionaryTests
     {
         logger = Substitute.For<ILogger<BlockDictionary>>();
 
-        IOptions<AliasSettings>  aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
+        IOptions<AliasSettings> aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
         aliasSettingsOptions.Value.Returns(new AliasSettings
         {
             RegisterDefaultIdAliases = true,
