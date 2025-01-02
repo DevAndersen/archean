@@ -57,8 +57,9 @@ public class PlayerRegistryTests
         Assert.True(wasPlayerBAdded);
         Assert.True(wasPlayerCAdded);
 
-        Assert.Equal(1, playerB.Id);
-        Assert.Equal(2, playerC.Id);
+        Assert.Equal(1, playerA.Id);
+        Assert.Equal(2, playerB.Id);
+        Assert.Equal(3, playerC.Id);
     }
 
     [Theory]
@@ -77,7 +78,7 @@ public class PlayerRegistryTests
         IPlayer exceedingPlayer = Substitute.For<IPlayer>();
 
         // Action
-        for (int i = 0; i < maxPlayerCount; i++)
+        for (int i = 1; i < maxPlayerCount; i++)
         {
             IPlayer player = Substitute.For<IPlayer>();
             bool wasPlayerAdded = playerRegistry.TryAdd(player);

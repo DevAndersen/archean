@@ -41,7 +41,7 @@ public class ServerSettings
     /// The maximum number of players that can be connected to the server.
     /// </summary>
     /// <remarks>
-    /// Values higher than <c>128</c> will be ignored.
+    /// Values higher than <c>127</c> will be ignored.
     /// </remarks>
-    public virtual required byte MaxPlayers { get; init; } = Constants.Players.HighestPlayerId + 1;
+    public virtual required byte MaxPlayers { get; init; } = (byte)Constants.Players.HighestPlayerId;
 }

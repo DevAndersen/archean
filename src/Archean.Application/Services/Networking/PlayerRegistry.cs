@@ -61,7 +61,7 @@ public class PlayerRegistry : IPlayerRegistry
 
         sbyte[] playerIdsInUse = players.Select(x => x.Id).ToArray();
 
-        for (int i = 0; i <= highestPlayerId; i++)
+        for (int i = 1; i <= highestPlayerId; i++)
         {
             sbyte sb = (sbyte)i;
             if (!playerIdsInUse.Contains(sb))
