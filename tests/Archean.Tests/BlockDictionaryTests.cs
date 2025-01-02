@@ -1,17 +1,30 @@
 ﻿using Archean.Application.Services;
+using Archean.Application.Settings;
 using Archean.Core.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using NSubstitute;
 
 namespace Archean.Tests;
 
 public class BlockDictionaryTests
 {
     private readonly BlockDictionary blockDictionary;
+    private readonly ILogger<BlockDictionary> logger;
 
     public BlockDictionaryTests()
     {
-        ILogger<BlockDictionary> logger = NSubstitute.Substitute.For<ILogger<BlockDictionary>>();
-        blockDictionary = new BlockDictionary(logger);
+        logger = Substitute.For<ILogger<BlockDictionary>>();
+
+        IOptions<AliasSettings>  aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
+        aliasSettingsOptions.Value.Returns(new AliasSettings
+        {
+            RegisterDefaultIdAliases = true,
+            RegisterDefaultNameAliases = true,
+            CustomAliases = []
+        });
+
+        blockDictionary = new BlockDictionary(logger, aliasSettingsOptions);
     }
 
     [Fact]
@@ -102,5 +115,55 @@ public class BlockDictionaryTests
 
         // Assert
         Assert.False(success);
+    }
+
+    [Fact]
+    public void RegisterCustomAliases_ValidCustomAliases_Success()
+    {
+        // Setup
+        IOptions<AliasSettings> aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
+        aliasSettingsOptions.Value.Returns(new AliasSettings
+        {
+            RegisterDefaultIdAliases = true,
+            RegisterDefaultNameAliases = true,
+            CustomAliases = new Dictionary<string, string[]>
+            {
+                [nameof(Block.Air)] = ["SomeName"],
+                [nameof(Block.Stone)] = ["SomeOtherName"]
+            }
+        });
+
+        BlockDictionary blockDictionary = new BlockDictionary(logger, aliasSettingsOptions);
+
+        // Action
+        int registeredAliases = blockDictionary.RegisterCustomAliases();
+
+        // Assert
+        Assert.Equal(2, registeredAliases);
+    }
+
+    [Fact]
+    public void RegisterCustomAliases_DuplicateCustomAliases_OnlyOneRegistered()
+    {
+        // Setup
+        IOptions<AliasSettings> aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
+        aliasSettingsOptions.Value.Returns(new AliasSettings
+        {
+            RegisterDefaultIdAliases = true,
+            RegisterDefaultNameAliases = true,
+            CustomAliases = new Dictionary<string, string[]>
+            {
+                [nameof(Block.Air)] = ["SomeName"],
+                [nameof(Block.Stone)] = ["SomeName"]
+            }
+        });
+
+        BlockDictionary blockDictionary = new BlockDictionary(logger, aliasSettingsOptions);
+
+        // Action
+        int registeredAliases = blockDictionary.RegisterCustomAliases();
+
+        // Assert
+        Assert.Equal(1, registeredAliases);
     }
 }

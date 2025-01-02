@@ -17,5 +17,6 @@ public class ServerStartup
     public void PerformSetup()
     {
         blockDictionary.RegisterStandardBlocks();
+        blockDictionary.RegisterCustomAliases();
     }
 }
