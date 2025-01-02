@@ -5,17 +5,28 @@ using Archean.Application.Services.Worlds;
 using Archean.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Archean.Application;
 
 public static class Extensions
 {
     /// <summary>
-    /// Adds all default Archean services.
+    /// Registers all default Archean services.
+    /// </summary>
+    /// <param name="host"></param>
+    /// <returns></returns>
+    public static IHostBuilder ConfigureArcheanDefaultServices(this IHostBuilder host)
+    {
+        return host.ConfigureServices((context, services) => services.RegisterArcheanDefaultServices(context.Configuration));
+    }
+
+    /// <summary>
+    /// Registers all default Archean services.
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection RegisterArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         return serviceCollection
 
