@@ -15,12 +15,12 @@ public class ServerSettings
     /// <summary>
     /// The name of the server.
     /// </summary>
-    public required string Name { get; init; }
+    public required string Name { get; init; } = "Unnamed server";
 
     /// <summary>
     /// The MOTD (message of the day) of the server.
     /// </summary>
-    public required string Motd { get; init; }
+    public required string Motd { get; init; } = "Server MOTD";
 
     /// <summary>
     /// The MOTD displayed when a player joins the world.
@@ -30,12 +30,12 @@ public class ServerSettings
     /// <item><c>{0}</c> will be replaced by the world loading percentage.</item>
     /// </list>
     /// </remarks>
-    public required string WorldLoadingMotd { get; init; }
+    public required string WorldLoadingMotd { get; init; } = "Loading world, {0}% done";
 
     /// <summary>
     /// The disconnect message sent to the client when, when attempting to join the server while it is full.
     /// </summary>
-    public required string ServerFullMessage { get; init; }
+    public required string ServerFullMessage { get; init; } = "The server is full";
 
     /// <summary>
     /// The maximum number of players that can be connected to the server.
