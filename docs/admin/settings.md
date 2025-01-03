@@ -4,7 +4,7 @@ Settings are defined in the `appsettings.json` file, using the [JSON](https://en
 
 Each of the sections described below can be configured by defining them as a top-level node in the `appsettings.json` file.
 
-An example of a simple `appsettings.json` file:
+Here is example of a simple `appsettings.json` file:
 
 ```json
 {
@@ -161,10 +161,89 @@ These settings let you configure chat messages and formatting.
     </tbody>
 </table>
 
+## Block aliases
+
+These settings let you configure aliases for blocks. These are used by commands that require specifying a type of block.
+
+`appsettings.json` path: `Aliases`
+
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Description</th>
+            <th>Data type</th>
+            <th>Remarks</th>
+            <th>Fallback value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>RegisterDefaultNameAliases</td>
+            <td>Automatically registers the default block names as aliases, for example <code>"stone"</code> for the Stone block type.</td>
+            <td>Boolean</td>
+            <td></td>
+            <td>
+                <code>true</code>
+            </td>
+        </tr>
+        <tr>
+            <td>RegisterDefaultIdAliases</td>
+            <td>Automatically registers the default block names as aliases, for example <code>"1"</code> for the Stone block type.</td>
+            <td>Boolean</td>
+            <td></td>
+            <td>
+                <code>true</code>
+            </td>
+        </tr>
+        <tr>
+            <td>CustomAliases</td>
+            <td>Allows you to define custom aliases for block types</td>
+            <td>Object</td>
+            <td>See below for further information.</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+### Custom aliases
+
+You can use this setting to define custom aliases for block types.
+
+You can either use the name of the block type or the block ID as the key.
+
+Custom aliases are defined in an array, allowing you to define multiple aliases for each block type.
+
+Here is an example which defines "Soil" and "Earth" as aliases for Dirt, and "Cobble" as an alias for Cobblestone (block ID 4).
+
+```json
+"Aliases":
+{
+    "CustomAliases":
+    {
+        "Dirt":
+        [
+            "Soil",
+            "Earth"
+        ],
+        "4":
+        [
+            "Cobble"
+        ]
+    }
+}
+```
+
+Do note:
+
+- Block aliases are case-insensitive.
+- You cannot reuse an alias that has already been defined.
+- You cannot define aliases for blocks that are not known to Archean (from Air to Obsidian).
+
 ## Logging
 
 These settings are used to configure logging.
 
 `appsettings.json` path: `Logging`
 
-This is also where logging levels can be defined. For more information, see: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging#configure-logging
+This is also where logging levels can be configured. For more information, see: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging#configure-logging
