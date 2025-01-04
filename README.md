@@ -4,7 +4,7 @@ Archean aims to be a modern and highly flexible Minecraft Classic server, target
 
 The project is named after [the Archean Eon](https://en.wikipedia.org/wiki/Archean), an early period in Earth's history, mirroring the version of the game that this project targets.
 
-This project was made possible thanks to the technical documentation of the Minecraft Classic Protocol, provided on [wiki.vg](https://wiki.vg/Classic_Protocol) and the [Minecraft Wiki](https://minecraft.wiki/w/Classic_server_protocol).
+This project was made possible thanks to the technical documentation of the Minecraft Classic networking protocol, provided on [wiki.vg](https://wiki.vg/Classic_Protocol) and the [Minecraft Wiki](https://minecraft.wiki/w/Classic_server_protocol).
 
 ## Documentation
 
