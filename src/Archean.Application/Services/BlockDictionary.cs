@@ -24,20 +24,14 @@ public class BlockDictionary : IBlockDictionary
         // Register all defined Block values by their ID and name.
         foreach (Block block in Enum.GetValues<Block>())
         {
-            if (aliasSettings.RegisterDefaultIdAliases)
+            if (aliasSettings.RegisterDefaultIdAliases && RegisterBlock(((byte)block).ToString(), block))
             {
-                if (RegisterBlock(((byte)block).ToString(), block))
-                {
-                    registeredAliases++;
-                }
+                registeredAliases++;
             }
 
-            if (aliasSettings.RegisterDefaultNameAliases)
+            if (aliasSettings.RegisterDefaultNameAliases && RegisterBlock(block.ToString(), block))
             {
-                if (RegisterBlock(block.ToString(), block))
-                {
-                    registeredAliases++;
-                }
+                registeredAliases++;
             }
         }
 
