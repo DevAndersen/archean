@@ -25,6 +25,7 @@ public static class Extensions
     /// Registers all default Archean services.
     /// </summary>
     /// <param name="serviceCollection"></param>
+    /// <param name="configuration"></param>
     /// <returns></returns>
     public static IServiceCollection RegisterArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
