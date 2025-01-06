@@ -1,6 +1,6 @@
 ﻿namespace Archean.Application.Services.Events;
 
-public class GlobalEventListener : IGlobalEventListener
+public sealed class GlobalEventListener : IGlobalEventListener
 {
     private readonly IGlobalEventBus globalEventBus;
     private readonly List<(Type EventType, Delegate EventDelegate)> eventDictionary = [];
@@ -46,18 +46,9 @@ public class GlobalEventListener : IGlobalEventListener
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        foreach ((Type eventType, Delegate eventDelegate) in eventDictionary)
         {
-            foreach ((Type eventType, Delegate eventDelegate) in eventDictionary)
-            {
-                globalEventBus?.Unsubscribe(eventType, eventDelegate);
-            }
+            globalEventBus?.Unsubscribe(eventType, eventDelegate);
         }
     }
 }

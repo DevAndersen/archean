@@ -1,6 +1,6 @@
 ﻿namespace Archean.Application.Services.Events;
 
-public class ScopedEventListener : IScopedEventListener
+public sealed class ScopedEventListener : IScopedEventListener
 {
     private readonly IScopedEventBus scopedEventBus;
     private readonly IGlobalEventBus globalEventBus;
@@ -52,19 +52,10 @@ public class ScopedEventListener : IScopedEventListener
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        foreach ((Type eventType, Delegate eventDelegate) in eventDictionary)
         {
-            foreach ((Type eventType, Delegate eventDelegate) in eventDictionary)
-            {
-                globalEventBus?.Unsubscribe(eventType, eventDelegate);
-                scopedEventBus?.Unsubscribe(eventType, eventDelegate);
-            }
+            globalEventBus?.Unsubscribe(eventType, eventDelegate);
+            scopedEventBus?.Unsubscribe(eventType, eventDelegate);
         }
     }
 }
