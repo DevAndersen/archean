@@ -23,7 +23,7 @@ public enum Block : byte
     IronOre = 15,
     CoalOre = 16,
     Wood = 17,
-    Leaf = 18,
+    Leaves = 18,
     Sponge = 19,
     Glass = 20,
     RedCloth = 21,
