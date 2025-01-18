@@ -8,7 +8,7 @@ namespace Archean.Core.Models.Worlds;
 /// </summary>
 public class BlockMap
 {
-    private static readonly string unevenDimensionDivisibilityExceptionMessage = $"Width of BlockMap must be even evenly divisible by {Constants.Worlds.WorldDimensionIncrement}";
+    private static readonly string unevenDimensionDivisibilityExceptionMessage = $"Sizes of BlockMap must be even evenly divisible by {Constants.Worlds.WorldDimensionIncrement}";
 
     /// <summary>
     /// The size of the X-dimension of the block map.
