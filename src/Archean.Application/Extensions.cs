@@ -1,8 +1,11 @@
-﻿using Archean.Application.Services;
+﻿using Archean.Application.Models.Commands;
+using Archean.Application.Services;
 using Archean.Application.Services.Events;
 using Archean.Application.Services.Networking;
 using Archean.Application.Services.Worlds;
+using Archean.Core.Models.Commands;
 using Archean.Core.Services;
+using Archean.Core.Services.Commands;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +21,8 @@ public static class Extensions
     /// <returns></returns>
     public static IHostBuilder ConfigureArcheanDefaultServices(this IHostBuilder host)
     {
-        return host.ConfigureServices((context, services) => services.RegisterArcheanDefaultServices(context.Configuration));
+        return host.ConfigureServices((context, services)
+            => services.RegisterArcheanDefaultServices(context.Configuration, out _));
     }
 
     /// <summary>
@@ -27,12 +31,15 @@ public static class Extensions
     /// <param name="serviceCollection"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection RegisterArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection RegisterArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration, out CommandRegistrations commandRegistrations)
     {
+        commandRegistrations = new CommandRegistrations();
+
         return serviceCollection
 
             // General
             .AddSingleton<ServerStartup>()
+            .AddSingleton(commandRegistrations)
 
             // Settings
             .Configure<ServerSettings>(configuration.GetSection("Server"))
@@ -60,10 +67,22 @@ public static class Extensions
             .AddScoped<IPlayerService, PlayerService>()
             .AddSingleton<IBlockDictionary, BlockDictionary>()
 
+            // Commands
+            .AddSingleton<ICommandDictionary, CommandDictionary>()
+            .RegisterCommand<TestCommand>(commandRegistrations)
+
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();
+    }
+
+    public static IServiceCollection RegisterCommand<TCommand>(this IServiceCollection serviceCollection, CommandRegistrations commandRegistrations)
+        where TCommand : class, ICommand
+    {
+        commandRegistrations.RegisterCommand<TCommand>();
+        return serviceCollection
+            .AddTransient<TCommand>();
     }
 }
