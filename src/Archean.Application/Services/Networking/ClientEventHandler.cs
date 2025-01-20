@@ -1,19 +1,27 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Application.Models;
+using Archean.Core.Models.Commands;
+using Archean.Core.Services.Commands;
+using System.Net.Sockets;
+
+namespace Archean.Application.Services.Networking;
 
 public class ClientEventHandler : IClientEventHandler
 {
     private readonly IScopedEventListener eventListener;
     private readonly IPlayerService playerService;
     private readonly ChatSettings chatSettings;
+    private readonly ICommandDictionary commandDictionary;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
         IPlayerService playerService,
-        IOptions<ChatSettings> chatSettingsOptions)
+        IOptions<ChatSettings> chatSettingsOptions,
+        ICommandDictionary commandDictionary)
     {
         this.eventListener = eventListener;
         this.playerService = playerService;
         chatSettings = chatSettingsOptions.Value;
+        this.commandDictionary = commandDictionary;
     }
 
     public void RegisterEventSubscriptions()
@@ -23,7 +31,27 @@ public class ClientEventHandler : IClientEventHandler
 
     private async Task ReceiveMessage(MessageEvent arg)
     {
-        if (playerService.TryGetPlayer(out IPlayer? player))
+        if (arg.Message.StartsWith('/'))
+        {
+            int spaceIndex = arg.Message.IndexOf(' ');
+            ReadOnlySpan<char> nonDigitsOnlyShortest = spaceIndex == -1
+                ? arg.Message[1..]
+                : arg.Message[1..spaceIndex];
+
+            if (commandDictionary.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
+            {
+                await command.InvokeAsync();
+            }
+            else if (playerService.TryGetPlayer(out IPlayer? player))
+            {
+                await player.Connection.SendAsync(new ServerMessagePacket
+                {
+                    Message = "No such command was found",
+                    PlayerId = 0
+                });
+            }
+        }
+        else if (playerService.TryGetPlayer(out IPlayer? player))
         {
             ServerMessagePacket packet;
 

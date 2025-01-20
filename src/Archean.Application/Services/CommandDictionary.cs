@@ -77,9 +77,9 @@ public class CommandDictionary : ICommandDictionary
         return true;
     }
 
-    public bool TryGetCommand(string commandName, [NotNullWhen(true)] out ICommand? command)
+    public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command)
     {
-        if (dictionary.TryGetValue(commandName, out Type? commandType))
+        if (dictionary.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
         {
             command = serviceProvider.GetService(commandType) as ICommand;
             return command != null;
