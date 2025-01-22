@@ -2,7 +2,7 @@
 using Archean.Core.Services.Commands;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Archean.Application.Services;
+namespace Archean.Application.Services.Commands;
 
 public class CommandDictionary : ICommandDictionary
 {

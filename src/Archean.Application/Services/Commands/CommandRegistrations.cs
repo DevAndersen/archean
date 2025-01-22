@@ -1,6 +1,6 @@
 ﻿using Archean.Core.Models.Commands;
 
-namespace Archean.Application.Services;
+namespace Archean.Application.Services.Commands;
 
 public class CommandRegistrations
 {
