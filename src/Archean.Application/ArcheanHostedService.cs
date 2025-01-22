@@ -1,6 +1,4 @@
 ﻿using Archean.Application.Services;
-using Archean.Core.Models.Commands;
-using Archean.Core.Services.Commands;
 using Microsoft.Extensions.Hosting;
 
 namespace Archean.Application;
