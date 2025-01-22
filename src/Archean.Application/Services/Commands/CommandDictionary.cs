@@ -51,7 +51,7 @@ public class CommandDictionary : ICommandDictionary
         return true;
     }
 
-    public bool RegisterAlias<TCommand>(string alias) where TCommand : ICommand
+    private bool RegisterAlias<TCommand>(string alias) where TCommand : ICommand
     {
         if (string.IsNullOrWhiteSpace(TCommand.CommandName))
         {
