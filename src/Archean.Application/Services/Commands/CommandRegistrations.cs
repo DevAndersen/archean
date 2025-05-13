@@ -4,12 +4,12 @@ namespace Archean.Application.Services.Commands;
 
 public class CommandRegistrations
 {
-    private readonly List<Type> commandTypes = [];
+    private readonly List<Type> _commandTypes = [];
 
-    public IReadOnlyList<Type> CommandTypes => commandTypes;
+    public IReadOnlyList<Type> CommandTypes => _commandTypes;
 
     public void RegisterCommand<TCommand>() where TCommand : ICommand
     {
-        commandTypes.Add(typeof(TCommand));
+        _commandTypes.Add(typeof(TCommand));
     }
 }

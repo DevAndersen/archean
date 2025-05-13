@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterLevelFinalizeTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerLevelFinalizePacket validPacket = new()
+    private static readonly ServerLevelFinalizePacket ValidPacket = new()
     {
         XSize = default,
         YSize = default,
@@ -15,7 +15,7 @@ public class ServerPacketWriterLevelFinalizeTests : BaseServerPacketWriterTests
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteLevelFinalizePacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteLevelFinalizePacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerLevelFinalizePacket.PacketSize, buffer.Length);

@@ -5,23 +5,23 @@ namespace Archean.Application;
 
 public class ArcheanHostedService : IHostedService
 {
-    private readonly ISocketServer socketServer;
-    private readonly ServerStartup serverStartup;
+    private readonly ISocketServer _socketServer;
+    private readonly ServerStartup _serverStartup;
 
     public ArcheanHostedService(ISocketServer socketServer, ServerStartup serverStartup)
     {
-        this.socketServer = socketServer;
-        this.serverStartup = serverStartup;
+        _socketServer = socketServer;
+        _serverStartup = serverStartup;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        serverStartup.PerformSetup();
-        await socketServer.StartAsync();
+        _serverStartup.PerformSetup();
+        await _socketServer.StartAsync();
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        await socketServer.StopAsync();
+        await _socketServer.StopAsync();
     }
 }

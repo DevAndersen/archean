@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterSetBlockTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerSetBlockPacket validPacket = new()
+    private static readonly ServerSetBlockPacket ValidPacket = new()
     {
         X = default,
         Y = default,
@@ -16,7 +16,7 @@ public class ServerPacketWriterSetBlockTests : BaseServerPacketWriterTests
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteSetBlockPacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteSetBlockPacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerSetBlockPacket.PacketSize, buffer.Length);

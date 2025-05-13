@@ -4,38 +4,38 @@ namespace Archean.Tests.Networking.PacketDataReaderTests;
 
 public class PacketDataReaderStringTests
 {
-    private static readonly string shortString = "Test string";
-    private static readonly string filledString = new string('A', 64);
+    private static readonly string ShortString = "Test string";
+    private static readonly string FilledString = new string('A', 64);
 
-    private static readonly byte[] emptyStringBuffer;
-    private static readonly byte[] shortStringBuffer;
-    private static readonly byte[] filledStringBuffer;
+    private static readonly byte[] EmptyStringBuffer;
+    private static readonly byte[] ShortStringBuffer;
+    private static readonly byte[] FilledStringBuffer;
 
-    private static readonly int additionalBufferSize = 4;
+    private static readonly int AdditionalBufferSize = 4;
 
     public static TheoryData<byte[], string> DataSets => new()
     {
-        { emptyStringBuffer, string.Empty },
-        { shortStringBuffer, shortString },
-        { filledStringBuffer, filledString }
+        { EmptyStringBuffer, string.Empty },
+        { ShortStringBuffer, ShortString },
+        { FilledStringBuffer, FilledString }
     };
 
-    private readonly PacketDataReader packetDataReader;
+    private readonly PacketDataReader _packetDataReader;
 
     public PacketDataReaderStringTests()
     {
-        packetDataReader = new PacketDataReader();
+        _packetDataReader = new PacketDataReader();
     }
 
     static PacketDataReaderStringTests()
     {
-        int bufferSize = Constants.Networking.StringLength + additionalBufferSize;
-        emptyStringBuffer = new byte[bufferSize];
-        shortStringBuffer = new byte[bufferSize];
-        filledStringBuffer = new byte[bufferSize];
+        int bufferSize = Constants.Networking.StringLength + AdditionalBufferSize;
+        EmptyStringBuffer = new byte[bufferSize];
+        ShortStringBuffer = new byte[bufferSize];
+        FilledStringBuffer = new byte[bufferSize];
 
-        Encoding.UTF8.GetBytes(shortString, shortStringBuffer);
-        Encoding.UTF8.GetBytes(filledString, filledStringBuffer);
+        Encoding.UTF8.GetBytes(ShortString, ShortStringBuffer);
+        Encoding.UTF8.GetBytes(FilledString, FilledStringBuffer);
     }
 
     [Theory]
@@ -46,7 +46,7 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        string readString = packetDataReader.ReadString(buffer, out _);
+        string readString = _packetDataReader.ReadString(buffer, out _);
 
         // Assert
         Assert.Equal(originalString, readString);
@@ -60,10 +60,10 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
+        _packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
 
         // Assert
-        Assert.Equal(additionalBufferSize, restBuffer.Length);
+        Assert.Equal(AdditionalBufferSize, restBuffer.Length);
     }
 
     [Fact]
@@ -73,6 +73,6 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
     }
 }

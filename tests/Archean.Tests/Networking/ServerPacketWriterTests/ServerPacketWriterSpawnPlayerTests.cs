@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterSpawnPlayerTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerSpawnPlayerPacket validPacket = new()
+    private static readonly ServerSpawnPlayerPacket ValidPacket = new()
     {
         PlayerId = default,
         PlayerName = string.Empty,
@@ -19,7 +19,7 @@ public class ServerPacketWriterSpawnPlayerTests : BaseServerPacketWriterTests
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteSpawnPlayerPacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteSpawnPlayerPacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerSpawnPlayerPacket.PacketSize, buffer.Length);

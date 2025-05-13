@@ -4,7 +4,7 @@ namespace Archean.Tests;
 
 public class GZipTests
 {
-    public static IEnumerable<object[]> data = [];
+    public static IEnumerable<object[]> Data = [];
 
     static GZipTests()
     {
@@ -16,11 +16,11 @@ public class GZipTests
         byteSamples.Add(new byte[100]);
         byteSamples.Add("The quick brown fox jumps over the lazy dog"u8.ToArray());
 
-        data = byteSamples.Select(x => new object[] { x });
+        Data = byteSamples.Select(x => new object[] { x });
     }
 
     [Theory]
-    [MemberData(nameof(data))]
+    [MemberData(nameof(Data))]
     public void GZipHelper_CompressAndDecompress_ReturnsOriginalBytes(byte[] bytes)
     {
         // Action

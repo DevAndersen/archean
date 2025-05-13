@@ -6,50 +6,50 @@ public readonly struct FShort : IEqualityOperators<FShort, FShort, bool>
 {
     public const int Size = sizeof(ushort);
     public const float MinValue = -1024;
-    public const float MaxValue = -MinValue - fractionValue;
+    public const float MaxValue = -MinValue - FractionValue;
 
-    private const int fractionBits = 5;
-    private const int fractionCount = 32;
-    private const float fractionValue = 1F / fractionCount;
+    private const int FractionBits = 5;
+    private const int FractionCount = 32;
+    private const float FractionValue = 1F / FractionCount;
 
-    private const ushort signMask = 0b_1000_0000_0000_0000;
+    private const ushort SignMask = 0b_1000_0000_0000_0000;
 
-    private readonly ushort value;
+    private readonly ushort _value;
 
     public FShort(ushort u)
     {
-        value = u;
+        _value = u;
     }
 
     public FShort(float f)
     {
         float clamped = Math.Clamp(f, MinValue, MaxValue);
-        float rounded = MathF.Round(clamped * fractionCount, MidpointRounding.AwayFromZero) / fractionCount;
+        float rounded = MathF.Round(clamped * FractionCount, MidpointRounding.AwayFromZero) / FractionCount;
 
         short integers = (short)rounded;
 
-        ushort fractions = (ushort)(MathF.Abs(rounded - integers) * fractionCount);
-        ushort negative = f < 0 ? signMask : (ushort)0b_0000_0000_0000_0000;
+        ushort fractions = (ushort)(MathF.Abs(rounded - integers) * FractionCount);
+        ushort negative = f < 0 ? SignMask : (ushort)0b_0000_0000_0000_0000;
 
-        value = (ushort)(negative | integers << fractionBits | fractions);
+        _value = (ushort)(negative | integers << FractionBits | fractions);
     }
 
     public float ToFloat()
     {
-        bool negative = value >= signMask;
-        ushort integers = (ushort)((value & 0b_0111_1111_1110_0000) >> fractionBits);
+        bool negative = _value >= SignMask;
+        ushort integers = (ushort)((_value & 0b_0111_1111_1110_0000) >> FractionBits);
         float integerValue = negative ? integers + MinValue : integers;
 
-        int fractions = value & 0b_0000_0000_0001_1111;
+        int fractions = _value & 0b_0000_0000_0001_1111;
         if (negative)
         {
             fractions = -fractions;
         }
 
-        return integerValue + fractions * fractionValue;
+        return integerValue + fractions * FractionValue;
     }
 
-    public ushort ToUShort() => value;
+    public ushort ToUShort() => _value;
 
     public override string ToString()
     {
@@ -69,11 +69,11 @@ public readonly struct FShort : IEqualityOperators<FShort, FShort, bool>
     public override bool Equals(object? obj)
     {
         return obj is FShort other
-            && other.value == value;
+            && other._value == _value;
     }
 
     public override int GetHashCode()
     {
-        return value;
+        return _value;
     }
 }

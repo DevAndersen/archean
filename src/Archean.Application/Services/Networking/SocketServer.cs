@@ -6,21 +6,21 @@ namespace Archean.Application.Services.Networking;
 
 public class SocketServer : ISocketServer
 {
-    private readonly IConnectionHandler connectionHandler;
-    private readonly ILogger<SocketServer> logger;
-    private readonly IServerPacketWriter serverPacketWriter;
-    private readonly ServerSettings serverSettings;
+    private readonly IConnectionHandler _connectionHandler;
+    private readonly ILogger<SocketServer> _logger;
+    private readonly IServerPacketWriter _serverPacketWriter;
+    private readonly ServerSettings _serverSettings;
 
-    private readonly CancellationTokenSource serverRunningCancellationTokenSource;
-    private readonly Socket serverSocket;
-    private readonly Thread socketThread;
+    private readonly CancellationTokenSource _serverRunningCancellationTokenSource;
+    private readonly Socket _serverSocket;
+    private readonly Thread _socketThread;
 
-    private readonly int port;
-    private readonly int listenBacklogSize;
+    private readonly int _port;
+    private readonly int _listenBacklogSize;
 
     public bool Running { get; private set; }
 
-    public CancellationToken ServerRunningCancellationToken => serverRunningCancellationTokenSource.Token;
+    public CancellationToken ServerRunningCancellationToken => _serverRunningCancellationTokenSource.Token;
 
     public SocketServer(
         IConnectionHandler connectionHandler,
@@ -28,19 +28,19 @@ public class SocketServer : ISocketServer
         IServerPacketWriter serverPacketWriter,
         IOptions<ServerSettings> serverSettingsOptions)
     {
-        this.connectionHandler = connectionHandler;
-        this.logger = logger;
-        this.serverPacketWriter = serverPacketWriter;
-        serverSettings = serverSettingsOptions.Value;
+        _connectionHandler = connectionHandler;
+        _logger = logger;
+        _serverPacketWriter = serverPacketWriter;
+        _serverSettings = serverSettingsOptions.Value;
 
-        port = serverSettingsOptions.Value.Port;
-        listenBacklogSize = serverSettingsOptions.Value.Backlog;
+        _port = serverSettingsOptions.Value.Port;
+        _listenBacklogSize = serverSettingsOptions.Value.Backlog;
 
-        serverRunningCancellationTokenSource = new CancellationTokenSource();
+        _serverRunningCancellationTokenSource = new CancellationTokenSource();
 
-        serverSocket = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-        socketThread = new Thread(async () => await AcceptClientAsync());
+        _serverSocket = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        _serverSocket.Bind(new IPEndPoint(IPAddress.Any, _port));
+        _socketThread = new Thread(async () => await AcceptClientAsync());
     }
 
     public Task StartAsync()
@@ -51,12 +51,12 @@ public class SocketServer : ISocketServer
         }
 
         Running = true;
-        serverSocket.Listen(listenBacklogSize);
-        socketThread.Start();
+        _serverSocket.Listen(_listenBacklogSize);
+        _socketThread.Start();
 
-        logger.LogInformation("Starting socket server on port {port}, with {maxPlayers} player slots",
-            port,
-            serverSettings.MaxPlayers);
+        _logger.LogInformation("Starting socket server on port {port}, with {maxPlayers} player slots",
+            _port,
+            _serverSettings.MaxPlayers);
 
         return Task.CompletedTask;
     }
@@ -68,28 +68,28 @@ public class SocketServer : ISocketServer
             return;
         }
 
-        logger.LogInformation("Stopping socket server on port {port}", port);
+        _logger.LogInformation("Stopping socket server on port {port}", _port);
 
         Running = false;
-        await serverRunningCancellationTokenSource.CancelAsync();
+        await _serverRunningCancellationTokenSource.CancelAsync();
 
-        serverSocket.Close();
+        _serverSocket.Close();
     }
 
     private async Task AcceptClientAsync()
     {
         try
         {
-            while (Running && !serverRunningCancellationTokenSource.IsCancellationRequested)
+            while (Running && !_serverRunningCancellationTokenSource.IsCancellationRequested)
             {
-                Socket clientSocket = await serverSocket.AcceptAsync(ServerRunningCancellationToken);
+                Socket clientSocket = await _serverSocket.AcceptAsync(ServerRunningCancellationToken);
 
                 Connection connection = new Connection(
                     Guid.NewGuid(),
                     clientSocket,
-                    serverPacketWriter);
+                    _serverPacketWriter);
 
-                await connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
+                await _connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
             }
         }
         catch (OperationCanceledException) // Catch and suppress the OperationCanceledException that may be thrown when the server is stopped.

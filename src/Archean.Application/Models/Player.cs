@@ -2,7 +2,7 @@
 
 public class Player : IPlayer
 {
-    private readonly IGlobalEventBus globalEventBus;
+    private readonly IGlobalEventBus _globalEventBus;
 
     public sbyte Id { get; set; }
 
@@ -29,7 +29,7 @@ public class Player : IPlayer
     {
         Connection = connection;
         Username = username;
-        this.globalEventBus = globalEventBus;
+        _globalEventBus = globalEventBus;
     }
 
     public void UpdatePositionAndRotation(float posX, float posY, float posZ, byte pitch, byte yaw)
@@ -47,7 +47,7 @@ public class Player : IPlayer
         PosY = posY;
         PosZ = posZ;
 
-        await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+        await _globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
         {
             Player = this,
             X = posX,
@@ -63,7 +63,7 @@ public class Player : IPlayer
         Pitch = pitch;
         Yaw = yaw;
 
-        await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+        await _globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
         {
             Player = this,
             X = PosX,
@@ -82,7 +82,7 @@ public class Player : IPlayer
         Pitch = pitch;
         Yaw = yaw;
 
-        await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+        await _globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
         {
             Player = this,
             X = posX,

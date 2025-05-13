@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterIdentificationTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerIdentificationPacket validPacket = new()
+    private static readonly ServerIdentificationPacket ValidPacket = new()
     {
         ProtocolVersion = default,
         ServerName = string.Empty,
@@ -16,7 +16,7 @@ public class ServerPacketWriterIdentificationTests : BaseServerPacketWriterTests
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteIdentificationPacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteIdentificationPacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerIdentificationPacket.PacketSize, buffer.Length);

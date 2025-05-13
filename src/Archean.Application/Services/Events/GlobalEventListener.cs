@@ -2,12 +2,12 @@
 
 public sealed class GlobalEventListener : IGlobalEventListener
 {
-    private readonly IGlobalEventBus globalEventBus;
-    private readonly List<(Type EventType, Delegate EventDelegate)> eventDictionary = [];
+    private readonly IGlobalEventBus _globalEventBus;
+    private readonly List<(Type EventType, Delegate EventDelegate)> _eventDictionary = [];
 
     public GlobalEventListener(IGlobalEventBus globalEventBus)
     {
-        this.globalEventBus = globalEventBus;
+        _globalEventBus = globalEventBus;
     }
 
     public void Subscribe<TEvent>(Action<TEvent> action) where TEvent : Event
@@ -22,33 +22,33 @@ public sealed class GlobalEventListener : IGlobalEventListener
 
     public void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority) where TEvent : Event
     {
-        eventDictionary.Add((typeof(TEvent), action));
-        globalEventBus.Subscribe(action, priority);
+        _eventDictionary.Add((typeof(TEvent), action));
+        _globalEventBus.Subscribe(action, priority);
     }
 
     public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority) where TEvent : Event
     {
-        eventDictionary.Add((typeof(TEvent), action));
-        globalEventBus.Subscribe(action, priority);
+        _eventDictionary.Add((typeof(TEvent), action));
+        _globalEventBus.Subscribe(action, priority);
     }
 
     public void Unsubscribe<TEvent>(Action<TEvent> action) where TEvent : Event
     {
-        eventDictionary.Remove((typeof(TEvent), action));
-        globalEventBus.Unsubscribe<TEvent>(action);
+        _eventDictionary.Remove((typeof(TEvent), action));
+        _globalEventBus.Unsubscribe<TEvent>(action);
     }
 
     public void Unsubscribe<TEvent>(Func<TEvent, Task> action) where TEvent : Event
     {
-        eventDictionary.Remove((typeof(TEvent), action));
-        globalEventBus.Unsubscribe<TEvent>(action);
+        _eventDictionary.Remove((typeof(TEvent), action));
+        _globalEventBus.Unsubscribe<TEvent>(action);
     }
 
     public void Dispose()
     {
-        foreach ((Type eventType, Delegate eventDelegate) in eventDictionary)
+        foreach ((Type eventType, Delegate eventDelegate) in _eventDictionary)
         {
-            globalEventBus?.Unsubscribe(eventType, eventDelegate);
+            _globalEventBus?.Unsubscribe(eventType, eventDelegate);
         }
     }
 }

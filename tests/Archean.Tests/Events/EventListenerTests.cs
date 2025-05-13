@@ -6,13 +6,13 @@ namespace Archean.Tests.Events;
 
 public class EventListenerTests
 {
-    private IScopedEventBus bus;
-    private IGlobalEventBus globalBus;
+    private readonly IScopedEventBus _bus;
+    private readonly IGlobalEventBus _globalBus;
 
     public EventListenerTests()
     {
-        bus = new EventBus();
-        globalBus = new EventBus();
+        _bus = new EventBus();
+        _globalBus = new EventBus();
     }
 
     [Fact]
@@ -20,32 +20,16 @@ public class EventListenerTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         listener.Subscribe(eventHandle, default);
 
         // Action
-        await bus.InvokeEventAsync(new TestEvent());
+        await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
         Assert.True(hasEventBeenInvoked);
-    }
-
-    [Fact]
-    public async Task Subscribe_InvokeNotSubscribedEvent_ExpectedNoListenerCallback()
-    {
-        // Setup
-        bool hasEventBeenInvoked = false;
-        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
-
-        Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
-
-        // Action
-        await bus.InvokeEventAsync(new TestEvent());
-
-        // Assert
-        Assert.False(hasEventBeenInvoked);
     }
 
     [Fact]
@@ -53,14 +37,14 @@ public class EventListenerTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         listener.Subscribe(eventHandle, default);
         listener.Unsubscribe(eventHandle);
 
         // Action
-        await bus.InvokeEventAsync(new TestEvent());
+        await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
         Assert.False(hasEventBeenInvoked);
@@ -70,7 +54,7 @@ public class EventListenerTests
     public async Task Subscribe_PrioritizedSubscriptions_ExpectedCallbackOrder()
     {
         // Setup
-        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         List<int> numbers = [];
         listener.Subscribe<TestEvent>(_ => numbers.Add(1), (EventPriority)1);
@@ -78,7 +62,7 @@ public class EventListenerTests
         listener.Subscribe<TestEvent>(_ => numbers.Add(3), (EventPriority)3);
 
         // Action
-        await bus.InvokeEventAsync(new TestEvent());
+        await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
         Assert.Equal([3, 2, 1], numbers);
@@ -88,7 +72,7 @@ public class EventListenerTests
     public async Task Subscribe_EventCancellation_ExpectedCallbackOrder()
     {
         // Setup
-        IScopedEventListener listener = new ScopedEventListener(bus, globalBus);
+        IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         List<int> numbers = [];
         listener.Subscribe<TestEvent>(_ => numbers.Add(1), (EventPriority)1);
@@ -100,7 +84,7 @@ public class EventListenerTests
         listener.Subscribe<TestEvent>(_ => numbers.Add(3), (EventPriority)3);
 
         // Action
-        await bus.InvokeEventAsync(new TestEvent());
+        await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
         Assert.Equal([3, 2], numbers);

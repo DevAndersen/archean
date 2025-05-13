@@ -8,7 +8,7 @@ namespace Archean.Core.Models.Worlds;
 /// </summary>
 public class BlockMap
 {
-    private static readonly string unevenDimensionDivisibilityExceptionMessage = $"Sizes of BlockMap must be even evenly divisible by {Constants.Worlds.WorldDimensionIncrement}";
+    private static readonly string UnevenDimensionDivisibilityExceptionMessage = $"Sizes of BlockMap must be even evenly divisible by {Constants.Worlds.WorldDimensionIncrement}";
 
     /// <summary>
     /// The size of the X-dimension of the block map.
@@ -37,7 +37,7 @@ public class BlockMap
     /// <summary>
     /// The byte array containing the raw map data.
     /// </summary>
-    private readonly byte[] data;
+    private readonly byte[] _data;
 
     /// <summary>
     /// Create a new map with the specified dimensions.
@@ -54,15 +54,15 @@ public class BlockMap
 
         if (width % Constants.Worlds.WorldDimensionIncrement != 0)
         {
-            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(width));
+            throw new ArgumentException(UnevenDimensionDivisibilityExceptionMessage, nameof(width));
         }
         else if (height % Constants.Worlds.WorldDimensionIncrement != 0)
         {
-            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(height));
+            throw new ArgumentException(UnevenDimensionDivisibilityExceptionMessage, nameof(height));
         }
         else if (depth % Constants.Worlds.WorldDimensionIncrement != 0)
         {
-            throw new ArgumentException(unevenDimensionDivisibilityExceptionMessage, nameof(depth));
+            throw new ArgumentException(UnevenDimensionDivisibilityExceptionMessage, nameof(depth));
         }
 
         Width = (short)width;
@@ -70,10 +70,10 @@ public class BlockMap
         Depth = (short)depth;
 
         int blockCount = width * height * depth;
-        data = new byte[sizeof(int) + blockCount];
+        _data = new byte[sizeof(int) + blockCount];
 
         // Set the data length bytes.
-        BinaryPrimitives.WriteInt32BigEndian(data, blockCount);
+        BinaryPrimitives.WriteInt32BigEndian(_data, blockCount);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class BlockMap
     /// </summary>
     public ReadOnlyMemory<byte> AsMemory()
     {
-        return data.AsMemory();
+        return _data.AsMemory();
     }
 
     /// <summary>
@@ -147,6 +147,6 @@ public class BlockMap
     /// </summary>
     private Span<Block> GetBlockBuffer()
     {
-        return MemoryMarshal.Cast<byte, Block>(data.AsSpan()[sizeof(int)..]);
+        return MemoryMarshal.Cast<byte, Block>(_data.AsSpan()[sizeof(int)..]);
     }
 }

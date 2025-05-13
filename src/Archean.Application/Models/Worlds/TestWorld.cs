@@ -4,51 +4,51 @@ namespace Archean.Application.Models.Worlds;
 
 public class TestWorld : IWorld
 {
-    private readonly ILogger logger;
-    private readonly IGlobalEventListener eventListener;
-    private readonly ServerSettings serverSettings;
+    private readonly ILogger _logger;
+    private readonly IGlobalEventListener _eventListener;
+    private readonly ServerSettings _serverSettings;
 
-    private readonly BlockMap blockMap;
-    private readonly List<IPlayer> players = [];
+    private readonly BlockMap _blockMap;
+    private readonly List<IPlayer> _players = [];
 
     public string Name { get; } = $"Test world {Guid.NewGuid()}";
 
-    public IReadOnlyList<IPlayer> Players => players;
+    public IReadOnlyList<IPlayer> Players => _players;
 
     public TestWorld(
         ILogger logger,
         IGlobalEventListener eventListener,
         ServerSettings serverSettings)
     {
-        this.logger = logger;
-        this.eventListener = eventListener;
-        this.serverSettings = serverSettings;
+        _logger = logger;
+        _eventListener = eventListener;
+        _serverSettings = serverSettings;
 
         short width = 16;
         short height = 16;
         short depth = 16;
 
-        blockMap = new BlockMap(width, height, depth);
+        _blockMap = new BlockMap(width, height, depth);
 
-        for (int x = 0; x < blockMap.Width; x++)
+        for (int x = 0; x < _blockMap.Width; x++)
         {
-            for (int z = 0; z < blockMap.Depth; z++)
+            for (int z = 0; z < _blockMap.Depth; z++)
             {
                 for (int y = 0; y < 7; y++)
                 {
-                    blockMap[x, y, z] = Block.Dirt;
+                    _blockMap[x, y, z] = Block.Dirt;
                 }
 
-                blockMap[x, 7, z] = Block.Grass;
+                _blockMap[x, 7, z] = Block.Grass;
             }
         }
     }
 
     public Task LoadAsync()
     {
-        eventListener.Subscribe<SetBlockEvent>(OnSetBlockAsync);
-        eventListener.Subscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
-        eventListener.Subscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
+        _eventListener.Subscribe<SetBlockEvent>(OnSetBlockAsync);
+        _eventListener.Subscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
+        _eventListener.Subscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
 
         return Task.CompletedTask;
     }
@@ -60,13 +60,13 @@ public class TestWorld : IWorld
 
     public async Task JoinAsync(IPlayer player)
     {
-        logger.LogInformation("Player {username} joining world {world}",
+        _logger.LogInformation("Player {username} joining world {world}",
             player.Username,
             Name);
 
         await SendJoinServerTestAsync(player);
 
-        foreach (IPlayer otherPlayer in players)
+        foreach (IPlayer otherPlayer in _players)
         {
             await player.Connection.SendAsync(new ServerSpawnPlayerPacket
             {
@@ -91,7 +91,7 @@ public class TestWorld : IWorld
             });
         }
 
-        players.Add(player);
+        _players.Add(player);
     }
 
     private async Task SendJoinServerTestAsync(IPlayer player)
@@ -99,13 +99,13 @@ public class TestWorld : IWorld
         IConnection connection = player.Connection;
 
         await connection.SendAsync(new ServerLevelInitializePacket());
-        await SendLevelTestAsync(blockMap, connection);
+        await SendLevelTestAsync(_blockMap, connection);
 
         await connection.SendAsync(new ServerLevelFinalizePacket
         {
-            XSize = blockMap.Width,
-            YSize = blockMap.Height,
-            ZSize = blockMap.Depth,
+            XSize = _blockMap.Width,
+            YSize = _blockMap.Height,
+            ZSize = _blockMap.Depth,
         });
 
         await connection.SendAsync(new ServerSpawnPlayerPacket
@@ -113,7 +113,7 @@ public class TestWorld : IWorld
             PlayerId = Constants.Networking.PlayerSelfId,
             PlayerName = player.Username,
             X = new FShort(4F),
-            Y = new FShort(blockMap.Height + 3),
+            Y = new FShort(_blockMap.Height + 3),
             Z = new FShort(4F),
             Pitch = 0,
             Yaw = 0
@@ -151,8 +151,8 @@ public class TestWorld : IWorld
             {
                 PlayerType = PlayerType.Op,
                 ProtocolVersion = Constants.Networking.ProtocolVersion,
-                ServerMotd = string.Format(serverSettings.WorldLoadingMotd, percent),
-                ServerName = serverSettings.Name,
+                ServerMotd = string.Format(_serverSettings.WorldLoadingMotd, percent),
+                ServerName = _serverSettings.Name,
             });
 
             await connection.SendAsync(new ServerLevelDataChunkPacket
@@ -166,19 +166,19 @@ public class TestWorld : IWorld
 
     public async Task LeaveAsync(IPlayer player)
     {
-        logger.LogInformation("Player {username} leaving world {world}",
+        _logger.LogInformation("Player {username} leaving world {world}",
             player.Username,
             Name);
 
-        IPlayer? matchingPlayer = players.FirstOrDefault(x => x == player);
+        IPlayer? matchingPlayer = _players.FirstOrDefault(x => x == player);
         if (matchingPlayer == null)
         {
             return;
         }
 
-        players.Remove(matchingPlayer);
+        _players.Remove(matchingPlayer);
 
-        foreach (IPlayer otherPlayer in players)
+        foreach (IPlayer otherPlayer in _players)
         {
             await otherPlayer.Connection.SendAsync(new ServerDespawnPlayerPacket
             {
@@ -189,11 +189,11 @@ public class TestWorld : IWorld
 
     private async Task OnSetBlockAsync(SetBlockEvent arg)
     {
-        if (arg.Player != null && players.Contains(arg.Player))
+        if (arg.Player != null && _players.Contains(arg.Player))
         {
-            blockMap[arg.X, arg.Y, arg.Z] = arg.Block;
+            _blockMap[arg.X, arg.Y, arg.Z] = arg.Block;
 
-            foreach (IPlayer? otherPlayer in players.Except([arg.Player]))
+            foreach (IPlayer? otherPlayer in _players.Except([arg.Player]))
             {
                 await otherPlayer.Connection.SendAsync(new ServerSetBlockPacket
                 {
@@ -208,7 +208,7 @@ public class TestWorld : IWorld
 
     private async Task OnPlayerMoveAsync(PositionAndOrientationEvent arg)
     {
-        foreach (IPlayer? otherPlayer in players.Except([arg.Player]))
+        foreach (IPlayer? otherPlayer in _players.Except([arg.Player]))
         {
             await otherPlayer.Connection.SendAsync(new ServerAbsolutePositionAndOrientationPacket
             {

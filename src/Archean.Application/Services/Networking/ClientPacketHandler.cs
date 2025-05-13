@@ -2,28 +2,28 @@
 
 public class ClientPacketHandler : IClientPacketHandler
 {
-    private readonly IPlayerService playerService;
-    private readonly IGlobalEventBus globalEventBus;
+    private readonly IPlayerService _playerService;
+    private readonly IGlobalEventBus _globalEventBus;
 
-    private FShort x;
-    private FShort y;
-    private FShort z;
-    private byte yaw;
-    private byte pitch;
+    private FShort _x;
+    private FShort _y;
+    private FShort _z;
+    private byte _yaw;
+    private byte _pitch;
 
     public ClientPacketHandler(
         IPlayerService playerService,
         IGlobalEventBus globalEventBus)
     {
-        this.playerService = playerService;
-        this.globalEventBus = globalEventBus;
+        _playerService = playerService;
+        _globalEventBus = globalEventBus;
     }
 
     public async Task HandleMessagePacketAsync(ClientMessagePacket packet)
     {
-        if (playerService.TryGetPlayer(out IPlayer? player))
+        if (_playerService.TryGetPlayer(out IPlayer? player))
         {
-            await globalEventBus.InvokeEventAsync(new MessageEvent
+            await _globalEventBus.InvokeEventAsync(new MessageEvent
             {
                 PlayerSender = player,
                 Message = packet.Message
@@ -33,19 +33,19 @@ public class ClientPacketHandler : IClientPacketHandler
 
     public async Task HandlePositionAndOrientationPacketAsync(ClientPositionAndOrientationPacket packet)
     {
-        if (playerService.TryGetPlayer(out IPlayer? player))
+        if (_playerService.TryGetPlayer(out IPlayer? player))
         {
-            if (packet.X != x
-                || packet.Y != y
-                || packet.Z != z
-                || packet.Pitch != pitch
-                || packet.Yaw != yaw)
+            if (packet.X != _x
+                || packet.Y != _y
+                || packet.Z != _z
+                || packet.Pitch != _pitch
+                || packet.Yaw != _yaw)
             {
-                x = packet.X;
-                y = packet.Y;
-                z = packet.Z;
-                pitch = packet.Pitch;
-                yaw = packet.Yaw;
+                _x = packet.X;
+                _y = packet.Y;
+                _z = packet.Z;
+                _pitch = packet.Pitch;
+                _yaw = packet.Yaw;
 
                 player.UpdatePositionAndRotation(
                     packet.X.ToFloat(),
@@ -54,7 +54,7 @@ public class ClientPacketHandler : IClientPacketHandler
                     packet.Pitch,
                     packet.Yaw);
 
-                await globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
+                await _globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
                 {
                     Player = player,
                     X = packet.X.ToFloat(),
@@ -69,9 +69,9 @@ public class ClientPacketHandler : IClientPacketHandler
 
     public async Task HandleSetBlockPacketAsync(ClientSetBlockPacket packet)
     {
-        if (playerService.TryGetPlayer(out IPlayer? player))
+        if (_playerService.TryGetPlayer(out IPlayer? player))
         {
-            await globalEventBus.InvokeEventAsync(new SetBlockEvent
+            await _globalEventBus.InvokeEventAsync(new SetBlockEvent
             {
                 Player = player,
                 X = packet.X,

@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterLevelDataChunkTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerLevelDataChunkPacket validPacket = new()
+    private static readonly ServerLevelDataChunkPacket ValidPacket = new()
     {
         ChunkLength = default,
         ChunkData = new byte[Constants.Networking.ByteArrayLength],
@@ -15,7 +15,7 @@ public class ServerPacketWriterLevelDataChunkTests : BaseServerPacketWriterTests
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteLevelDataChunkPacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteLevelDataChunkPacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerLevelDataChunkPacket.PacketSize, buffer.Length);

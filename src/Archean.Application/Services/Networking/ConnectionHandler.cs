@@ -6,14 +6,14 @@ namespace Archean.Application.Services.Networking;
 
 public class ConnectionHandler : IConnectionHandler
 {
-    private readonly IClientPacketReader clientPacketReader;
-    private readonly IPlayerRegistry playerRegistry;
-    private readonly IPacketDataReader packetDataReader;
-    private readonly ILogger<ConnectionHandler> logger;
-    private readonly IServiceProvider provider;
-    private readonly IWorldRegistry worldRegistry;
-    private readonly IGlobalEventBus globalEventBus;
-    private readonly ServerSettings serverSettings;
+    private readonly IClientPacketReader _clientPacketReader;
+    private readonly IPlayerRegistry _playerRegistry;
+    private readonly IPacketDataReader _packetDataReader;
+    private readonly ILogger<ConnectionHandler> _logger;
+    private readonly IServiceProvider _provider;
+    private readonly IWorldRegistry _worldRegistry;
+    private readonly IGlobalEventBus _globalEventBus;
+    private readonly ServerSettings _serverSettings;
 
     public ConnectionHandler(
         IClientPacketReader clientPacketReader,
@@ -25,25 +25,25 @@ public class ConnectionHandler : IConnectionHandler
         IGlobalEventBus globalEventBus,
         IOptions<ServerSettings> serverSettingsOptions)
     {
-        this.clientPacketReader = clientPacketReader;
-        this.playerRegistry = playerRegistry;
-        this.packetDataReader = packetDataReader;
-        this.logger = logger;
-        this.provider = provider;
-        this.worldRegistry = worldRegistry;
-        this.globalEventBus = globalEventBus;
-        this.serverSettings = serverSettingsOptions.Value;
+        _clientPacketReader = clientPacketReader;
+        _playerRegistry = playerRegistry;
+        _packetDataReader = packetDataReader;
+        _logger = logger;
+        _provider = provider;
+        _worldRegistry = worldRegistry;
+        _globalEventBus = globalEventBus;
+        _serverSettings = serverSettingsOptions.Value;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
     {
         ReadOnlyMemory<byte> buffer = await connection.ReadAsync(cancellationToken);
-        ClientPacketId packetId = (ClientPacketId)packetDataReader.ReadByte(buffer, out buffer);
+        ClientPacketId packetId = (ClientPacketId)_packetDataReader.ReadByte(buffer, out buffer);
 
         // Ensure that the first packet ID corresponds to that of an identification packet.
         if (packetId != ClientPacketId.Identification)
         {
-            logger.LogError("Unexpected first packet ID {packetId} from connection {connectionId}",
+            _logger.LogError("Unexpected first packet ID {packetId} from connection {connectionId}",
                 packetId,
                 connection.Id);
 
@@ -56,12 +56,12 @@ public class ConnectionHandler : IConnectionHandler
             return;
         }
 
-        ClientIdentificationPacket clientIdentificationPacket = clientPacketReader.ReadIdentificationPacket(buffer);
+        ClientIdentificationPacket clientIdentificationPacket = _clientPacketReader.ReadIdentificationPacket(buffer);
 
         // Validate client protocol ID.
         if (clientIdentificationPacket.ProtocolVersion != Constants.Networking.ProtocolVersion)
         {
-            logger.LogError("Connection {connectionId} specified unexpected protocol version {protocolVersion}",
+            _logger.LogError("Connection {connectionId} specified unexpected protocol version {protocolVersion}",
                 connection.Id,
                 clientIdentificationPacket.ProtocolVersion);
 
@@ -77,11 +77,11 @@ public class ConnectionHandler : IConnectionHandler
         IPlayer player = new Player(
             connection,
             clientIdentificationPacket.Username,
-            globalEventBus);
+            _globalEventBus);
 
-        if (playerRegistry.TryAdd(player))
+        if (_playerRegistry.TryAdd(player))
         {
-            logger.LogInformation("Player {username} assigned ID {playerId}",
+            _logger.LogInformation("Player {username} assigned ID {playerId}",
                 player.Username,
                 player.Id);
 
@@ -90,10 +90,10 @@ public class ConnectionHandler : IConnectionHandler
         }
         else
         {
-            logger.LogInformation("Unable to register player {username}, server is full",
+            _logger.LogInformation("Unable to register player {username}, server is full",
                 player.Username);
 
-            await connection.DisconnectAsync(serverSettings.ServerFullMessage);
+            await connection.DisconnectAsync(_serverSettings.ServerFullMessage);
         }
     }
 
@@ -101,7 +101,7 @@ public class ConnectionHandler : IConnectionHandler
     {
         IConnection connection = player.Connection;
 
-        using IServiceScope scope = provider.CreateScope();
+        using IServiceScope scope = _provider.CreateScope();
 
         // Set the player of the current scope.
         IPlayerService playerService = scope.ServiceProvider.GetRequiredService<IPlayerService>();
@@ -130,28 +130,28 @@ public class ConnectionHandler : IConnectionHandler
                     {
                         // Block update packet.
                         case ClientPacketId.SetBlock:
-                            ClientSetBlockPacket setBlockPacket = clientPacketReader.ReadSetBlockPacket(buffer[..ClientSetBlockPacket.PacketSize]);
+                            ClientSetBlockPacket setBlockPacket = _clientPacketReader.ReadSetBlockPacket(buffer[..ClientSetBlockPacket.PacketSize]);
                             buffer = buffer[ClientSetBlockPacket.PacketSize..];
                             await packetHandler.HandleSetBlockPacketAsync(setBlockPacket);
                             break;
 
                         // Pose packet.
                         case ClientPacketId.PositionAndOrientation:
-                            ClientPositionAndOrientationPacket positionAndOrientationPacket = clientPacketReader.ReadPositionAndOrientationPacket(buffer[..ClientPositionAndOrientationPacket.PacketSize]);
+                            ClientPositionAndOrientationPacket positionAndOrientationPacket = _clientPacketReader.ReadPositionAndOrientationPacket(buffer[..ClientPositionAndOrientationPacket.PacketSize]);
                             buffer = buffer[ClientPositionAndOrientationPacket.PacketSize..];
                             await packetHandler.HandlePositionAndOrientationPacketAsync(positionAndOrientationPacket);
                             break;
 
                         // Message packet.
                         case ClientPacketId.Message:
-                            ClientMessagePacket messagePacket = clientPacketReader.ReadMessagePacket(buffer[..ClientMessagePacket.PacketSize]);
+                            ClientMessagePacket messagePacket = _clientPacketReader.ReadMessagePacket(buffer[..ClientMessagePacket.PacketSize]);
                             buffer = buffer[ClientMessagePacket.PacketSize..];
                             await packetHandler.HandleMessagePacketAsync(messagePacket);
                             break;
 
                         // Unknown packet type.
                         default:
-                            logger.LogWarning("Unexpected packet {packetId} receives from {connectionId}, flushing buffer",
+                            _logger.LogWarning("Unexpected packet {packetId} receives from {connectionId}, flushing buffer",
                                 packetId,
                                 connection.Id);
 
@@ -163,20 +163,20 @@ public class ConnectionHandler : IConnectionHandler
         }
         catch (SocketException e) when (e.SocketErrorCode == SocketError.ConnectionReset)
         {
-            logger.LogInformation("Connection {connectionId} disconnected",
+            _logger.LogInformation("Connection {connectionId} disconnected",
                 connection.Id);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Unexpected {exceptionType} thrown while receiving data from connection {connectionId}",
+            _logger.LogError(e, "Unexpected {exceptionType} thrown while receiving data from connection {connectionId}",
                 e.GetType().FullName,
                 connection.Id);
         }
         finally
         {
-            playerRegistry.Remove(connection);
+            _playerRegistry.Remove(connection);
 
-            await globalEventBus.InvokeEventAsync(new PlayerDisconnectEvent
+            await _globalEventBus.InvokeEventAsync(new PlayerDisconnectEvent
             {
                 Player = player
             });
@@ -191,10 +191,10 @@ public class ConnectionHandler : IConnectionHandler
         {
             PlayerType = PlayerType.Normal,
             ProtocolVersion = Constants.Networking.ProtocolVersion,
-            ServerMotd = serverSettings.Motd,
-            ServerName = serverSettings.Name,
+            ServerMotd = _serverSettings.Motd,
+            ServerName = _serverSettings.Name,
         });
 
-        await worldRegistry.GetDefaultWorld().JoinAsync(player);
+        await _worldRegistry.GetDefaultWorld().JoinAsync(player);
     }
 }

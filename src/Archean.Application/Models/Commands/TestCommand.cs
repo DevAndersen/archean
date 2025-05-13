@@ -8,16 +8,16 @@ public class TestCommand : ICommand
 
     public static string[]? CommandAliases => ["t"];
 
-    private readonly ILogger<TestCommand> logger;
+    private readonly ILogger<TestCommand> _logger;
 
     public TestCommand(ILogger<TestCommand> logger)
     {
-        this.logger = logger;
+        _logger = logger;
     }
 
     public Task InvokeAsync()
     {
-        logger.LogInformation("Test command invoked.");
+        _logger.LogInformation("Test command invoked.");
         return Task.CompletedTask;
     }
 }

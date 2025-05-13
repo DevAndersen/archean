@@ -4,17 +4,17 @@ namespace Archean.Application.Services;
 
 public class BlockDictionary : IBlockDictionary
 {
-    private readonly ILogger<BlockDictionary> logger;
-    private readonly AliasSettings aliasSettings;
+    private readonly ILogger<BlockDictionary> _logger;
+    private readonly AliasSettings _aliasSettings;
 
-    private readonly Dictionary<string, Block> dictionary;
+    private readonly Dictionary<string, Block> _dictionary;
 
     public BlockDictionary(ILogger<BlockDictionary> logger, IOptions<AliasSettings> aliasSettingsOptions)
     {
-        this.logger = logger;
-        aliasSettings = aliasSettingsOptions.Value;
+        _logger = logger;
+        _aliasSettings = aliasSettingsOptions.Value;
 
-        dictionary = new Dictionary<string, Block>(StringComparer.OrdinalIgnoreCase);
+        _dictionary = new Dictionary<string, Block>(StringComparer.OrdinalIgnoreCase);
     }
 
     public int RegisterStandardBlocks()
@@ -24,24 +24,24 @@ public class BlockDictionary : IBlockDictionary
         // Register all defined Block values by their ID and name.
         foreach (Block block in Enum.GetValues<Block>())
         {
-            if (aliasSettings.RegisterDefaultIdAliases && RegisterBlock(((byte)block).ToString(), block))
+            if (_aliasSettings.RegisterDefaultIdAliases && RegisterBlock(((byte)block).ToString(), block))
             {
                 registeredAliases++;
             }
 
-            if (aliasSettings.RegisterDefaultNameAliases && RegisterBlock(block.ToString(), block))
+            if (_aliasSettings.RegisterDefaultNameAliases && RegisterBlock(block.ToString(), block))
             {
                 registeredAliases++;
             }
         }
 
-        logger.LogDebug("Registered {dictionarySize} standard block aliases", registeredAliases);
+        _logger.LogDebug("Registered {dictionarySize} standard block aliases", registeredAliases);
         return registeredAliases;
     }
 
     public int RegisterCustomAliases()
     {
-        if (aliasSettings.CustomAliases == null)
+        if (_aliasSettings.CustomAliases == null)
         {
             return 0;
         }
@@ -49,7 +49,7 @@ public class BlockDictionary : IBlockDictionary
         int registeredAliases = 0;
         Block[] definedBlocks = Enum.GetValues<Block>();
 
-        foreach (KeyValuePair<string, string[]> kvp in aliasSettings.CustomAliases)
+        foreach (KeyValuePair<string, string[]> kvp in _aliasSettings.CustomAliases)
         {
             if (Enum.TryParse(kvp.Key, out Block parsedBlock) && definedBlocks.Contains(parsedBlock))
             {
@@ -63,7 +63,7 @@ public class BlockDictionary : IBlockDictionary
             }
         }
 
-        logger.LogDebug("Registered {dictionarySize} custom block aliases", registeredAliases);
+        _logger.LogDebug("Registered {dictionarySize} custom block aliases", registeredAliases);
         return registeredAliases;
     }
 
@@ -71,7 +71,7 @@ public class BlockDictionary : IBlockDictionary
     {
         if (string.IsNullOrWhiteSpace(alias))
         {
-            logger.LogWarning("Failed to register empty or whitespace alias for block {block}",
+            _logger.LogWarning("Failed to register empty or whitespace alias for block {block}",
                 block);
 
             return false;
@@ -79,32 +79,32 @@ public class BlockDictionary : IBlockDictionary
 
         if (!Enum.IsDefined(block))
         {
-            logger.LogWarning("Failed to register alias {alias} for undefined block {block}",
+            _logger.LogWarning("Failed to register alias {alias} for undefined block {block}",
                 alias,
                 block);
 
             return false;
         }
 
-        if (dictionary.ContainsKey(alias))
+        if (_dictionary.ContainsKey(alias))
         {
-            logger.LogWarning("Failed to register alias {alias} for block {block}, alias already in use",
+            _logger.LogWarning("Failed to register alias {alias} for block {block}, alias already in use",
                 alias,
                 block);
 
             return false;
         }
 
-        logger.LogTrace("Succesfully registered alias {alias} for block {block}",
+        _logger.LogTrace("Succesfully registered alias {alias} for block {block}",
             alias,
             block);
 
-        dictionary[alias] = block;
+        _dictionary[alias] = block;
         return true;
     }
 
     public bool TryGetBlock(string identity, out Block block)
     {
-        return dictionary.TryGetValue(identity, out block);
+        return _dictionary.TryGetValue(identity, out block);
     }
 }

@@ -4,27 +4,27 @@ namespace Archean.Tests.Networking.PacketDataWriterTests;
 
 public class PacketDataWriterStringTests
 {
-    private const string emptyString = "";
-    private const string singleWordString = "Abc";
-    private const string multiWordString = "Abc def ghi";
-    private const string maxSizedString = "0123456789012345678901234567890123456789012345678901234567890123";
-    private const string oversizedString = "01234567890123456789012345678901234567890123456789012345678901234567890123456789";
-    private const int indexNotFound = -1;
-    private const byte zeroByte = 0;
-    private const byte spaceByte = (byte)' ';
+    private const string EmptyString = "";
+    private const string SingleWordString = "Abc";
+    private const string MultiWordString = "Abc def ghi";
+    private const string MaxSizedString = "0123456789012345678901234567890123456789012345678901234567890123";
+    private const string OversizedString = "01234567890123456789012345678901234567890123456789012345678901234567890123456789";
+    private const int IndexNotFound = -1;
+    private const byte ZeroByte = 0;
+    private const byte SpaceByte = (byte)' ';
 
-    private readonly PacketDataWriter packetDataWriter;
+    private readonly PacketDataWriter _packetDataWriter;
 
     public PacketDataWriterStringTests()
     {
-        packetDataWriter = new PacketDataWriter();
+        _packetDataWriter = new PacketDataWriter();
     }
 
     [Theory]
-    [InlineData(emptyString)]
-    [InlineData(singleWordString)]
-    [InlineData(multiWordString)]
-    [InlineData(maxSizedString)]
+    [InlineData(EmptyString)]
+    [InlineData(SingleWordString)]
+    [InlineData(MultiWordString)]
+    [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ExpectedWrittenBytes(string value)
     {
         // Setup
@@ -32,7 +32,7 @@ public class PacketDataWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out _);
+        _packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value);
@@ -41,10 +41,10 @@ public class PacketDataWriterStringTests
     }
 
     [Theory]
-    [InlineData(emptyString)]
-    [InlineData(singleWordString)]
-    [InlineData(multiWordString)]
-    [InlineData(maxSizedString)]
+    [InlineData(EmptyString)]
+    [InlineData(SingleWordString)]
+    [InlineData(MultiWordString)]
+    [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ExpectedRestBufferLength(string value)
     {
         // Setup
@@ -52,17 +52,17 @@ public class PacketDataWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        _packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
         Assert.Equal(additionalBufferSize, restBuffer.Length);
     }
 
     [Theory]
-    [InlineData(emptyString)]
-    [InlineData(singleWordString)]
-    [InlineData(multiWordString)]
-    [InlineData(maxSizedString)]
+    [InlineData(EmptyString)]
+    [InlineData(SingleWordString)]
+    [InlineData(MultiWordString)]
+    [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ZeroFilledRestBuffer(string value)
     {
         // Setup
@@ -70,18 +70,18 @@ public class PacketDataWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        _packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
         int firstNonZeroByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept((byte)0);
-        Assert.Equal(indexNotFound, firstNonZeroByteInRestBuffer);
+        Assert.Equal(IndexNotFound, firstNonZeroByteInRestBuffer);
     }
 
     [Theory]
-    [InlineData(emptyString)]
-    [InlineData(singleWordString)]
-    [InlineData(multiWordString)]
-    [InlineData(maxSizedString)]
+    [InlineData(EmptyString)]
+    [InlineData(SingleWordString)]
+    [InlineData(MultiWordString)]
+    [InlineData(MaxSizedString)]
     public void WriteString_ValidString_SpaceFilledUnwrittenBuffer(string value)
     {
         // Setup
@@ -89,25 +89,25 @@ public class PacketDataWriterStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out _);
+        _packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value);
         Memory<byte> unwrittenBufferArea = buffer[expectedStringBytes.Length..Constants.Networking.StringLength];
-        int firstNonSpaceByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(spaceByte);
-        Assert.Equal(indexNotFound, firstNonSpaceByteInUnwrittenBuffer);
+        int firstNonSpaceByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(SpaceByte);
+        Assert.Equal(IndexNotFound, firstNonSpaceByteInUnwrittenBuffer);
     }
 
     [Fact]
     public void WriteString_StringTooLong_ExpectedTruncatedWrittenBytes()
     {
         // Setup
-        string value = oversizedString;
+        string value = OversizedString;
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out _);
+        _packetDataWriter.WriteString(value, buffer, out _);
 
         // Assert
         Memory<byte> expectedStringBytes = Encoding.UTF8.GetBytes(value).AsMemory()[..Constants.Networking.StringLength];
@@ -119,16 +119,16 @@ public class PacketDataWriterStringTests
     public void WriteString_StringTooLong_ZeroFilledRestBuffer()
     {
         // Setup
-        string value = oversizedString;
+        string value = OversizedString;
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
         // Action
-        packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
+        _packetDataWriter.WriteString(value, buffer, out Memory<byte> restBuffer);
 
         // Assert
-        int firstNonNullByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept(zeroByte);
-        Assert.Equal(indexNotFound, firstNonNullByteInRestBuffer);
+        int firstNonNullByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept(ZeroByte);
+        Assert.Equal(IndexNotFound, firstNonNullByteInRestBuffer);
     }
 
     [Fact]
@@ -136,9 +136,9 @@ public class PacketDataWriterStringTests
     {
         // Setup
         Memory<byte> undersizedBuffer = new byte[Constants.Networking.StringLength - 1];
-        string value = singleWordString;
+        string value = SingleWordString;
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataWriter.WriteString(value, undersizedBuffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _packetDataWriter.WriteString(value, undersizedBuffer, out _));
     }
 }

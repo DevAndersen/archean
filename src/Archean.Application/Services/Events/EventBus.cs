@@ -4,14 +4,14 @@ namespace Archean.Application.Services.Events;
 
 public class EventBus : IGlobalEventBus, IScopedEventBus
 {
-    private readonly ReversePriorityComparer reversePriorityComparer = new ReversePriorityComparer();
-    private readonly SemaphoreSlim subscriptionSemaphore = new SemaphoreSlim(1);
-    private readonly ConcurrentDictionary<Type, SortedDictionary<EventPriority, List<Delegate>>> eventDictionary = [];
+    private readonly ReversePriorityComparer _reversePriorityComparer = new ReversePriorityComparer();
+    private readonly SemaphoreSlim _subscriptionSemaphore = new SemaphoreSlim(1);
+    private readonly ConcurrentDictionary<Type, SortedDictionary<EventPriority, List<Delegate>>> _eventDictionary = [];
 
     public async Task InvokeEventAsync(Event eventArgs)
     {
         Type eventType = eventArgs.GetType();
-        if (eventDictionary.TryGetValue(eventType, out SortedDictionary<EventPriority, List<Delegate>>? eventList) && eventList.Count != 0)
+        if (_eventDictionary.TryGetValue(eventType, out SortedDictionary<EventPriority, List<Delegate>>? eventList) && eventList.Count != 0)
         {
             Type expectedType = typeof(Action<>).MakeGenericType(eventType);
             Type expectedAsyncType = typeof(Func<,>).MakeGenericType([eventType, typeof(Task)]);
@@ -53,14 +53,14 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
     {
         try
         {
-            subscriptionSemaphore.Wait();
+            _subscriptionSemaphore.Wait();
 
             EventPriority priorityValue = priority ?? default;
 
             Type eventArgsType = typeof(TEvent);
-            if (!eventDictionary.TryGetValue(eventArgsType, out SortedDictionary<EventPriority, List<Delegate>>? eventLists))
+            if (!_eventDictionary.TryGetValue(eventArgsType, out SortedDictionary<EventPriority, List<Delegate>>? eventLists))
             {
-                eventLists = eventDictionary[eventArgsType] = new SortedDictionary<EventPriority, List<Delegate>>(reversePriorityComparer);
+                eventLists = _eventDictionary[eventArgsType] = new SortedDictionary<EventPriority, List<Delegate>>(_reversePriorityComparer);
             }
 
             if (!eventLists.TryGetValue(priorityValue, out List<Delegate>? eventsForIndex))
@@ -72,7 +72,7 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
         }
         finally
         {
-            subscriptionSemaphore.Release();
+            _subscriptionSemaphore.Release();
         }
     }
 
@@ -85,9 +85,9 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
     {
         try
         {
-            subscriptionSemaphore.Wait();
+            _subscriptionSemaphore.Wait();
 
-            if (eventDictionary.TryGetValue(eventType, out SortedDictionary<EventPriority, List<Delegate>>? eventList))
+            if (_eventDictionary.TryGetValue(eventType, out SortedDictionary<EventPriority, List<Delegate>>? eventList))
             {
                 foreach ((EventPriority _, List<Delegate> list) in eventList)
                 {
@@ -97,7 +97,7 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
         }
         finally
         {
-            subscriptionSemaphore.Release();
+            _subscriptionSemaphore.Release();
         }
     }
 

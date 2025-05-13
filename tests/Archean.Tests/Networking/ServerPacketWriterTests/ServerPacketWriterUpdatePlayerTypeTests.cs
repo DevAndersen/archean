@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterUpdatePlayerTypeTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerUpdatePlayerTypePacket validPacket = new()
+    private static readonly ServerUpdatePlayerTypePacket ValidPacket = new()
     {
         PlayerType = default
     };
@@ -13,7 +13,7 @@ public class ServerPacketWriterUpdatePlayerTypeTests : BaseServerPacketWriterTes
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteUpdatePlayerTypePacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteUpdatePlayerTypePacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerUpdatePlayerTypePacket.PacketSize, buffer.Length);

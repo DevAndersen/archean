@@ -7,10 +7,10 @@ namespace Archean.Application.Services;
 
 public class ServerStartup
 {
-    private readonly IBlockDictionary blockDictionary;
-    private readonly ICommandDictionary commandDictionary;
-    private readonly CommandRegistrations commandRegistrations;
-    private readonly ILogger<ServerStartup> logger;
+    private readonly IBlockDictionary _blockDictionary;
+    private readonly ICommandDictionary _commandDictionary;
+    private readonly CommandRegistrations _commandRegistrations;
+    private readonly ILogger<ServerStartup> _logger;
 
     public ServerStartup(
         IBlockDictionary blockDictionary,
@@ -18,10 +18,10 @@ public class ServerStartup
         CommandRegistrations commandRegistrations,
         ILogger<ServerStartup> logger)
     {
-        this.blockDictionary = blockDictionary;
-        this.commandDictionary = commandDictionary;
-        this.commandRegistrations = commandRegistrations;
-        this.logger = logger;
+        _blockDictionary = blockDictionary;
+        _commandDictionary = commandDictionary;
+        _commandRegistrations = commandRegistrations;
+        _logger = logger;
     }
 
     /// <summary>
@@ -29,8 +29,8 @@ public class ServerStartup
     /// </summary>
     public void PerformSetup()
     {
-        blockDictionary.RegisterStandardBlocks();
-        blockDictionary.RegisterCustomAliases();
+        _blockDictionary.RegisterStandardBlocks();
+        _blockDictionary.RegisterCustomAliases();
         RegisterCommands();
     }
 
@@ -43,18 +43,18 @@ public class ServerStartup
 
         if (registerMethod == null)
         {
-            logger.LogError("Failed to find ICommandDictionary's register method");
+            _logger.LogError("Failed to find ICommandDictionary's register method");
             return;
         }
 
-        foreach (Type commandType in commandRegistrations.CommandTypes)
+        foreach (Type commandType in _commandRegistrations.CommandTypes)
         {
             object? result = registerMethod.MakeGenericMethod(commandType)
-                .Invoke(commandDictionary, []);
+                .Invoke(_commandDictionary, []);
 
             if (result is not bool wasCommandRegistered)
             {
-                logger.LogError("Attempt to register command {commandType} returned unexpected type {returnType}",
+                _logger.LogError("Attempt to register command {commandType} returned unexpected type {returnType}",
                     commandType.FullName,
                     result);
 
@@ -67,6 +67,6 @@ public class ServerStartup
             }
         }
 
-        logger.LogDebug("Registered {commandCount} commands", commandCount);
+        _logger.LogDebug("Registered {commandCount} commands", commandCount);
     }
 }

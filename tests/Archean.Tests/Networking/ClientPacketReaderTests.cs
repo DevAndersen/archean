@@ -5,12 +5,12 @@ namespace Archean.Tests.Networking;
 
 public class ClientPacketReaderTests
 {
-    private readonly ClientPacketReader reader;
+    private readonly ClientPacketReader _reader;
 
     public ClientPacketReaderTests()
     {
         PacketDataReader dataReader = new PacketDataReader();
-        reader = new ClientPacketReader(dataReader);
+        _reader = new ClientPacketReader(dataReader);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientIdentificationPacket.PacketSize - 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadIdentificationPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadIdentificationPacket(buffer));
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientIdentificationPacket.PacketSize + 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadIdentificationPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadIdentificationPacket(buffer));
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientMessagePacket.PacketSize - 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadMessagePacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadMessagePacket(buffer));
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientMessagePacket.PacketSize + 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadMessagePacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadMessagePacket(buffer));
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientPositionAndOrientationPacket.PacketSize - 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadPositionAndOrientationPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadPositionAndOrientationPacket(buffer));
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientPositionAndOrientationPacket.PacketSize + 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadPositionAndOrientationPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadPositionAndOrientationPacket(buffer));
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientSetBlockPacket.PacketSize - 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadSetBlockPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadSetBlockPacket(buffer));
     }
 
     [Fact]
@@ -90,6 +90,6 @@ public class ClientPacketReaderTests
         ReadOnlyMemory<byte> buffer = new byte[ClientSetBlockPacket.PacketSize + 1];
 
         // Assertion
-        Assert.Throws<ArgumentOutOfRangeException>(() => reader.ReadSetBlockPacket(buffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _reader.ReadSetBlockPacket(buffer));
     }
 }

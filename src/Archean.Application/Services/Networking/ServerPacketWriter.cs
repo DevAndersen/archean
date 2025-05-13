@@ -4,11 +4,11 @@ namespace Archean.Application.Services.Networking;
 
 public class ServerPacketWriter : IServerPacketWriter
 {
-    private readonly IPacketDataWriter writer;
+    private readonly IPacketDataWriter _writer;
 
     public ServerPacketWriter(IPacketDataWriter writer)
     {
-        this.writer = writer;
+        _writer = writer;
     }
 
     public ReadOnlyMemory<byte> WritePacket(IServerPacket packet)
@@ -38,13 +38,13 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerAbsolutePositionAndOrientationPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.AbsolutePositionAndOrientation, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.X, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.Y, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.Z, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Pitch, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.AbsolutePositionAndOrientation, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.X, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.Y, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.Z, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Pitch, restBuffer, out _);
 
         return buffer;
     }
@@ -53,8 +53,8 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerDespawnPlayerPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.DespawnPlayer, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.DespawnPlayer, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out _);
 
         return buffer;
     }
@@ -63,8 +63,8 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerDisconnectPlayerPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.DisconnectPlayer, buffer, out Memory<byte> restBuffer);
-        writer.WriteString(packet.Message, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.DisconnectPlayer, buffer, out Memory<byte> restBuffer);
+        _writer.WriteString(packet.Message, restBuffer, out _);
 
         return buffer;
     }
@@ -73,11 +73,11 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerIdentificationPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.Identification, buffer, out Memory<byte> restBuffer);
-        writer.WriteByte(packet.ProtocolVersion, restBuffer, out restBuffer);
-        writer.WriteString(packet.ServerName, restBuffer, out restBuffer);
-        writer.WriteString(packet.ServerMotd, restBuffer, out restBuffer);
-        writer.WriteByte((byte)packet.PlayerType, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.Identification, buffer, out Memory<byte> restBuffer);
+        _writer.WriteByte(packet.ProtocolVersion, restBuffer, out restBuffer);
+        _writer.WriteString(packet.ServerName, restBuffer, out restBuffer);
+        _writer.WriteString(packet.ServerMotd, restBuffer, out restBuffer);
+        _writer.WriteByte((byte)packet.PlayerType, restBuffer, out _);
 
         return buffer;
     }
@@ -86,10 +86,10 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerLevelDataChunkPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.LevelDataChunk, buffer, out Memory<byte> restBuffer);
-        writer.WriteShort(packet.ChunkLength, restBuffer, out restBuffer);
-        writer.WriteByteArray(packet.ChunkData, restBuffer, out restBuffer);
-        writer.WriteByte(packet.PercentageComplete, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.LevelDataChunk, buffer, out Memory<byte> restBuffer);
+        _writer.WriteShort(packet.ChunkLength, restBuffer, out restBuffer);
+        _writer.WriteByteArray(packet.ChunkData, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.PercentageComplete, restBuffer, out _);
 
         return buffer;
     }
@@ -98,10 +98,10 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerLevelFinalizePacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.LevelFinalize, buffer, out Memory<byte> restBuffer);
-        writer.WriteShort(packet.XSize, restBuffer, out restBuffer);
-        writer.WriteShort(packet.YSize, restBuffer, out restBuffer);
-        writer.WriteShort(packet.ZSize, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.LevelFinalize, buffer, out Memory<byte> restBuffer);
+        _writer.WriteShort(packet.XSize, restBuffer, out restBuffer);
+        _writer.WriteShort(packet.YSize, restBuffer, out restBuffer);
+        _writer.WriteShort(packet.ZSize, restBuffer, out _);
 
         return buffer;
     }
@@ -118,9 +118,9 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerMessagePacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.Message, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteString(packet.Message, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.Message, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteString(packet.Message, restBuffer, out _);
 
         return buffer;
     }
@@ -137,10 +137,10 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerRelativeOrientationPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.RelativeOrientation, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Pitch, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.RelativeOrientation, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Pitch, restBuffer, out _);
 
         return buffer;
     }
@@ -149,13 +149,13 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerRelativePositionAndOrientationPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.RelativePositionAndOrientation, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.X, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.Y, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.Z, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Pitch, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.RelativePositionAndOrientation, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.X, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.Y, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.Z, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Pitch, restBuffer, out _);
 
         return buffer;
     }
@@ -164,11 +164,11 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerRelativePositionPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.RelativePosition, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.X, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.Y, restBuffer, out restBuffer);
-        writer.WriteFByte(packet.Z, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.RelativePosition, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.X, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.Y, restBuffer, out restBuffer);
+        _writer.WriteFByte(packet.Z, restBuffer, out _);
 
         return buffer;
     }
@@ -177,11 +177,11 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerSetBlockPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.SetBlock, buffer, out Memory<byte> restBuffer);
-        writer.WriteShort(packet.X, restBuffer, out restBuffer);
-        writer.WriteShort(packet.Y, restBuffer, out restBuffer);
-        writer.WriteShort(packet.Z, restBuffer, out restBuffer);
-        writer.WriteByte((byte)packet.BlockType, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.SetBlock, buffer, out Memory<byte> restBuffer);
+        _writer.WriteShort(packet.X, restBuffer, out restBuffer);
+        _writer.WriteShort(packet.Y, restBuffer, out restBuffer);
+        _writer.WriteShort(packet.Z, restBuffer, out restBuffer);
+        _writer.WriteByte((byte)packet.BlockType, restBuffer, out _);
 
         return buffer;
     }
@@ -190,14 +190,14 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerSpawnPlayerPacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.SpawnPlayer, buffer, out Memory<byte> restBuffer);
-        writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        writer.WriteString(packet.PlayerName, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.X, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.Y, restBuffer, out restBuffer);
-        writer.WriteFShort(packet.Z, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        writer.WriteByte(packet.Pitch, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.SpawnPlayer, buffer, out Memory<byte> restBuffer);
+        _writer.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
+        _writer.WriteString(packet.PlayerName, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.X, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.Y, restBuffer, out restBuffer);
+        _writer.WriteFShort(packet.Z, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Yaw, restBuffer, out restBuffer);
+        _writer.WriteByte(packet.Pitch, restBuffer, out _);
 
         return buffer;
     }
@@ -206,8 +206,8 @@ public class ServerPacketWriter : IServerPacketWriter
     {
         Memory<byte> buffer = new byte[ServerUpdatePlayerTypePacket.PacketSize];
 
-        writer.WriteByte((byte)ServerPacketId.UpdatePlayerType, buffer, out Memory<byte> restBuffer);
-        writer.WriteByte((byte)packet.PlayerType, restBuffer, out _);
+        _writer.WriteByte((byte)ServerPacketId.UpdatePlayerType, buffer, out Memory<byte> restBuffer);
+        _writer.WriteByte((byte)packet.PlayerType, restBuffer, out _);
 
         return buffer;
     }

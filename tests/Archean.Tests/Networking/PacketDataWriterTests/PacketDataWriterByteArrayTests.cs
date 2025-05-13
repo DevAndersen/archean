@@ -4,34 +4,34 @@ namespace Archean.Tests.Networking.PacketDataWriterTests;
 
 public class PacketDataWriterByteArrayTests
 {
-    private const int indexNotFound = -1;
-    private const byte zeroByte = 0;
+    private const int IndexNotFound = -1;
+    private const byte ZeroByte = 0;
 
-    private static readonly byte[] shortByteArray;
-    private static readonly byte[] emptyByteArray;
-    private static readonly byte[] filledByteArray;
+    private static readonly byte[] ShortByteArray;
+    private static readonly byte[] EmptyByteArray;
+    private static readonly byte[] FilledByteArray;
 
-    private readonly PacketDataWriter packetDataWriter;
+    private readonly PacketDataWriter _packetDataWriter;
 
     public PacketDataWriterByteArrayTests()
     {
-        packetDataWriter = new PacketDataWriter();
+        _packetDataWriter = new PacketDataWriter();
     }
 
     public static TheoryData<byte[]> ValidInputData => new TheoryData<byte[]>
     {
-        emptyByteArray,
-        shortByteArray,
-        filledByteArray
+        EmptyByteArray,
+        ShortByteArray,
+        FilledByteArray
     };
 
     static PacketDataWriterByteArrayTests()
     {
-        emptyByteArray = [];
-        shortByteArray = [1, 2, 3, 4];
+        EmptyByteArray = [];
+        ShortByteArray = [1, 2, 3, 4];
 
-        filledByteArray = new byte[Constants.Networking.ByteArrayLength];
-        Array.Fill<byte>(filledByteArray, 127);
+        FilledByteArray = new byte[Constants.Networking.ByteArrayLength];
+        Array.Fill<byte>(FilledByteArray, 127);
     }
 
     [Theory]
@@ -42,7 +42,7 @@ public class PacketDataWriterByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength];
 
         // Action
-        packetDataWriter.WriteByteArray(data, buffer, out _);
+        _packetDataWriter.WriteByteArray(data, buffer, out _);
 
         // Assert
         Assert.Equal(data, buffer[..data.Length]);
@@ -57,7 +57,7 @@ public class PacketDataWriterByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
         // Action
-        packetDataWriter.WriteByteArray(data, buffer, out Memory<byte> restBuffer);
+        _packetDataWriter.WriteByteArray(data, buffer, out Memory<byte> restBuffer);
 
         // Assert
         Assert.Equal(extraBytes, restBuffer.Length);
@@ -72,11 +72,11 @@ public class PacketDataWriterByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
         // Action
-        packetDataWriter.WriteByteArray(data, buffer, out Memory<byte> restBuffer);
+        _packetDataWriter.WriteByteArray(data, buffer, out Memory<byte> restBuffer);
 
         // Assert
-        int firstNonZeroByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept(zeroByte);
-        Assert.Equal(indexNotFound, firstNonZeroByteInRestBuffer);
+        int firstNonZeroByteInRestBuffer = restBuffer.Span.IndexOfAnyExcept(ZeroByte);
+        Assert.Equal(IndexNotFound, firstNonZeroByteInRestBuffer);
     }
 
     [Theory]
@@ -88,12 +88,12 @@ public class PacketDataWriterByteArrayTests
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
         // Action
-        packetDataWriter.WriteByteArray(data, buffer, out _);
+        _packetDataWriter.WriteByteArray(data, buffer, out _);
 
         // Assert
         Memory<byte> unwrittenBufferArea = buffer[data.Length..Constants.Networking.ByteArrayLength];
-        int firstNonZeroByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(zeroByte);
-        Assert.Equal(indexNotFound, firstNonZeroByteInUnwrittenBuffer);
+        int firstNonZeroByteInUnwrittenBuffer = unwrittenBufferArea.Span.IndexOfAnyExcept(ZeroByte);
+        Assert.Equal(IndexNotFound, firstNonZeroByteInUnwrittenBuffer);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class PacketDataWriterByteArrayTests
         byte[] value = new byte[Constants.Networking.ByteArrayLength + 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataWriter.WriteByteArray(value, undersizedBuffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _packetDataWriter.WriteByteArray(value, undersizedBuffer, out _));
     }
 
     [Fact]
@@ -113,9 +113,9 @@ public class PacketDataWriterByteArrayTests
     {
         // Setup
         Memory<byte> undersizedBuffer = new byte[Constants.Networking.ByteArrayLength - 1];
-        byte[] value = shortByteArray;
+        byte[] value = ShortByteArray;
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => packetDataWriter.WriteByteArray(value, undersizedBuffer, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _packetDataWriter.WriteByteArray(value, undersizedBuffer, out _));
     }
 }

@@ -2,52 +2,52 @@
 
 public class PlayerRegistry : IPlayerRegistry
 {
-    private readonly ServerSettings serverSettings;
+    private readonly ServerSettings _serverSettings;
 
-    private readonly Lock lockObject;
-    private readonly List<IPlayer> players;
+    private readonly Lock _lockObject;
+    private readonly List<IPlayer> _players;
 
     public PlayerRegistry(IOptions<ServerSettings> serverSettingsOptions)
     {
-        serverSettings = serverSettingsOptions.Value;
+        _serverSettings = serverSettingsOptions.Value;
 
-        players = [];
-        lockObject = new Lock();
+        _players = [];
+        _lockObject = new Lock();
     }
 
     public IEnumerable<IPlayer> GetAll()
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
-            return players;
+            return _players;
         }
     }
 
     public void Remove(IPlayer player)
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
-            players.Remove(player);
+            _players.Remove(player);
         }
     }
 
     public void Remove(IConnection connection)
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
-            players.RemoveAll(x => x.Connection == connection);
+            _players.RemoveAll(x => x.Connection == connection);
         }
     }
 
     public bool TryAdd(IPlayer player)
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
             sbyte? availablePlayerId = TryGetAvailablePlayerId();
 
             if (availablePlayerId.HasValue)
             {
-                players.Add(player);
+                _players.Add(player);
                 player.Id = availablePlayerId.Value;
             }
 
@@ -57,9 +57,9 @@ public class PlayerRegistry : IPlayerRegistry
 
     private sbyte? TryGetAvailablePlayerId()
     {
-        int highestPlayerId = Math.Min(serverSettings.MaxPlayers - 1, Constants.Players.HighestPlayerId);
+        int highestPlayerId = Math.Min(_serverSettings.MaxPlayers - 1, Constants.Players.HighestPlayerId);
 
-        sbyte[] playerIdsInUse = players.Select(x => x.Id).ToArray();
+        sbyte[] playerIdsInUse = _players.Select(x => x.Id).ToArray();
 
         for (int i = 1; i <= highestPlayerId; i++)
         {

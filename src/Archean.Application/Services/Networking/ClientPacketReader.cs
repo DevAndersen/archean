@@ -2,20 +2,20 @@
 
 public class ClientPacketReader : IClientPacketReader
 {
-    private readonly IPacketDataReader reader;
+    private readonly IPacketDataReader _reader;
 
     public ClientPacketReader(IPacketDataReader reader)
     {
-        this.reader = reader;
+        _reader = reader;
     }
 
     public ClientIdentificationPacket ReadIdentificationPacket(ReadOnlyMemory<byte> memory)
     {
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientIdentificationPacket.PacketSize, nameof(memory));
 
-        byte protocolVersion = reader.ReadByte(memory, out memory);
-        string username = reader.ReadString(memory, out memory);
-        string verificationKey = reader.ReadString(memory, out _);
+        byte protocolVersion = _reader.ReadByte(memory, out memory);
+        string username = _reader.ReadString(memory, out memory);
+        string verificationKey = _reader.ReadString(memory, out _);
 
         return new ClientIdentificationPacket
         {
@@ -30,7 +30,7 @@ public class ClientPacketReader : IClientPacketReader
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientMessagePacket.PacketSize, nameof(memory));
 
         // Skip the first byte, which represents the player ID (always 0xFF).
-        string message = reader.ReadString(memory[1..], out _);
+        string message = _reader.ReadString(memory[1..], out _);
 
         return new ClientMessagePacket
         {
@@ -43,11 +43,11 @@ public class ClientPacketReader : IClientPacketReader
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientPositionAndOrientationPacket.PacketSize, nameof(memory));
 
         // Skip the first byte, which represents the player ID (always 0xFF).
-        FShort x = reader.ReadFShort(memory[1..], out memory);
-        FShort y = reader.ReadFShort(memory, out memory);
-        FShort z = reader.ReadFShort(memory, out memory);
-        byte yaw = reader.ReadByte(memory, out memory);
-        byte pitch = reader.ReadByte(memory, out _);
+        FShort x = _reader.ReadFShort(memory[1..], out memory);
+        FShort y = _reader.ReadFShort(memory, out memory);
+        FShort z = _reader.ReadFShort(memory, out memory);
+        byte yaw = _reader.ReadByte(memory, out memory);
+        byte pitch = _reader.ReadByte(memory, out _);
 
         return new ClientPositionAndOrientationPacket
         {
@@ -63,11 +63,11 @@ public class ClientPacketReader : IClientPacketReader
     {
         ArgumentOutOfRangeException.ThrowIfNotEqual(memory.Length, ClientSetBlockPacket.PacketSize, nameof(memory));
 
-        short x = reader.ReadShort(memory, out memory);
-        short y = reader.ReadShort(memory, out memory);
-        short z = reader.ReadShort(memory, out memory);
-        BlockChangeMode mode = (BlockChangeMode)reader.ReadByte(memory, out memory);
-        Block blockType = (Block)reader.ReadByte(memory, out _);
+        short x = _reader.ReadShort(memory, out memory);
+        short y = _reader.ReadShort(memory, out memory);
+        short z = _reader.ReadShort(memory, out memory);
+        BlockChangeMode mode = (BlockChangeMode)_reader.ReadByte(memory, out memory);
+        Block blockType = (Block)_reader.ReadByte(memory, out _);
 
         return new ClientSetBlockPacket
         {

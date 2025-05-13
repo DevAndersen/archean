@@ -4,7 +4,7 @@ namespace Archean.Tests.Networking.ServerPacketWriterTests;
 
 public class ServerPacketWriterAbsolutePositionAndOrientationTests : BaseServerPacketWriterTests
 {
-    private static readonly ServerAbsolutePositionAndOrientationPacket validPacket = new()
+    private static readonly ServerAbsolutePositionAndOrientationPacket ValidPacket = new()
     {
         PlayerId = default,
         X = default,
@@ -18,7 +18,7 @@ public class ServerPacketWriterAbsolutePositionAndOrientationTests : BaseServerP
     public void WritePacket_ValidPacket_ExpectedBufferSize()
     {
         // Action
-        ReadOnlyMemory<byte> buffer = writer.WriteAbsolutePositionAndOrientationPacket(validPacket);
+        ReadOnlyMemory<byte> buffer = _writer.WriteAbsolutePositionAndOrientationPacket(ValidPacket);
 
         // Assert
         Assert.Equal(ServerAbsolutePositionAndOrientationPacket.PacketSize, buffer.Length);

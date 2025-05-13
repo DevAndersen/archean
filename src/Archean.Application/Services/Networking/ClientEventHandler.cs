@@ -5,10 +5,10 @@ namespace Archean.Application.Services.Networking;
 
 public class ClientEventHandler : IClientEventHandler
 {
-    private readonly IScopedEventListener eventListener;
-    private readonly IPlayerService playerService;
-    private readonly ChatSettings chatSettings;
-    private readonly ICommandDictionary commandDictionary;
+    private readonly IScopedEventListener _eventListener;
+    private readonly IPlayerService _playerService;
+    private readonly ChatSettings _chatSettings;
+    private readonly ICommandDictionary _commandDictionary;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
@@ -16,15 +16,15 @@ public class ClientEventHandler : IClientEventHandler
         IOptions<ChatSettings> chatSettingsOptions,
         ICommandDictionary commandDictionary)
     {
-        this.eventListener = eventListener;
-        this.playerService = playerService;
-        chatSettings = chatSettingsOptions.Value;
-        this.commandDictionary = commandDictionary;
+        _eventListener = eventListener;
+        _playerService = playerService;
+        _chatSettings = chatSettingsOptions.Value;
+        _commandDictionary = commandDictionary;
     }
 
     public void RegisterEventSubscriptions()
     {
-        eventListener.Subscribe<MessageEvent>(ReceiveMessage);
+        _eventListener.Subscribe<MessageEvent>(ReceiveMessage);
     }
 
     private async Task ReceiveMessage(MessageEvent arg)
@@ -36,11 +36,11 @@ public class ClientEventHandler : IClientEventHandler
                 ? arg.Message[1..]
                 : arg.Message[1..spaceIndex];
 
-            if (commandDictionary.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
+            if (_commandDictionary.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
             {
                 await command.InvokeAsync();
             }
-            else if (playerService.TryGetPlayer(out IPlayer? player))
+            else if (_playerService.TryGetPlayer(out IPlayer? player))
             {
                 await player.Connection.SendAsync(new ServerMessagePacket
                 {
@@ -49,7 +49,7 @@ public class ClientEventHandler : IClientEventHandler
                 });
             }
         }
-        else if (playerService.TryGetPlayer(out IPlayer? player))
+        else if (_playerService.TryGetPlayer(out IPlayer? player))
         {
             ServerMessagePacket packet;
 
@@ -57,7 +57,7 @@ public class ClientEventHandler : IClientEventHandler
             {
                 packet = new ServerMessagePacket
                 {
-                    Message = string.Format(chatSettings.ChatFormat, arg.Message, arg.PlayerSender.DisplayName),
+                    Message = string.Format(_chatSettings.ChatFormat, arg.Message, arg.PlayerSender.DisplayName),
                     PlayerId = arg.PlayerSender.Id
                 };
             }
@@ -65,7 +65,7 @@ public class ClientEventHandler : IClientEventHandler
             {
                 packet = new ServerMessagePacket
                 {
-                    Message = string.Format(chatSettings.ServerChatFormat, arg.Message),
+                    Message = string.Format(_chatSettings.ServerChatFormat, arg.Message),
                     PlayerId = 0
                 };
             }

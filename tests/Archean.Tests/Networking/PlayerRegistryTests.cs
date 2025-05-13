@@ -9,12 +9,12 @@ namespace Archean.Tests.Networking;
 
 public class PlayerRegistryTests
 {
-    private readonly ServerSettings defaultServerSettings;
+    private readonly ServerSettings _defaultServerSettings;
 
     public PlayerRegistryTests()
     {
-        defaultServerSettings = Substitute.For<ServerSettings>();
-        defaultServerSettings.MaxPlayers.Returns((byte)Constants.Players.HighestPlayerId);
+        _defaultServerSettings = Substitute.For<ServerSettings>();
+        _defaultServerSettings.MaxPlayers.Returns((byte)Constants.Players.HighestPlayerId);
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class PlayerRegistryTests
     {
         // Setup
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
-        settings.Value.Returns(defaultServerSettings);
+        settings.Value.Returns(_defaultServerSettings);
 
         IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer player = Substitute.For<IPlayer>();
@@ -40,7 +40,7 @@ public class PlayerRegistryTests
     {
         // Setup
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
-        settings.Value.Returns(defaultServerSettings);
+        settings.Value.Returns(_defaultServerSettings);
 
         IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer playerA = Substitute.For<IPlayer>();
@@ -71,8 +71,8 @@ public class PlayerRegistryTests
     {
         // Setup
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
-        settings.Value.Returns(defaultServerSettings);
-        defaultServerSettings.MaxPlayers.Returns(maxPlayerCount);
+        settings.Value.Returns(_defaultServerSettings);
+        _defaultServerSettings.MaxPlayers.Returns(maxPlayerCount);
 
         IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer exceedingPlayer = Substitute.For<IPlayer>();

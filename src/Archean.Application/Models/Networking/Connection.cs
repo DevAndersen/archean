@@ -4,30 +4,30 @@ namespace Archean.Application.Models.Networking;
 
 public class Connection : IConnection
 {
-    private readonly Socket socket;
-    private readonly IServerPacketWriter serverPacketWriter;
+    private readonly Socket _socket;
+    private readonly IServerPacketWriter _serverPacketWriter;
 
     public Guid Id { get; }
 
-    public bool IsConnected => socket.Connected;
+    public bool IsConnected => _socket.Connected;
 
     public Connection(Guid id, Socket socket, IServerPacketWriter serverPacketWriter)
     {
         Id = id;
-        this.socket = socket;
-        this.serverPacketWriter = serverPacketWriter;
+        _socket = socket;
+        _serverPacketWriter = serverPacketWriter;
     }
 
     public async Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken)
     {
         int readAttempts = 0;
-        while (socket.Available == 0 && readAttempts++ < 5)
+        while (_socket.Available == 0 && readAttempts++ < 5)
         {
             await Task.Delay(10, cancellationToken);
         }
 
-        Memory<byte> data = new byte[socket.Available];
-        await socket.ReceiveAsync(data, cancellationToken);
+        Memory<byte> data = new byte[_socket.Available];
+        await _socket.ReceiveAsync(data, cancellationToken);
         return data;
     }
 
@@ -40,14 +40,14 @@ public class Connection : IConnection
                 return;
             }
 
-            ReadOnlyMemory<byte> bytes = serverPacketWriter.WritePacket(packet);
-            await socket.SendAsync(bytes);
+            ReadOnlyMemory<byte> bytes = _serverPacketWriter.WritePacket(packet);
+            await _socket.SendAsync(bytes);
         }
     }
 
     public Task DisconnectAsync()
     {
-        socket.Close();
+        _socket.Close();
         return Task.CompletedTask;
     }
 
@@ -58,11 +58,11 @@ public class Connection : IConnection
             Message = message
         });
 
-        socket.Close();
+        _socket.Close();
     }
 
     public void Dispose()
     {
-        socket.Dispose();
+        _socket.Dispose();
     }
 }

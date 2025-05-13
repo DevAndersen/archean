@@ -6,37 +6,37 @@ namespace Archean.Application.Services.Commands;
 
 public class CommandDictionary : ICommandDictionary
 {
-    private readonly ILogger<CommandDictionary> logger;
-    private readonly Dictionary<string, Type> dictionary;
-    private readonly IServiceProvider serviceProvider;
+    private readonly ILogger<CommandDictionary> _logger;
+    private readonly Dictionary<string, Type> _dictionary;
+    private readonly IServiceProvider _serviceProvider;
 
     public CommandDictionary(ILogger<CommandDictionary> logger, IServiceProvider serviceProvider)
     {
-        this.logger = logger;
-        dictionary = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-        this.serviceProvider = serviceProvider;
+        _logger = logger;
+        _dictionary = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+        _serviceProvider = serviceProvider;
     }
 
     public bool Register<TCommand>() where TCommand : ICommand
     {
         if (string.IsNullOrWhiteSpace(TCommand.CommandName))
         {
-            logger.LogWarning("Failed to register empty or whitespace command name for command type {commandTypeName}",
+            _logger.LogWarning("Failed to register empty or whitespace command name for command type {commandTypeName}",
                 typeof(TCommand).FullName);
 
             return false;
         }
 
-        if (!dictionary.TryAdd(TCommand.CommandName, typeof(TCommand)))
+        if (!_dictionary.TryAdd(TCommand.CommandName, typeof(TCommand)))
         {
-            logger.LogWarning("Failed to register command name {commandName} for command type {commandTypeName}, command name/alias already in use",
+            _logger.LogWarning("Failed to register command name {commandName} for command type {commandTypeName}, command name/alias already in use",
                 TCommand.CommandName,
                 typeof(TCommand).FullName);
 
             return false;
         }
 
-        logger.LogTrace("Succesfully registered command name {commandName} for command type {commandTypeName}",
+        _logger.LogTrace("Succesfully registered command name {commandName} for command type {commandTypeName}",
                 TCommand.CommandName,
                 typeof(TCommand).FullName);
 
@@ -55,22 +55,22 @@ public class CommandDictionary : ICommandDictionary
     {
         if (string.IsNullOrWhiteSpace(TCommand.CommandName))
         {
-            logger.LogWarning("Failed to register empty or whitespace command alias for command type {commandTypeName}",
+            _logger.LogWarning("Failed to register empty or whitespace command alias for command type {commandTypeName}",
                 typeof(TCommand).FullName);
 
             return false;
         }
 
-        if (!dictionary.TryAdd(alias, typeof(TCommand)))
+        if (!_dictionary.TryAdd(alias, typeof(TCommand)))
         {
-            logger.LogWarning("Failed to register command name {commandAlias} for command type {commandTypeName}, command name/alias already in use",
+            _logger.LogWarning("Failed to register command name {commandAlias} for command type {commandTypeName}, command name/alias already in use",
                 alias,
                 typeof(TCommand).FullName);
 
             return false;
         }
 
-        logger.LogTrace("Succesfully registered command alias {commandAlias} for command type {commandTypeName}",
+        _logger.LogTrace("Succesfully registered command alias {commandAlias} for command type {commandTypeName}",
                 alias,
                 typeof(TCommand).FullName);
 
@@ -79,9 +79,9 @@ public class CommandDictionary : ICommandDictionary
 
     public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command)
     {
-        if (dictionary.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
+        if (_dictionary.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
         {
-            command = serviceProvider.GetService(commandType) as ICommand;
+            command = _serviceProvider.GetService(commandType) as ICommand;
             return command != null;
         }
         command = null;
