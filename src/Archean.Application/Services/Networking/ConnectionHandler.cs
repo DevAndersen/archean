@@ -10,7 +10,7 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IPlayerRegistry _playerRegistry;
     private readonly IPacketDataReader _packetDataReader;
     private readonly ILogger<ConnectionHandler> _logger;
-    private readonly IServiceProvider _provider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IWorldRegistry _worldRegistry;
     private readonly IGlobalEventBus _globalEventBus;
     private readonly ServerSettings _serverSettings;
@@ -20,7 +20,7 @@ public class ConnectionHandler : IConnectionHandler
         IPlayerRegistry playerRegistry,
         IPacketDataReader packetDataReader,
         ILogger<ConnectionHandler> logger,
-        IServiceProvider provider,
+        IServiceScopeFactory serviceScopeFactory,
         IWorldRegistry worldRegistry,
         IGlobalEventBus globalEventBus,
         IOptions<ServerSettings> serverSettingsOptions)
@@ -29,7 +29,7 @@ public class ConnectionHandler : IConnectionHandler
         _playerRegistry = playerRegistry;
         _packetDataReader = packetDataReader;
         _logger = logger;
-        _provider = provider;
+        _serviceScopeFactory = serviceScopeFactory;
         _worldRegistry = worldRegistry;
         _globalEventBus = globalEventBus;
         _serverSettings = serverSettingsOptions.Value;
@@ -101,7 +101,7 @@ public class ConnectionHandler : IConnectionHandler
     {
         IConnection connection = player.Connection;
 
-        using IServiceScope scope = _provider.CreateScope();
+        using IServiceScope scope = _serviceScopeFactory.CreateScope();
 
         // Set the player of the current scope.
         IPlayerService playerService = scope.ServiceProvider.GetRequiredService<IPlayerService>();
