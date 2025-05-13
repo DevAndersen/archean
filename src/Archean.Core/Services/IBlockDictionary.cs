@@ -13,7 +13,7 @@ public interface IBlockDictionary
     /// <returns>
     /// The number of registered aliases.
     /// </returns>
-    public int RegisterStandardBlocks();
+    int RegisterStandardBlocks();
 
     /// <summary>
     /// Preform registration of custom block aliases.
@@ -21,7 +21,7 @@ public interface IBlockDictionary
     /// <returns>
     /// The number of registered aliases.
     /// </returns>
-    public int RegisterCustomAliases();
+    int RegisterCustomAliases();
 
     /// <summary>
     /// Register a block identity in the dictionary.
@@ -29,7 +29,7 @@ public interface IBlockDictionary
     /// <param name="identity"></param>
     /// <param name="block"></param>
     /// <returns><c>true</c> if <paramref name="block"/> is a defined block, otherwise <c>false</c>.</returns>
-    public bool RegisterBlock(string identity, Block block);
+    bool RegisterBlock(string identity, Block block);
 
     /// <summary>
     /// Attempt to find a <see cref="Block"/> registered by <paramref name="identity"/>.
@@ -37,5 +37,5 @@ public interface IBlockDictionary
     /// <param name="identity"></param>
     /// <param name="block"></param>
     /// <returns></returns>
-    public bool TryGetBlock(string identity, out Block block);
+    bool TryGetBlock(string identity, out Block block);
 }

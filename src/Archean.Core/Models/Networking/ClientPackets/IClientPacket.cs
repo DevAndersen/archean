@@ -2,5 +2,5 @@
 
 public interface IClientPacket
 {
-    public ClientPacketId PacketId { get; }
+    ClientPacketId PacketId { get; }
 }

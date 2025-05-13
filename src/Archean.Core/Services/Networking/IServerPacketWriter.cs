@@ -4,35 +4,35 @@ namespace Archean.Core.Services.Networking;
 
 public interface IServerPacketWriter
 {
-    public ReadOnlyMemory<byte> WritePacket(IServerPacket packet);
+    ReadOnlyMemory<byte> WritePacket(IServerPacket packet);
 
-    public ReadOnlyMemory<byte> WriteAbsolutePositionAndOrientationPacket(ServerAbsolutePositionAndOrientationPacket packet);
+    ReadOnlyMemory<byte> WriteAbsolutePositionAndOrientationPacket(ServerAbsolutePositionAndOrientationPacket packet);
 
-    public ReadOnlyMemory<byte> WriteDespawnPlayerPacket(ServerDespawnPlayerPacket packet);
+    ReadOnlyMemory<byte> WriteDespawnPlayerPacket(ServerDespawnPlayerPacket packet);
 
-    public ReadOnlyMemory<byte> WriteDisconnectPlayerPacket(ServerDisconnectPlayerPacket packet);
+    ReadOnlyMemory<byte> WriteDisconnectPlayerPacket(ServerDisconnectPlayerPacket packet);
 
-    public ReadOnlyMemory<byte> WriteIdentificationPacket(ServerIdentificationPacket packet);
+    ReadOnlyMemory<byte> WriteIdentificationPacket(ServerIdentificationPacket packet);
 
-    public ReadOnlyMemory<byte> WriteLevelDataChunkPacket(ServerLevelDataChunkPacket packet);
+    ReadOnlyMemory<byte> WriteLevelDataChunkPacket(ServerLevelDataChunkPacket packet);
 
-    public ReadOnlyMemory<byte> WriteLevelFinalizePacket(ServerLevelFinalizePacket packet);
+    ReadOnlyMemory<byte> WriteLevelFinalizePacket(ServerLevelFinalizePacket packet);
 
-    public ReadOnlyMemory<byte> WriteLevelInitializePacket(ServerLevelInitializePacket packet);
+    ReadOnlyMemory<byte> WriteLevelInitializePacket(ServerLevelInitializePacket packet);
 
-    public ReadOnlyMemory<byte> WriteMessagePacket(ServerMessagePacket packet);
+    ReadOnlyMemory<byte> WriteMessagePacket(ServerMessagePacket packet);
 
-    public ReadOnlyMemory<byte> WritePingPacket(ServerPingPacket packet);
+    ReadOnlyMemory<byte> WritePingPacket(ServerPingPacket packet);
 
-    public ReadOnlyMemory<byte> WriteRelativeOrientationPacket(ServerRelativeOrientationPacket packet);
+    ReadOnlyMemory<byte> WriteRelativeOrientationPacket(ServerRelativeOrientationPacket packet);
 
-    public ReadOnlyMemory<byte> WriteRelativePositionAndOrientationPacket(ServerRelativePositionAndOrientationPacket packet);
+    ReadOnlyMemory<byte> WriteRelativePositionAndOrientationPacket(ServerRelativePositionAndOrientationPacket packet);
 
-    public ReadOnlyMemory<byte> WriteRelativePositionPacket(ServerRelativePositionPacket packet);
+    ReadOnlyMemory<byte> WriteRelativePositionPacket(ServerRelativePositionPacket packet);
 
-    public ReadOnlyMemory<byte> WriteSetBlockPacket(ServerSetBlockPacket packet);
+    ReadOnlyMemory<byte> WriteSetBlockPacket(ServerSetBlockPacket packet);
 
-    public ReadOnlyMemory<byte> WriteSpawnPlayerPacket(ServerSpawnPlayerPacket packet);
+    ReadOnlyMemory<byte> WriteSpawnPlayerPacket(ServerSpawnPlayerPacket packet);
 
-    public ReadOnlyMemory<byte> WriteUpdatePlayerTypePacket(ServerUpdatePlayerTypePacket packet);
+    ReadOnlyMemory<byte> WriteUpdatePlayerTypePacket(ServerUpdatePlayerTypePacket packet);
 }

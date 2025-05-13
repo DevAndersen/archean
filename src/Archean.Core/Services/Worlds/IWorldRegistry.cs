@@ -5,7 +5,7 @@ namespace Archean.Core.Services.Worlds;
 
 public interface IWorldRegistry
 {
-    public IWorld GetDefaultWorld();
+    IWorld GetDefaultWorld();
 
-    public Task TransferPlayerAsync(IPlayer player, IWorld destinationWorld);
+    Task TransferPlayerAsync(IPlayer player, IWorld destinationWorld);
 }

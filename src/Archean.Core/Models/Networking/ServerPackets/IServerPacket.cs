@@ -2,5 +2,5 @@
 
 public interface IServerPacket
 {
-    public ServerPacketId PacketId { get; }
+    ServerPacketId PacketId { get; }
 }

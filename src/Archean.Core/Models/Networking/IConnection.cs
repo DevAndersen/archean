@@ -4,24 +4,24 @@ namespace Archean.Core.Models.Networking;
 
 public interface IConnection : IDisposable
 {
-    public Guid Id { get; }
+    Guid Id { get; }
 
-    public bool IsConnected { get; }
+    bool IsConnected { get; }
 
-    public Task SendAsync(params IEnumerable<IServerPacket> packets);
+    Task SendAsync(params IEnumerable<IServerPacket> packets);
 
-    public Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
+    Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Closes the connection.
     /// </summary>
     /// <returns></returns>
-    public Task DisconnectAsync();
+    Task DisconnectAsync();
 
     /// <summary>
     /// Sends a <see cref="ServerDisconnectPlayerPacket"/> containing <paramref name="message"/>, then closes the connection.
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    public Task DisconnectAsync(string message);
+    Task DisconnectAsync(string message);
 }

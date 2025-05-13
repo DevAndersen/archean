@@ -2,5 +2,5 @@
 
 public interface IClientEventHandler
 {
-    public void RegisterEventSubscriptions();
+    void RegisterEventSubscriptions();
 }

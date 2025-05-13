@@ -4,11 +4,11 @@ namespace Archean.Core.Services.Networking;
 
 public interface IClientPacketReader
 {
-    public ClientIdentificationPacket ReadIdentificationPacket(ReadOnlyMemory<byte> memory);
+    ClientIdentificationPacket ReadIdentificationPacket(ReadOnlyMemory<byte> memory);
 
-    public ClientMessagePacket ReadMessagePacket(ReadOnlyMemory<byte> memory);
+    ClientMessagePacket ReadMessagePacket(ReadOnlyMemory<byte> memory);
 
-    public ClientPositionAndOrientationPacket ReadPositionAndOrientationPacket(ReadOnlyMemory<byte> memory);
+    ClientPositionAndOrientationPacket ReadPositionAndOrientationPacket(ReadOnlyMemory<byte> memory);
 
-    public ClientSetBlockPacket ReadSetBlockPacket(ReadOnlyMemory<byte> memory);
+    ClientSetBlockPacket ReadSetBlockPacket(ReadOnlyMemory<byte> memory);
 }

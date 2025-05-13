@@ -2,11 +2,11 @@
 
 public interface ISocketServer
 {
-    public bool Running { get; }
+    bool Running { get; }
 
-    public CancellationToken ServerRunningCancellationToken { get; }
+    CancellationToken ServerRunningCancellationToken { get; }
 
-    public Task StartAsync();
+    Task StartAsync();
 
-    public Task StopAsync();
+    Task StopAsync();
 }

@@ -5,11 +5,11 @@ namespace Archean.Core.Services.Networking;
 
 public interface IPlayerRegistry
 {
-    public IEnumerable<IPlayer> GetAll();
+    IEnumerable<IPlayer> GetAll();
 
-    public bool TryAdd(IPlayer player);
+    bool TryAdd(IPlayer player);
 
-    public void Remove(IPlayer player);
+    void Remove(IPlayer player);
 
-    public void Remove(IConnection connection);
+    void Remove(IConnection connection);
 }

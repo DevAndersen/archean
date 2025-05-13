@@ -2,9 +2,9 @@
 
 public interface ICommand
 {
-    public static abstract string CommandName { get; }
+    static abstract string CommandName { get; }
 
-    public static virtual string[]? CommandAliases { get; }
+    static virtual string[]? CommandAliases { get; }
 
-    public Task InvokeAsync();
+    Task InvokeAsync();
 }

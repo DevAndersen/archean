@@ -2,15 +2,15 @@
 
 public interface IWorld
 {
-    public string Name { get; }
+    string Name { get; }
 
-    public IReadOnlyList<IPlayer> Players { get; }
+    IReadOnlyList<IPlayer> Players { get; }
 
-    public Task JoinAsync(IPlayer player);
+    Task JoinAsync(IPlayer player);
 
-    public Task LeaveAsync(IPlayer player);
+    Task LeaveAsync(IPlayer player);
 
-    public Task LoadAsync();
+    Task LoadAsync();
 
-    public Task UnloadAsync();
+    Task UnloadAsync();
 }
