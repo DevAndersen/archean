@@ -8,6 +8,13 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
     private readonly SemaphoreSlim _subscriptionSemaphore = new SemaphoreSlim(1);
     private readonly ConcurrentDictionary<Type, SortedDictionary<EventPriority, List<Delegate>>> _eventDictionary = [];
 
+    private readonly ILogger<EventBus> _logger;
+
+    public EventBus(ILogger<EventBus> logger)
+    {
+        _logger = logger;
+    }
+
     public async Task InvokeEventAsync(Event eventArgs)
     {
         Type eventType = eventArgs.GetType();
@@ -21,13 +28,20 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
             {
                 foreach (Delegate item in itemList)
                 {
-                    if (item.GetType() == expectedType)
+                    Type eventListenerType = item.GetType();
+                    if (eventListenerType == expectedType)
                     {
                         item.Method.Invoke(item.Target, argsArray);
                     }
-                    else if (item.GetType() == expectedAsyncType)
+                    else if (eventListenerType == expectedAsyncType)
                     {
                         await (Task)item.Method.Invoke(item.Target, argsArray)!;
+                    }
+                    else
+                    {
+                        _logger.LogError("Unexpected {eventType} event listener for of type {eventListenerType}",
+                            eventType.Name,
+                            eventListenerType.FullName);
                     }
 
                     if (eventArgs.IsCancelled)
