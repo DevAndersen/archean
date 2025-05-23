@@ -11,7 +11,7 @@ public class EventBusTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IScopedEventBus bus = new EventBus();
+        IScopedEventBus bus = new EventBus(null!);
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         bus.Subscribe(eventHandle, default);
 
@@ -27,7 +27,7 @@ public class EventBusTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IScopedEventBus bus = new EventBus();
+        IScopedEventBus bus = new EventBus(null!);
 
         // Action
         await bus.InvokeEventAsync(new TestEvent());
@@ -41,7 +41,7 @@ public class EventBusTests
     {
         // Setup
         bool hasEventBeenInvoked = false;
-        IScopedEventBus bus = new EventBus();
+        IScopedEventBus bus = new EventBus(null!);
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         bus.Subscribe(eventHandle, default);
         bus.Unsubscribe<TestEvent>(eventHandle);

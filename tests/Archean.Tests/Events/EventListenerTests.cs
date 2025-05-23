@@ -11,8 +11,8 @@ public class EventListenerTests
 
     public EventListenerTests()
     {
-        _bus = new EventBus();
-        _globalBus = new EventBus();
+        _bus = new EventBus(null!);
+        _globalBus = new EventBus(null!);
     }
 
     [Fact]
