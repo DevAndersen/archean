@@ -49,7 +49,7 @@ These settings let you configure the base server setup.
         <tr>
             <td>Name</td>
             <td>The name of the server.</td>
-            <td>string</td>
+            <td>String</td>
             <td></td>
             <td>
                 <code>Unnamed server</code>
@@ -58,7 +58,7 @@ These settings let you configure the base server setup.
         <tr>
             <td>Motd</td>
             <td>The MOTD (Message Of The Day), displayed beneath the server name when joining the server.</td>
-            <td>string</td>
+            <td>String</td>
             <td></td>
             <td>
                 <code>Server MOTD</code>
