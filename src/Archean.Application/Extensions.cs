@@ -7,7 +7,6 @@ using Archean.Application.Services.Worlds;
 using Archean.Core.Models.Commands;
 using Archean.Core.Services;
 using Archean.Core.Services.Commands;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,34 +17,22 @@ public static class Extensions
     /// <summary>
     /// Registers all default Archean services.
     /// </summary>
-    /// <param name="host"></param>
+    /// <param name="builder"></param>
     /// <returns></returns>
-    public static IHostBuilder ConfigureArcheanDefaultServices(this IHostBuilder host)
+    public static IHostApplicationBuilder ConfigureArcheanDefaultServices(this IHostApplicationBuilder builder)
     {
-        return host.ConfigureServices((context, services)
-            => services.RegisterArcheanDefaultServices(context.Configuration, out _));
-    }
+        CommandRegistrations commandRegistrations = new CommandRegistrations();
 
-    /// <summary>
-    /// Registers all default Archean services.
-    /// </summary>
-    /// <param name="serviceCollection"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
-    public static IServiceCollection RegisterArcheanDefaultServices(this IServiceCollection serviceCollection, IConfiguration configuration, out CommandRegistrations commandRegistrations)
-    {
-        commandRegistrations = new CommandRegistrations();
-
-        return serviceCollection
+        builder.Services
 
             // General
             .AddSingleton<ServerStartup>()
             .AddSingleton(commandRegistrations)
 
             // Settings
-            .Configure<ServerSettings>(configuration.GetSection("Server"))
-            .Configure<ChatSettings>(configuration.GetSection("Chat"))
-            .Configure<AliasSettings>(configuration.GetSection("Aliases"))
+            .Configure<ServerSettings>(builder.Configuration.GetSection("Server"))
+            .Configure<ChatSettings>(builder.Configuration.GetSection("Chat"))
+            .Configure<AliasSettings>(builder.Configuration.GetSection("Aliases"))
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
@@ -77,6 +64,8 @@ public static class Extensions
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();
+
+        return builder;
     }
 
     public static IServiceCollection RegisterCommand<TCommand>(this IServiceCollection serviceCollection, CommandRegistrations commandRegistrations)
