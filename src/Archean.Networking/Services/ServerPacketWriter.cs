@@ -1,6 +1,8 @@
 ﻿using Archean.Core.Exceptions;
+using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Services.Networking;
 
-namespace Archean.Application.Services.Networking;
+namespace Archean.Networking.Services;
 
 public class ServerPacketWriter : IServerPacketWriter
 {

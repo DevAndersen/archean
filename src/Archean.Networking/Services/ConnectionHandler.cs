@@ -1,8 +1,20 @@
-﻿using Archean.Application.Models;
+﻿using Archean.Core;
+using Archean.Core.Models;
+using Archean.Core.Models.Events;
+using Archean.Core.Models.Networking;
+using Archean.Core.Models.Networking.ClientPackets;
+using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Services.Events;
+using Archean.Core.Services.Networking;
+using Archean.Core.Services.Worlds;
+using Archean.Core.Settings;
+using Archean.Networking.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net.Sockets;
 
-namespace Archean.Application.Services.Networking;
+namespace Archean.Networking.Services;
 
 public class ConnectionHandler : IConnectionHandler
 {

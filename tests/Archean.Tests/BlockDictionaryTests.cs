@@ -1,6 +1,6 @@
 ﻿using Archean.Application.Services;
-using Archean.Application.Settings;
 using Archean.Core.Models;
+using Archean.Core.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;

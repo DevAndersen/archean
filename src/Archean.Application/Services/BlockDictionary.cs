@@ -1,4 +1,5 @@
 ﻿using Archean.Core.Services;
+using Archean.Core.Settings;
 
 namespace Archean.Application.Services;
 

@@ -1,6 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using Archean.Core.Models.Networking;
+using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Services.Networking;
+using System.Net.Sockets;
 
-namespace Archean.Application.Models.Networking;
+namespace Archean.Networking.Models;
 
 public class Connection : IConnection
 {

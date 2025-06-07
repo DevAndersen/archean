@@ -1,8 +1,12 @@
-﻿using Archean.Application.Models.Networking;
+﻿using Archean.Core.Services.Networking;
+using Archean.Core.Settings;
+using Archean.Networking.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Archean.Application.Services.Networking;
+namespace Archean.Networking.Services;
 
 public class SocketServer : ISocketServer
 {

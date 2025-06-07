@@ -1,4 +1,9 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Core.Models;
+using Archean.Core.Models.Networking;
+using Archean.Core.Models.Networking.ClientPackets;
+using Archean.Core.Services.Networking;
+
+namespace Archean.Networking.Services;
 
 public class ClientPacketReader : IClientPacketReader
 {

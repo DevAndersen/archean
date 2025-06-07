@@ -1,6 +1,10 @@
-﻿using System.Buffers.Binary;
+﻿using Archean.Core;
+using Archean.Core.Models.Networking;
+using Archean.Core.Services.Networking;
+using System.Buffers.Binary;
+using System.Text;
 
-namespace Archean.Application.Services.Networking;
+namespace Archean.Networking.Services;
 
 public class PacketDataReader : IPacketDataReader
 {

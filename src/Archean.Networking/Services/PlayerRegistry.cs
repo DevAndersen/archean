@@ -1,4 +1,11 @@
-﻿namespace Archean.Application.Services.Networking;
+﻿using Archean.Core;
+using Archean.Core.Models;
+using Archean.Core.Models.Networking;
+using Archean.Core.Services.Networking;
+using Archean.Core.Settings;
+using Microsoft.Extensions.Options;
+
+namespace Archean.Networking.Services;
 
 public class PlayerRegistry : IPlayerRegistry
 {

@@ -1,4 +1,4 @@
-﻿using Archean.Application;
+﻿using Archean.Console;
 using Microsoft.Extensions.Hosting;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder();

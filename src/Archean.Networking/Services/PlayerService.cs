@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Archean.Core.Models;
+using Archean.Core.Services.Networking;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Archean.Application.Services.Networking;
+namespace Archean.Networking.Services;
 
 public class PlayerService : IPlayerService
 {

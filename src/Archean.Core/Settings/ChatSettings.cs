@@ -1,4 +1,4 @@
-﻿namespace Archean.Application.Settings;
+﻿namespace Archean.Core.Settings;
 
 public class ChatSettings
 {

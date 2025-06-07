@@ -1,16 +1,21 @@
-﻿using Archean.Application.Models.Commands;
+﻿using Archean.Application;
+using Archean.Application.Models.Commands;
 using Archean.Application.Services;
 using Archean.Application.Services.Commands;
 using Archean.Application.Services.Events;
-using Archean.Application.Services.Networking;
 using Archean.Application.Services.Worlds;
 using Archean.Core.Models.Commands;
 using Archean.Core.Services;
 using Archean.Core.Services.Commands;
+using Archean.Core.Services.Events;
+using Archean.Core.Services.Networking;
+using Archean.Core.Services.Worlds;
+using Archean.Core.Settings;
+using Archean.Networking.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Archean.Application;
+namespace Archean.Console;
 
 public static class Extensions
 {
