@@ -7,68 +7,68 @@ namespace Archean.Networking.Helpers;
 
 public static class PacketDataWriter
 {
-    public static void WriteByte(byte value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteByte(byte value, Span<byte> buffer, out Span<byte> rest)
     {
-        memory[0] = value;
-        rest = memory[sizeof(byte)..];
+        buffer[0] = value;
+        rest = buffer[sizeof(byte)..];
     }
 
-    public static void WriteSByte(sbyte value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteSByte(sbyte value, Span<byte> buffer, out Span<byte> rest)
     {
-        memory[0] = (byte)value;
-        rest = memory[sizeof(sbyte)..];
+        buffer[0] = (byte)value;
+        rest = buffer[sizeof(sbyte)..];
     }
 
-    public static void WriteShort(short value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteShort(short value, Span<byte> buffer, out Span<byte> rest)
     {
-        BinaryPrimitives.WriteInt16BigEndian(memory, value);
-        rest = memory[sizeof(short)..];
+        BinaryPrimitives.WriteInt16BigEndian(buffer, value);
+        rest = buffer[sizeof(short)..];
     }
 
-    public static void WriteFByte(FByte value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteFByte(FByte value, Span<byte> buffer, out Span<byte> rest)
     {
-        memory[0] = value.ToByte();
-        rest = memory[sizeof(byte)..];
+        buffer[0] = value.ToByte();
+        rest = buffer[sizeof(byte)..];
     }
 
-    public static void WriteFShort(FShort value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteFShort(FShort value, Span<byte> buffer, out Span<byte> rest)
     {
-        BinaryPrimitives.WriteUInt16BigEndian(memory, value.ToUShort());
-        rest = memory[sizeof(short)..];
+        BinaryPrimitives.WriteUInt16BigEndian(buffer, value.ToUShort());
+        rest = buffer[sizeof(short)..];
     }
 
-    public static void WriteString(string value, Span<byte> memory, out Span<byte> rest)
+    public static void WriteString(string value, Span<byte> buffer, out Span<byte> rest)
     {
-        if (memory.Length < Constants.Networking.StringLength)
+        if (buffer.Length < Constants.Networking.StringLength)
         {
-            throw new ArgumentOutOfRangeException(nameof(memory), "Memory buffer too small");
+            throw new ArgumentOutOfRangeException(nameof(buffer), "Memory buffer too small");
         }
 
         if (value.Length > Constants.Networking.StringLength)
         {
-            Encoding.UTF8.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], memory);
+            Encoding.UTF8.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], buffer);
         }
         else
         {
-            Encoding.UTF8.GetBytes(value, memory);
-            memory[value.Length..Constants.Networking.StringLength].Fill((byte)' ');
+            Encoding.UTF8.GetBytes(value, buffer);
+            buffer[value.Length..Constants.Networking.StringLength].Fill((byte)' ');
         }
-        rest = memory[Constants.Networking.StringLength..];
+        rest = buffer[Constants.Networking.StringLength..];
     }
 
-    public static void WriteByteArray(byte[] bytes, Span<byte> memory, out Span<byte> rest)
+    public static void WriteByteArray(byte[] bytes, Span<byte> buffer, out Span<byte> rest)
     {
-        if (memory.Length < Constants.Networking.ByteArrayLength)
+        if (buffer.Length < Constants.Networking.ByteArrayLength)
         {
-            throw new ArgumentOutOfRangeException(nameof(memory), "Memory buffer too small");
+            throw new ArgumentOutOfRangeException(nameof(buffer), "Memory buffer too small");
         }
 
         if (bytes.Length > Constants.Networking.ByteArrayLength)
         {
-            throw new ArgumentOutOfRangeException(nameof(memory), "Input buffer too long");
+            throw new ArgumentOutOfRangeException(nameof(buffer), "Input buffer too long");
         }
 
-        bytes.CopyTo(memory);
-        rest = memory[Constants.Networking.ByteArrayLength..];
+        bytes.CopyTo(buffer);
+        rest = buffer[Constants.Networking.ByteArrayLength..];
     }
 }
