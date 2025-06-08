@@ -2,8 +2,6 @@
 
 public class ServerLevelFinalizePacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.LevelFinalize;
-
     public required short XSize { get; init; }
 
     public required short YSize { get; init; }

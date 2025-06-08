@@ -2,8 +2,6 @@
 
 public class ServerAbsolutePositionAndOrientationPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.AbsolutePositionAndOrientation;
-
     public required sbyte PlayerId { get; init; }
 
     public required FShort X { get; init; }

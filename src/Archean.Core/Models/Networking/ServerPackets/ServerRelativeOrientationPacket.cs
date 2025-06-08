@@ -2,8 +2,6 @@
 
 public class ServerRelativeOrientationPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.RelativeOrientation;
-
     public required sbyte PlayerId { get; init; }
 
     public required byte Yaw { get; init; }

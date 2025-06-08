@@ -2,8 +2,6 @@
 
 public class ServerIdentificationPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.Identification;
-
     public required byte ProtocolVersion { get; init; }
 
     public required string ServerName { get; init; }

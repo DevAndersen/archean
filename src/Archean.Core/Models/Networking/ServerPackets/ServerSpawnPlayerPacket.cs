@@ -2,8 +2,6 @@
 
 public class ServerSpawnPlayerPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.SpawnPlayer;
-
     public required sbyte PlayerId { get; init; }
 
     public required string PlayerName { get; init; }

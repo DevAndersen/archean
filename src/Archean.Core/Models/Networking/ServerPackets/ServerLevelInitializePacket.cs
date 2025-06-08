@@ -2,5 +2,4 @@
 
 public class ServerLevelInitializePacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.LevelInitialize;
 }

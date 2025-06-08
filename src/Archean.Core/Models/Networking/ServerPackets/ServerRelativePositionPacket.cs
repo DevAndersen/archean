@@ -2,8 +2,6 @@
 
 public class ServerRelativePositionPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.RelativePosition;
-
     public required sbyte PlayerId { get; init; }
 
     public required FByte X { get; init; }

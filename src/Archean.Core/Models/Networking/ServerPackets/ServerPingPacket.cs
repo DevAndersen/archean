@@ -2,5 +2,4 @@
 
 public class ServerPingPacket : IServerPacket
 {
-    public ServerPacketId PacketId => ServerPacketId.Ping;
 }
