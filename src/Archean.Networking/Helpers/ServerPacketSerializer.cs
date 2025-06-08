@@ -86,50 +86,50 @@ public static class ServerPacketSerializer
 
     private static void WriteAbsolutePositionAndOrientationPacket(ServerAbsolutePositionAndOrientationPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.AbsolutePositionAndOrientation, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.X, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.Y, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.Z, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Pitch, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.AbsolutePositionAndOrientation, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.X, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.Y, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.Z, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Yaw, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Pitch, buffer, out _);
     }
 
     private static void WriteDespawnPlayerPacket(ServerDespawnPlayerPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.DespawnPlayer, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.DespawnPlayer, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out _);
     }
 
     private static void WriteDisconnectPlayerPacket(ServerDisconnectPlayerPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.DisconnectPlayer, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteString(packet.Message, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.DisconnectPlayer, buffer, out buffer);
+        PacketDataWriter.WriteString(packet.Message, buffer, out _);
     }
 
     private static void WriteIdentificationPacket(ServerIdentificationPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.Identification, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteByte(packet.ProtocolVersion, restBuffer, out restBuffer);
-        PacketDataWriter.WriteString(packet.ServerName, restBuffer, out restBuffer);
-        PacketDataWriter.WriteString(packet.ServerMotd, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte((byte)packet.PlayerType, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.Identification, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.ProtocolVersion, buffer, out buffer);
+        PacketDataWriter.WriteString(packet.ServerName, buffer, out buffer);
+        PacketDataWriter.WriteString(packet.ServerMotd, buffer, out buffer);
+        PacketDataWriter.WriteByte((byte)packet.PlayerType, buffer, out _);
     }
 
     private static void WriteLevelDataChunkPacket(ServerLevelDataChunkPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.LevelDataChunk, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteShort(packet.ChunkLength, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByteArray(packet.ChunkData, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.PercentageComplete, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.LevelDataChunk, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.ChunkLength, buffer, out buffer);
+        PacketDataWriter.WriteByteArray(packet.ChunkData, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.PercentageComplete, buffer, out _);
     }
 
     private static void WriteLevelFinalizePacket(ServerLevelFinalizePacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.LevelFinalize, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteShort(packet.XSize, restBuffer, out restBuffer);
-        PacketDataWriter.WriteShort(packet.YSize, restBuffer, out restBuffer);
-        PacketDataWriter.WriteShort(packet.ZSize, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.LevelFinalize, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.XSize, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.YSize, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.ZSize, buffer, out _);
     }
 
     private static void WriteLevelInitializePacket(Span<byte> buffer)
@@ -139,9 +139,9 @@ public static class ServerPacketSerializer
 
     private static void WriteMessagePacket(ServerMessagePacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.Message, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteString(packet.Message, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.Message, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteString(packet.Message, buffer, out _);
     }
 
     private static void WritePingPacket(Span<byte> buffer)
@@ -151,56 +151,56 @@ public static class ServerPacketSerializer
 
     private static void WriteRelativeOrientationPacket(ServerRelativeOrientationPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativeOrientation, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Pitch, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativeOrientation, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Yaw, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Pitch, buffer, out _);
     }
 
     private static void WriteRelativePositionAndOrientationPacket(ServerRelativePositionAndOrientationPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativePositionAndOrientation, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.X, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.Y, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.Z, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Pitch, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativePositionAndOrientation, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.X, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.Y, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.Z, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Yaw, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Pitch, buffer, out _);
     }
 
     private static void WriteRelativePositionPacket(ServerRelativePositionPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativePosition, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.X, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.Y, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFByte(packet.Z, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.RelativePosition, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.X, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.Y, buffer, out buffer);
+        PacketDataWriter.WriteFByte(packet.Z, buffer, out _);
     }
 
     private static void WriteSetBlockPacket(ServerSetBlockPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.SetBlock, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteShort(packet.X, restBuffer, out restBuffer);
-        PacketDataWriter.WriteShort(packet.Y, restBuffer, out restBuffer);
-        PacketDataWriter.WriteShort(packet.Z, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte((byte)packet.BlockType, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.SetBlock, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.X, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.Y, buffer, out buffer);
+        PacketDataWriter.WriteShort(packet.Z, buffer, out buffer);
+        PacketDataWriter.WriteByte((byte)packet.BlockType, buffer, out _);
     }
 
     private static void WriteSpawnPlayerPacket(ServerSpawnPlayerPacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.SpawnPlayer, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteSByte(packet.PlayerId, restBuffer, out restBuffer);
-        PacketDataWriter.WriteString(packet.PlayerName, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.X, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.Y, restBuffer, out restBuffer);
-        PacketDataWriter.WriteFShort(packet.Z, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Yaw, restBuffer, out restBuffer);
-        PacketDataWriter.WriteByte(packet.Pitch, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.SpawnPlayer, buffer, out buffer);
+        PacketDataWriter.WriteSByte(packet.PlayerId, buffer, out buffer);
+        PacketDataWriter.WriteString(packet.PlayerName, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.X, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.Y, buffer, out buffer);
+        PacketDataWriter.WriteFShort(packet.Z, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Yaw, buffer, out buffer);
+        PacketDataWriter.WriteByte(packet.Pitch, buffer, out _);
     }
 
     private static void WriteUpdatePlayerTypePacket(ServerUpdatePlayerTypePacket packet, Span<byte> buffer)
     {
-        PacketDataWriter.WriteByte((byte)ServerPacketId.UpdatePlayerType, buffer, out Span<byte> restBuffer);
-        PacketDataWriter.WriteByte((byte)packet.PlayerType, restBuffer, out _);
+        PacketDataWriter.WriteByte((byte)ServerPacketId.UpdatePlayerType, buffer, out buffer);
+        PacketDataWriter.WriteByte((byte)packet.PlayerType, buffer, out _);
     }
 }
