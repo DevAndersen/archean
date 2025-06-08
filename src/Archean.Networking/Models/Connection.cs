@@ -1,6 +1,8 @@
 ﻿using Archean.Core.Models.Networking;
 using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Services.Networking;
+using Archean.Networking.Helpers;
+using System.Buffers;
 using System.Net.Sockets;
 
 namespace Archean.Networking.Models;
@@ -8,17 +10,15 @@ namespace Archean.Networking.Models;
 public class Connection : IConnection
 {
     private readonly Socket _socket;
-    private readonly IServerPacketWriter _serverPacketWriter;
 
     public Guid Id { get; }
 
     public bool IsConnected => _socket.Connected;
 
-    public Connection(Guid id, Socket socket, IServerPacketWriter serverPacketWriter)
+    public Connection(Guid id, Socket socket)
     {
         Id = id;
         _socket = socket;
-        _serverPacketWriter = serverPacketWriter;
     }
 
     public async Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken)
@@ -36,16 +36,14 @@ public class Connection : IConnection
 
     public async Task SendAsync(params IEnumerable<IServerPacket> packets)
     {
-        foreach (IServerPacket packet in packets)
-        {
-            if (!IsConnected)
-            {
-                return;
-            }
+        int bufferSize = ServerPacketSizer.CalculateSize(packets);
+        byte[] array = ArrayPool<byte>.Shared.Rent(bufferSize);
 
-            ReadOnlyMemory<byte> bytes = _serverPacketWriter.WritePacket(packet);
-            await _socket.SendAsync(bytes);
-        }
+        Memory<byte> memory = array.AsMemory()[..bufferSize];
+        ServerPacketSerializer.WritePackets(packets, memory.Span);
+        await _socket.SendAsync(memory);
+
+        ArrayPool<byte>.Shared.Return(array);
     }
 
     public Task DisconnectAsync()

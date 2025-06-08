@@ -12,7 +12,6 @@ public class SocketServer : ISocketServer
 {
     private readonly IConnectionHandler _connectionHandler;
     private readonly ILogger<SocketServer> _logger;
-    private readonly IServerPacketWriter _serverPacketWriter;
     private readonly ServerSettings _serverSettings;
 
     private readonly CancellationTokenSource _serverRunningCancellationTokenSource;
@@ -29,12 +28,10 @@ public class SocketServer : ISocketServer
     public SocketServer(
         IConnectionHandler connectionHandler,
         ILogger<SocketServer> logger,
-        IServerPacketWriter serverPacketWriter,
         IOptions<ServerSettings> serverSettingsOptions)
     {
         _connectionHandler = connectionHandler;
         _logger = logger;
-        _serverPacketWriter = serverPacketWriter;
         _serverSettings = serverSettingsOptions.Value;
 
         _port = serverSettingsOptions.Value.Port;
@@ -90,8 +87,7 @@ public class SocketServer : ISocketServer
 
                 Connection connection = new Connection(
                     Guid.NewGuid(),
-                    clientSocket,
-                    _serverPacketWriter);
+                    clientSocket);
 
                 await _connectionHandler.HandleNewConnectionAsync(connection, ServerRunningCancellationToken);
             }

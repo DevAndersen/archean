@@ -2,18 +2,6 @@
 
 public class ServerRelativePositionAndOrientationPacket : IServerPacket
 {
-    /// <summary>
-    /// The size of the packet, in bytes.
-    /// </summary>
-    public const int PacketSize
-        = sizeof(ServerPacketId) // Packet ID
-        + sizeof(sbyte) // Player ID
-        + FByte.Size // X
-        + FByte.Size // Y
-        + FByte.Size // Z
-        + sizeof(byte) // Yaw
-        + sizeof(byte); // Pitch
-
     public ServerPacketId PacketId => ServerPacketId.RelativePositionAndOrientation;
 
     public required sbyte PlayerId { get; init; }
