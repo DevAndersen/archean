@@ -11,6 +11,7 @@ using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 using Archean.Core.Services.Worlds;
 using Archean.Core.Settings;
+using Archean.Networking.Helpers;
 using Archean.Networking.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,8 +43,6 @@ public static class Extensions
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
             .AddSingleton<IConnectionHandler, ConnectionHandler>()
-            .AddSingleton<IClientPacketReader, ClientPacketReader>()
-            .AddSingleton<IPacketDataReader, PacketDataReader>()
             .AddSingleton<IPlayerRegistry, PlayerRegistry>()
 
             // Events

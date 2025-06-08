@@ -8,6 +8,7 @@ using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 using Archean.Core.Services.Worlds;
 using Archean.Core.Settings;
+using Archean.Networking.Helpers;
 using Archean.Networking.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,9 +19,7 @@ namespace Archean.Networking.Services;
 
 public class ConnectionHandler : IConnectionHandler
 {
-    private readonly IClientPacketReader _clientPacketReader;
     private readonly IPlayerRegistry _playerRegistry;
-    private readonly IPacketDataReader _packetDataReader;
     private readonly ILogger<ConnectionHandler> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IWorldRegistry _worldRegistry;
@@ -28,18 +27,14 @@ public class ConnectionHandler : IConnectionHandler
     private readonly ServerSettings _serverSettings;
 
     public ConnectionHandler(
-        IClientPacketReader clientPacketReader,
         IPlayerRegistry playerRegistry,
-        IPacketDataReader packetDataReader,
         ILogger<ConnectionHandler> logger,
         IServiceScopeFactory serviceScopeFactory,
         IWorldRegistry worldRegistry,
         IGlobalEventBus globalEventBus,
         IOptions<ServerSettings> serverSettingsOptions)
     {
-        _clientPacketReader = clientPacketReader;
         _playerRegistry = playerRegistry;
-        _packetDataReader = packetDataReader;
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
         _worldRegistry = worldRegistry;
@@ -50,25 +45,16 @@ public class ConnectionHandler : IConnectionHandler
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
     {
         ReadOnlyMemory<byte> buffer = await connection.ReadAsync(cancellationToken);
-        ClientPacketId packetId = (ClientPacketId)_packetDataReader.ReadByte(buffer, out buffer);
+        IEnumerable<IClientPacket> initialConnectionPackets = ClientPacketDeserializer.ReadPackets(buffer, cancellationToken);
 
-        // Ensure that the first packet ID corresponds to that of an identification packet.
-        if (packetId != ClientPacketId.Identification)
+        if (initialConnectionPackets.ToArray() is not [ClientIdentificationPacket clientIdentificationPacket])
         {
-            _logger.LogError("Unexpected first packet ID {packetId} from connection {connectionId}",
-                packetId,
+            _logger.LogError("Unexpected initial packets received from connection {connectionId}",
                 connection.Id);
-
-            await connection.SendAsync(new ServerDisconnectPlayerPacket
-            {
-                Message = $"Invalid client identification packet ID {(byte)packetId}"
-            });
 
             await connection.DisconnectAsync();
             return;
         }
-
-        ClientIdentificationPacket clientIdentificationPacket = _clientPacketReader.ReadIdentificationPacket(buffer);
 
         // Validate client protocol ID.
         if (clientIdentificationPacket.ProtocolVersion != Constants.Networking.ProtocolVersion)
@@ -131,43 +117,36 @@ public class ConnectionHandler : IConnectionHandler
             {
                 ReadOnlyMemory<byte> buffer = await connection.ReadAsync(cancellationToken);
 
-                while (buffer.Length > 0)
+                foreach (IClientPacket packet in ClientPacketDeserializer.ReadPackets(buffer, cancellationToken))
                 {
-                    ClientPacketId packetId = (ClientPacketId)buffer.Span[0];
-
-                    // Slice the packet ID byte off.
-                    buffer = buffer[1..];
-
-                    switch (packetId)
+                    switch (packet)
                     {
+                        // Client identification packet.
+                        case ClientIdentificationPacket clientIdentificationPacket:
+                            // Todo: Handle unexpected client identification packet.
+                            break;
+
                         // Block update packet.
-                        case ClientPacketId.SetBlock:
-                            ClientSetBlockPacket setBlockPacket = _clientPacketReader.ReadSetBlockPacket(buffer[..ClientSetBlockPacket.PacketSize]);
-                            buffer = buffer[ClientSetBlockPacket.PacketSize..];
+                        case ClientSetBlockPacket setBlockPacket:
                             await packetHandler.HandleSetBlockPacketAsync(setBlockPacket);
                             break;
 
                         // Pose packet.
-                        case ClientPacketId.PositionAndOrientation:
-                            ClientPositionAndOrientationPacket positionAndOrientationPacket = _clientPacketReader.ReadPositionAndOrientationPacket(buffer[..ClientPositionAndOrientationPacket.PacketSize]);
-                            buffer = buffer[ClientPositionAndOrientationPacket.PacketSize..];
+                        case ClientPositionAndOrientationPacket positionAndOrientationPacket:
                             await packetHandler.HandlePositionAndOrientationPacketAsync(positionAndOrientationPacket);
                             break;
 
                         // Message packet.
-                        case ClientPacketId.Message:
-                            ClientMessagePacket messagePacket = _clientPacketReader.ReadMessagePacket(buffer[..ClientMessagePacket.PacketSize]);
-                            buffer = buffer[ClientMessagePacket.PacketSize..];
+                        case ClientMessagePacket messagePacket:
                             await packetHandler.HandleMessagePacketAsync(messagePacket);
                             break;
 
                         // Unknown packet type.
                         default:
-                            _logger.LogWarning("Unexpected packet {packetId} receives from {connectionId}, flushing buffer",
-                                packetId,
+                            // Todo: Handle unknown packet.
+                            _logger.LogWarning("Unexpected packet {packetType} receives from {connectionId}, ", // Todo: Finish error message
+                                packet.GetType().FullName,
                                 connection.Id);
-
-                            buffer = buffer[buffer.Length..];
                             break;
                     }
                 }
