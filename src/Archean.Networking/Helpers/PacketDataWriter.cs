@@ -20,15 +20,17 @@ public static class PacketDataWriter
         rest = buffer[sizeof(short)..];
     }
 
-    public static void WriteFByte(FByte value, Span<byte> buffer, out Span<byte> rest)
+    public static void WriteFByte(float value, Span<byte> buffer, out Span<byte> rest)
     {
-        buffer[0] = value.ToByte();
+        sbyte sbyteValue = FixedPointHelper.WriteFixedSByte(value);
+        buffer[0] = (byte)sbyteValue;
         rest = buffer[sizeof(byte)..];
     }
 
-    public static void WriteFShort(FShort value, Span<byte> buffer, out Span<byte> rest)
+    public static void WriteFShort(float value, Span<byte> buffer, out Span<byte> rest)
     {
-        BinaryPrimitives.WriteUInt16BigEndian(buffer, value.ToUShort());
+        short shortValue = FixedPointHelper.WriteFixedShort(value);
+        BinaryPrimitives.WriteInt16BigEndian(buffer, shortValue);
         rest = buffer[sizeof(short)..];
     }
 

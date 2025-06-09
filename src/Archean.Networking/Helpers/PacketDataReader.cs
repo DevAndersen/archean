@@ -34,18 +34,18 @@ public static class PacketDataReader
         return buffer[..read].ToArray();
     }
 
-    public static FByte ReadFByte(ReadOnlySpan<byte> buffer, out ReadOnlySpan<byte> rest)
+    public static float ReadFByte(ReadOnlySpan<byte> buffer, out ReadOnlySpan<byte> rest)
     {
         const int read = sizeof(byte);
         rest = buffer[read..];
-        return new FByte(buffer[0]);
+        return FixedPointHelper.ReadFixedSByte((sbyte)buffer[0]);
     }
 
-    public static FShort ReadFShort(ReadOnlySpan<byte> buffer, out ReadOnlySpan<byte> rest)
+    public static float ReadFShort(ReadOnlySpan<byte> buffer, out ReadOnlySpan<byte> rest)
     {
         const int read = sizeof(ushort);
         rest = buffer[read..];
-        return new FShort(BinaryPrimitives.ReadUInt16BigEndian(buffer));
+        return FixedPointHelper.ReadFixedShort(BinaryPrimitives.ReadInt16BigEndian(buffer));
     }
 
     public static ushort ReadUShort(ReadOnlySpan<byte> buffer, out ReadOnlySpan<byte> rest)

@@ -5,9 +5,9 @@ public class ClientPacketHandler : IClientPacketHandler
     private readonly IPlayerService _playerService;
     private readonly IGlobalEventBus _globalEventBus;
 
-    private FShort _x;
-    private FShort _y;
-    private FShort _z;
+    private float _x;
+    private float _y;
+    private float _z;
     private byte _yaw;
     private byte _pitch;
 
@@ -48,18 +48,18 @@ public class ClientPacketHandler : IClientPacketHandler
                 _yaw = packet.Yaw;
 
                 player.UpdatePositionAndRotation(
-                    packet.X.ToFloat(),
-                    packet.Y.ToFloat(),
-                    packet.Z.ToFloat(),
+                    packet.X,
+                    packet.Y,
+                    packet.Z,
                     packet.Pitch,
                     packet.Yaw);
 
                 await _globalEventBus.InvokeEventAsync(new PositionAndOrientationEvent
                 {
                     Player = player,
-                    X = packet.X.ToFloat(),
-                    Y = packet.Y.ToFloat(),
-                    Z = packet.Z.ToFloat(),
+                    X = packet.X,
+                    Y = packet.Y,
+                    Z = packet.Z,
                     Pitch = packet.Pitch,
                     Yaw = packet.Yaw
                 });

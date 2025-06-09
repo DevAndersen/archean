@@ -80,9 +80,9 @@ public static class ClientPacketDeserializer
     public static ClientPositionAndOrientationPacket ReadPositionAndOrientationPacket(ReadOnlySpan<byte> buffer)
     {
         // Skip the first byte, which represents the player ID (always 0xFF).
-        FShort x = PacketDataReader.ReadFShort(buffer[1..], out buffer);
-        FShort y = PacketDataReader.ReadFShort(buffer, out buffer);
-        FShort z = PacketDataReader.ReadFShort(buffer, out buffer);
+        float x = PacketDataReader.ReadFShort(buffer[1..], out buffer);
+        float y = PacketDataReader.ReadFShort(buffer, out buffer);
+        float z = PacketDataReader.ReadFShort(buffer, out buffer);
         byte yaw = PacketDataReader.ReadByte(buffer, out buffer);
         byte pitch = PacketDataReader.ReadByte(buffer, out _);
 

@@ -73,9 +73,9 @@ public class TestWorld : IWorld
             {
                 PlayerId = otherPlayer.Id,
                 PlayerName = otherPlayer.DisplayName,
-                X = new FShort(otherPlayer.PosX),
-                Y = new FShort(otherPlayer.PosY),
-                Z = new FShort(otherPlayer.PosZ),
+                X = otherPlayer.PosX,
+                Y = otherPlayer.PosY,
+                Z = otherPlayer.PosZ,
                 Pitch = otherPlayer.Pitch,
                 Yaw = otherPlayer.Yaw
             });
@@ -84,9 +84,9 @@ public class TestWorld : IWorld
             {
                 PlayerId = player.Id,
                 PlayerName = player.DisplayName,
-                X = new FShort(player.PosX),
-                Y = new FShort(player.PosY),
-                Z = new FShort(player.PosZ),
+                X = player.PosX,
+                Y = player.PosY,
+                Z = player.PosZ,
                 Pitch = player.Pitch,
                 Yaw = player.Yaw
             });
@@ -113,9 +113,9 @@ public class TestWorld : IWorld
         {
             PlayerId = Constants.Networking.PlayerSelfId,
             PlayerName = player.Username,
-            X = new FShort(4F),
-            Y = new FShort(_blockMap.Height + 3),
-            Z = new FShort(4F),
+            X = 4F,
+            Y = _blockMap.Height + 3,
+            Z = 4F,
             Pitch = 0,
             Yaw = 0
         });
@@ -214,9 +214,9 @@ public class TestWorld : IWorld
             await otherPlayer.Connection.SendAsync(new ServerAbsolutePositionAndOrientationPacket
             {
                 PlayerId = arg.Player.Id,
-                X = new FShort(arg.X),
-                Y = new FShort(arg.Y),
-                Z = new FShort(arg.Z),
+                X = arg.X,
+                Y = arg.Y,
+                Z = arg.Z,
                 Pitch = arg.Pitch,
                 Yaw = arg.Yaw
             });

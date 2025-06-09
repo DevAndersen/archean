@@ -5,9 +5,9 @@ public static class ServerPacketSizer
     public const int ServerAbsolutePositionAndOrientationPacketSize
         = sizeof(ServerPacketId) // Packet ID
         + sizeof(sbyte) // Player ID
-        + FShort.Size // X
-        + FShort.Size // Y
-        + FShort.Size // Z
+        + sizeof(short) // X
+        + sizeof(short) // Y
+        + sizeof(short) // Z
         + sizeof(byte) // Yaw
         + sizeof(byte); // Pitch
 
@@ -58,18 +58,18 @@ public static class ServerPacketSizer
     public const int ServerRelativePositionAndOrientationPacketSize
         = sizeof(ServerPacketId) // Packet ID
         + sizeof(sbyte) // Player ID
-        + FByte.Size // X
-        + FByte.Size // Y
-        + FByte.Size // Z
+        + sizeof(sbyte) // X
+        + sizeof(sbyte) // Y
+        + sizeof(sbyte) // Z
         + sizeof(byte) // Yaw
         + sizeof(byte); // Pitch
 
     public const int ServerRelativePositionPacketSize
         = sizeof(ServerPacketId) // Packet ID
         + sizeof(sbyte) // Player ID
-        + FByte.Size // X
-        + FByte.Size // Y
-        + FByte.Size; // Z
+        + sizeof(sbyte) // X
+        + sizeof(sbyte) // Y
+        + sizeof(sbyte); // Z
 
     public const int ServerSetBlockPacketSize
         = sizeof(ServerPacketId) // Packet ID
@@ -82,9 +82,9 @@ public static class ServerPacketSizer
         = sizeof(ServerPacketId) // Packet ID
         + sizeof(sbyte) // Player ID
         + Constants.Networking.StringLength // Player name
-        + FShort.Size // X
-        + FShort.Size // Y
-        + FShort.Size // Z
+        + sizeof(short) // X
+        + sizeof(short) // Y
+        + sizeof(short) // Z
         + sizeof(byte) // Yaw
         + sizeof(byte); // Pitch
 
