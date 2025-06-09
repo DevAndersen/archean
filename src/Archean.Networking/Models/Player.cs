@@ -1,9 +1,4 @@
-﻿using Archean.Core.Models;
-using Archean.Core.Models.Events;
-using Archean.Core.Models.Networking;
-using Archean.Core.Services.Events;
-
-namespace Archean.Networking.Models;
+﻿namespace Archean.Networking.Models;
 
 public class Player : IPlayer
 {
