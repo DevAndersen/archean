@@ -1,4 +1,4 @@
-﻿namespace Archean.Core.Models.Networking.ClientPackets;
+﻿namespace Archean.Networking.Models;
 
 /// <summary>
 /// Client packet IDs.

@@ -1,5 +1,6 @@
 ﻿using Archean.Core.Exceptions;
 using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Networking.Models;
 
 namespace Archean.Networking.Helpers;
 
