@@ -2,5 +2,4 @@
 
 public interface IClientPacket
 {
-    ClientPacketId PacketId { get; }
 }

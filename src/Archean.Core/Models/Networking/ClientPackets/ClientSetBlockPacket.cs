@@ -2,8 +2,6 @@
 
 public class ClientSetBlockPacket : IClientPacket
 {
-    public ClientPacketId PacketId => ClientPacketId.SetBlock;
-
     public required short X { get; init; }
 
     public required short Y { get; init; }

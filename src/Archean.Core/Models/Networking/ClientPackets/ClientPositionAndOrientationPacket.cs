@@ -2,8 +2,6 @@
 
 public class ClientPositionAndOrientationPacket : IClientPacket
 {
-    public ClientPacketId PacketId => ClientPacketId.PositionAndOrientation;
-
     public required FShort X { get; init; }
 
     public required FShort Y { get; init; }
