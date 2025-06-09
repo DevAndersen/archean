@@ -26,26 +26,26 @@ public static class ClientPacketDeserializer
         {
             // Client identification packet.
             case ClientPacketId.Identification:
-                packet = ReadIdentificationPacket(buffer.Span[..ClientIdentificationPacket.PacketSize]);
-                rest = buffer[ClientIdentificationPacket.PacketSize..];
+                packet = ReadIdentificationPacket(buffer.Span[..ClientPacketSizer.ClientIdentificationPacketSize]);
+                rest = buffer[ClientPacketSizer.ClientIdentificationPacketSize..];
                 break;
 
             // Block update packet.
             case ClientPacketId.SetBlock:
-                packet = ReadSetBlockPacket(buffer.Span[..ClientSetBlockPacket.PacketSize]);
-                rest = buffer[ClientSetBlockPacket.PacketSize..];
+                packet = ReadSetBlockPacket(buffer.Span[..ClientPacketSizer.ClientSetBlockPacketSize]);
+                rest = buffer[ClientPacketSizer.ClientSetBlockPacketSize..];
                 break;
 
             // Pose packet.
             case ClientPacketId.PositionAndOrientation:
-                packet = ReadPositionAndOrientationPacket(buffer.Span[..ClientPositionAndOrientationPacket.PacketSize]);
-                rest = buffer[ClientPositionAndOrientationPacket.PacketSize..];
+                packet = ReadPositionAndOrientationPacket(buffer.Span[..ClientPacketSizer.ClientPositionAndOrientationPacketSize]);
+                rest = buffer[ClientPacketSizer.ClientPositionAndOrientationPacketSize..];
                 break;
 
             // Message packet.
             case ClientPacketId.Message:
-                packet = ReadMessagePacket(buffer.Span[..ClientMessagePacket.PacketSize]);
-                rest = buffer[ClientMessagePacket.PacketSize..];
+                packet = ReadMessagePacket(buffer.Span[..ClientPacketSizer.ClientMessagePacketSize]);
+                rest = buffer[ClientPacketSizer.ClientMessagePacketSize..];
                 break;
 
             // Unknown packet type.
