@@ -1,4 +1,4 @@
-﻿using Archean.Application.Services.Networking;
+﻿using Archean.Networking.Helpers;
 
 namespace Archean.Tests.Networking.PacketDataReaderTests;
 
@@ -20,13 +20,6 @@ public class PacketDataReaderStringTests
         { FilledStringBuffer, FilledString }
     };
 
-    private readonly PacketDataReader _packetDataReader;
-
-    public PacketDataReaderStringTests()
-    {
-        _packetDataReader = new PacketDataReader();
-    }
-
     static PacketDataReaderStringTests()
     {
         int bufferSize = Constants.Networking.StringLength + AdditionalBufferSize;
@@ -46,7 +39,7 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        string readString = _packetDataReader.ReadString(buffer, out _);
+        string readString = PacketDataReader.ReadString(buffer.Span, out _);
 
         // Assert
         Assert.Equal(originalString, readString);
@@ -60,7 +53,7 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = data;
 
         // Action
-        _packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer);
+        PacketDataReader.ReadString(buffer.Span, out ReadOnlySpan<byte> restBuffer);
 
         // Assert
         Assert.Equal(AdditionalBufferSize, restBuffer.Length);
@@ -73,6 +66,6 @@ public class PacketDataReaderStringTests
         Memory<byte> buffer = new byte[Constants.Networking.StringLength - 1];
 
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => _packetDataReader.ReadString(buffer, out ReadOnlyMemory<byte> restBuffer));
+        Assert.Throws<ArgumentOutOfRangeException>(() => PacketDataReader.ReadString(buffer.Span, out ReadOnlySpan<byte> restBuffer));
     }
 }

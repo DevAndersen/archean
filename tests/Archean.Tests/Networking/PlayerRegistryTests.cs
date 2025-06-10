@@ -1,7 +1,7 @@
-﻿using Archean.Application.Services.Networking;
-using Archean.Core.Models;
+﻿using Archean.Core.Models;
 using Archean.Core.Services.Networking;
 using Archean.Core.Settings;
+using Archean.Networking.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 

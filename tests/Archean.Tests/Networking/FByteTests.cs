@@ -1,4 +1,5 @@
 ﻿using Archean.Core.Models.Networking;
+using Archean.Networking.Helpers;
 
 namespace Archean.Tests.Networking;
 
@@ -17,42 +18,42 @@ public class FByteTests
     public void ConstructFromFloat_WithinRange_ReturnsExpected(float input, float expected)
     {
         // Setup
-        FByte fbyte = new FByte(input);
+        sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
         // Action
-        float actual = fbyte.ToFloat();
+        float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
         Assert.Equal(expected, actual);
     }
 
     [Theory]
-    [InlineData(4, FByte.MaxValue)]
-    [InlineData(float.MaxValue, FByte.MaxValue)]
-    [InlineData(float.PositiveInfinity, FByte.MaxValue)]
+    [InlineData(4, FixedPointHelper.FixedByteMaxValue)]
+    [InlineData(float.MaxValue, FixedPointHelper.FixedByteMaxValue)]
+    [InlineData(float.PositiveInfinity, FixedPointHelper.FixedByteMaxValue)]
     public void ConstructFromFloat_Positive_ReturnsClamped(float input, float expected)
     {
         // Setup
-        FByte fbyte = new FByte(input);
+        sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
         // Action
-        float actual = fbyte.ToFloat();
+        float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
         Assert.Equal(expected, actual);
     }
 
     [Theory]
-    [InlineData(-4, FByte.MinValue)]
-    [InlineData(float.MinValue, FByte.MinValue)]
-    [InlineData(float.NegativeInfinity, FByte.MinValue)]
+    [InlineData(-4, FixedPointHelper.FixedByteMinValue)]
+    [InlineData(float.MinValue, FixedPointHelper.FixedByteMinValue)]
+    [InlineData(float.NegativeInfinity, FixedPointHelper.FixedByteMinValue)]
     public void ConstructFromFloat_Negative_ReturnsClamped(float input, float expected)
     {
         // Setup
-        FByte fbyte = new FByte(input);
+        sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
         // Action
-        float actual = fbyte.ToFloat();
+        float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
         Assert.Equal(expected, actual);
@@ -63,10 +64,10 @@ public class FByteTests
     public void ConstructFromFloat_NaN_ReturnsZero(float input, float expected)
     {
         // Setup
-        FByte fbyte = new FByte(input);
+        sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
         // Action
-        float actual = fbyte.ToFloat();
+        float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
         Assert.Equal(expected, actual);

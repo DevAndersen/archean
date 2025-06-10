@@ -1,4 +1,5 @@
 ﻿using Archean.Core.Models.Networking;
+using Archean.Networking.Helpers;
 
 namespace Archean.Tests.Networking;
 
@@ -17,42 +18,42 @@ public class FShortTests
     public void ConstructFromFloat_WithinRange_ReturnsExpected(float input, float expected)
     {
         // Setup
-        FShort fshort = new FShort(input);
+        short fshort = FixedPointHelper.WriteFixedShort(input);
 
         // Action
-        float actual = fshort.ToFloat();
+        float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
         Assert.Equal(expected, actual);
     }
 
     [Theory]
-    [InlineData(2000, FShort.MaxValue)]
-    [InlineData(float.MaxValue, FShort.MaxValue)]
-    [InlineData(float.PositiveInfinity, FShort.MaxValue)]
+    [InlineData(2000, FixedPointHelper.FixedShortMaxValue)]
+    [InlineData(float.MaxValue, FixedPointHelper.FixedShortMaxValue)]
+    [InlineData(float.PositiveInfinity, FixedPointHelper.FixedShortMaxValue)]
     public void ConstructFromFloat_Positive_ReturnsClamped(float input, float expected)
     {
         // Setup
-        FShort fshort = new FShort(input);
+        short fshort = FixedPointHelper.WriteFixedShort(input);
 
         // Action
-        float actual = fshort.ToFloat();
+        float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
         Assert.Equal(expected, actual);
     }
 
     [Theory]
-    [InlineData(-2000, FShort.MinValue)]
-    [InlineData(float.MinValue, FShort.MinValue)]
-    [InlineData(float.NegativeInfinity, FShort.MinValue)]
+    [InlineData(-2000, FixedPointHelper.FixedShortMinValue)]
+    [InlineData(float.MinValue, FixedPointHelper.FixedShortMinValue)]
+    [InlineData(float.NegativeInfinity, FixedPointHelper.FixedShortMinValue)]
     public void ConstructFromFloat_Negative_ReturnsClamped(float input, float expected)
     {
         // Setup
-        FShort fshort = new FShort(input);
+        short fshort = FixedPointHelper.WriteFixedShort(input);
 
         // Action
-        float actual = fshort.ToFloat();
+        float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
         Assert.Equal(expected, actual);
@@ -63,10 +64,10 @@ public class FShortTests
     public void ConstructFromFloat_NaN_ReturnsZero(float input, float expected)
     {
         // Setup
-        FShort fshort = new FShort(input);
+        short fshort = FixedPointHelper.WriteFixedShort(input);
 
         // Action
-        float actual = fshort.ToFloat();
+        float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
         Assert.Equal(expected, actual);
