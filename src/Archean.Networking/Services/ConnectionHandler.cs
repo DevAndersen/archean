@@ -30,8 +30,9 @@ public class ConnectionHandler : IConnectionHandler
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
     {
-        ReadOnlyMemory<byte> buffer = await connection.ReadAsync(cancellationToken);
-        IEnumerable<IClientPacket> initialConnectionPackets = ClientPacketDeserializer.ReadPackets(buffer, cancellationToken);
+        IClientPacket[] initialConnectionPackets = connection.ReadAsync(cancellationToken)
+            .ToBlockingEnumerable(cancellationToken)
+            .ToArray();
 
         if (initialConnectionPackets.ToArray() is not [ClientIdentificationPacket clientIdentificationPacket])
         {
@@ -101,9 +102,9 @@ public class ConnectionHandler : IConnectionHandler
         {
             while (!cancellationToken.IsCancellationRequested && connection.IsConnected)
             {
-                ReadOnlyMemory<byte> buffer = await connection.ReadAsync(cancellationToken);
+                IAsyncEnumerable<IClientPacket> packets = connection.ReadAsync(cancellationToken);
 
-                foreach (IClientPacket packet in ClientPacketDeserializer.ReadPackets(buffer, cancellationToken))
+                await foreach (IClientPacket packet in packets)
                 {
                     switch (packet)
                     {

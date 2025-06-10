@@ -1,4 +1,5 @@
-﻿using Archean.Core.Models.Networking.ServerPackets;
+﻿using Archean.Core.Models.Networking.ClientPackets;
+using Archean.Core.Models.Networking.ServerPackets;
 
 namespace Archean.Core.Models.Networking;
 
@@ -10,7 +11,7 @@ public interface IConnection : IDisposable
 
     Task SendAsync(params IEnumerable<IServerPacket> packets);
 
-    Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken);
+    IAsyncEnumerable<IClientPacket> ReadAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Closes the connection.

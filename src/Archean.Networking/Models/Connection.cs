@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Archean.Networking.Models;
 
@@ -16,7 +17,7 @@ public class Connection : IConnection
         _socket = socket;
     }
 
-    public async Task<ReadOnlyMemory<byte>> ReadAsync(CancellationToken cancellationToken)
+    public async IAsyncEnumerable<IClientPacket> ReadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         int readAttempts = 0;
         while (_socket.Available == 0 && readAttempts++ < 5)
@@ -24,9 +25,17 @@ public class Connection : IConnection
             await Task.Delay(10, cancellationToken);
         }
 
-        Memory<byte> data = new byte[_socket.Available];
-        await _socket.ReceiveAsync(data, cancellationToken);
-        return data;
+        int bufferSize = _socket.Available;
+        byte[] array = ArrayPool<byte>.Shared.Rent(bufferSize);
+        Memory<byte> buffer = array.AsMemory()[..bufferSize];
+        await _socket.ReceiveAsync(buffer, cancellationToken);
+
+        foreach (IClientPacket packet in ClientPacketDeserializer.ReadPackets(buffer, cancellationToken))
+        {
+            yield return packet;
+        }
+
+        ArrayPool<byte>.Shared.Return(array);
     }
 
     public async Task SendAsync(params IEnumerable<IServerPacket> packets)
@@ -34,9 +43,9 @@ public class Connection : IConnection
         int bufferSize = ServerPacketSizer.CalculateSize(packets);
         byte[] array = ArrayPool<byte>.Shared.Rent(bufferSize);
 
-        Memory<byte> memory = array.AsMemory()[..bufferSize];
-        ServerPacketSerializer.WritePackets(packets, memory.Span);
-        await _socket.SendAsync(memory);
+        Memory<byte> buffer = array.AsMemory()[..bufferSize];
+        ServerPacketSerializer.WritePackets(packets, buffer.Span);
+        await _socket.SendAsync(buffer);
 
         ArrayPool<byte>.Shared.Return(array);
     }
