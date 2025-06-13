@@ -1,5 +1,4 @@
-﻿using Archean.Core.Models.Networking;
-using Archean.Networking.Helpers;
+﻿using Archean.Networking.Helpers;
 
 namespace Archean.Tests.Networking;
 
