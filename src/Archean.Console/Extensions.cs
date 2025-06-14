@@ -14,6 +14,7 @@ using Archean.Core.Settings;
 using Archean.Networking.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Archean.Console;
 
@@ -27,6 +28,14 @@ public static class Extensions
     public static IHostApplicationBuilder ConfigureArcheanDefaultServices(this IHostApplicationBuilder builder)
     {
         CommandRegistrations commandRegistrations = new CommandRegistrations();
+
+        // Define default log levels, while allowing configurations to override these.
+        builder.Services.AddLogging(loggingBuilder =>
+        {
+            loggingBuilder.SetMinimumLevel(LogLevel.Information);
+            loggingBuilder.AddFilter("Microsoft", LogLevel.Warning);
+            loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+        });
 
         builder.Services
 
