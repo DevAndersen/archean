@@ -1,13 +1,11 @@
-﻿using Archean.Core.Models.Commands;
+﻿using Archean.Commands;
+using Archean.Core.Models.Commands;
 
 namespace Archean.Application.Models.Commands;
 
+[Command("Test", Aliases = ["t"])]
 public class TestCommand : ICommand
 {
-    public static string CommandName => "Test";
-
-    public static string[]? CommandAliases => ["t"];
-
     private readonly ILogger<TestCommand> _logger;
 
     public TestCommand(ILogger<TestCommand> logger)

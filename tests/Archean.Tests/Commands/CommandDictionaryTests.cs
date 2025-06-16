@@ -1,4 +1,5 @@
-﻿using Archean.Application.Services.Commands;
+﻿using Archean.Commands;
+using Archean.Commands.Services;
 using Archean.Core.Models.Commands;
 using Archean.Core.Services.Commands;
 using Microsoft.Extensions.Logging;
@@ -8,12 +9,12 @@ namespace Archean.Tests.Commands;
 
 public class CommandDictionaryTests
 {
-    private readonly ILogger<CommandDictionary> _mockedLogger;
+    private readonly ILogger<CommandRegistry> _mockedLogger;
     private readonly IServiceProvider _mockedServiceProvider;
 
     public CommandDictionaryTests()
     {
-        _mockedLogger = Substitute.For<ILogger<CommandDictionary>>();
+        _mockedLogger = Substitute.For<ILogger<CommandRegistry>>();
         _mockedServiceProvider = Substitute.For<IServiceProvider>();
     }
 
@@ -21,10 +22,10 @@ public class CommandDictionaryTests
     public void Register_EmptyDictionary_ReturnsTrue()
     {
         // Setup
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        bool wasCommandRegistered = commandDictionary.Register<TestCommand>();
+        bool wasCommandRegistered = commandDictionary.RegisterCommand(typeof(TestCommand));
 
         // Assert
         Assert.True(wasCommandRegistered);
@@ -34,11 +35,11 @@ public class CommandDictionaryTests
     public void Register_CommandAlreadyInDictionary_ReturnsFalse()
     {
         // Setup
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.Register<TestCommand>();
-        bool wasCommandRegistered = commandDictionary.Register<TestCommand>();
+        commandDictionary.RegisterCommand(typeof(TestCommand));
+        bool wasCommandRegistered = commandDictionary.RegisterCommand(typeof(TestCommand));
 
         // Assert
         Assert.False(wasCommandRegistered);
@@ -49,11 +50,11 @@ public class CommandDictionaryTests
     {
         // Setup
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.Register<TestCommand>();
-        bool wasCommandFound = commandDictionary.TryGetCommand(TestCommand.CommandName, out ICommand? command);
+        commandDictionary.RegisterCommand(typeof(TestCommand));
+        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
 
         // Assert
         Assert.True(wasCommandFound);
@@ -65,12 +66,12 @@ public class CommandDictionaryTests
     {
         // Setup
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.Register<TestCommand>();
-        bool foundByAlias1 = commandDictionary.TryGetCommand(TestCommand.CommandAliases[0], out ICommand? commandByAlias1);
-        bool foundByAlias2 = commandDictionary.TryGetCommand(TestCommand.CommandAliases[1], out ICommand? commandByAlias2);
+        commandDictionary.RegisterCommandAliases(typeof(TestCommand));
+        bool foundByAlias1 = commandDictionary.TryGetCommand("t", out ICommand? commandByAlias1);
+        bool foundByAlias2 = commandDictionary.TryGetCommand("123", out ICommand? commandByAlias2);
 
         // Assert
         Assert.True(foundByAlias1);
@@ -83,10 +84,10 @@ public class CommandDictionaryTests
     public void TryGetCommand_IncorrectName_CommandNotFound()
     {
         // Setup
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        bool wasCommandFound = commandDictionary.TryGetCommand(TestCommand.CommandName, out ICommand? command);
+        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
 
         // Assert
         Assert.False(wasCommandFound);
@@ -97,23 +98,20 @@ public class CommandDictionaryTests
     public void TryGetCommand_CommandNotInServiceProvider_CommandFound()
     {
         // Setup
-        ICommandDictionary commandDictionary = new CommandDictionary(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.Register<TestCommand>();
-        bool wasCommandFound = commandDictionary.TryGetCommand(TestCommand.CommandName, out ICommand? command);
+        commandDictionary.RegisterCommand(typeof(TestCommand));
+        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
 
         // Assert
         Assert.False(wasCommandFound);
         Assert.Null(command);
     }
 
+    [Command(nameof(TestCommand), Aliases = ["t", "123"])]
     private class TestCommand : ICommand
     {
-        public static string CommandName => nameof(TestCommand);
-
-        public static string[] CommandAliases => ["t", "123"];
-
         public Task InvokeAsync() => Task.CompletedTask;
     }
 }

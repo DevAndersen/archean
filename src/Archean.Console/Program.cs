@@ -1,8 +1,8 @@
-﻿using Archean.Console;
+﻿using Archean.Hosting;
 using Microsoft.Extensions.Hosting;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder();
-builder.ConfigureArcheanDefaultServices();
+builder.ConfigureArcheanDefaults();
 
 IHost app = builder.Build();
 app.Run();

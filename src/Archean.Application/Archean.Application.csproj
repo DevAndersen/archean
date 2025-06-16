@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Archean.Commands\Archean.Commands.csproj" />
     <ProjectReference Include="..\Archean.Core\Archean.Core.csproj" />
   </ItemGroup>
 
