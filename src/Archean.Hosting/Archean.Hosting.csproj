@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Archean.Application\Archean.Application.csproj" />
+    <ProjectReference Include="..\Archean.Commands\Archean.Commands.csproj" />
     <ProjectReference Include="..\Archean.Core\Archean.Core.csproj" />
     <ProjectReference Include="..\Archean.Networking\Archean.Networking.csproj" />
   </ItemGroup>

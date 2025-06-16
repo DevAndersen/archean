@@ -1,8 +1,8 @@
 ﻿using Archean.Application.Models.Commands;
 using Archean.Application.Services;
-using Archean.Application.Services.Commands;
 using Archean.Application.Services.Events;
 using Archean.Application.Services.Worlds;
+using Archean.Commands.Services;
 using Archean.Core.Models.Commands;
 using Archean.Core.Services;
 using Archean.Core.Services.Commands;
@@ -64,17 +64,12 @@ public static class HostApplicationBuilderExtensions
 
     public static IHostApplicationBuilder ConfigureServiceDefaults(this IHostApplicationBuilder builder)
     {
-        CommandRegistrations commandRegistrations = new CommandRegistrations();
-
         builder
             .ConfigureServiceDefaults<ServerSettings>("Server")
             .ConfigureServiceDefaults<ChatSettings>("Chat")
             .ConfigureServiceDefaults<AliasSettings>("Aliases");
 
         builder.Services
-
-            // General
-            .AddSingleton(commandRegistrations)
 
             // Startup
             .AddStartup<BlockRegistrationStartupService>()
@@ -98,8 +93,8 @@ public static class HostApplicationBuilderExtensions
             .AddSingleton<IBlockDictionary, BlockDictionary>()
 
             // Commands
-            .AddSingleton<ICommandDictionary, CommandDictionary>()
-            .RegisterCommand<TestCommand>(commandRegistrations)
+            .AddSingleton<ICommandRegistry, CommandRegistry>()
+            .RegisterCommand<TestCommand>()
 
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()
@@ -110,11 +105,11 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
-    public static IServiceCollection RegisterCommand<TCommand>(this IServiceCollection serviceCollection, CommandRegistrations commandRegistrations)
+    public static IServiceCollection RegisterCommand<TCommand>(this IServiceCollection serviceCollection)
         where TCommand : class, ICommand
     {
-        commandRegistrations.RegisterCommand<TCommand>();
         return serviceCollection
+            .AddSingleton<ICommand, TCommand>()
             .AddTransient<TCommand>();
     }
 

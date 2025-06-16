@@ -8,18 +8,18 @@ public class ClientEventHandler : IClientEventHandler
     private readonly IScopedEventListener _eventListener;
     private readonly IPlayerService _playerService;
     private readonly ChatSettings _chatSettings;
-    private readonly ICommandDictionary _commandDictionary;
+    private readonly ICommandRegistry _commandRegistry;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
         IPlayerService playerService,
         IOptions<ChatSettings> chatSettingsOptions,
-        ICommandDictionary commandDictionary)
+        ICommandRegistry commandRegistry)
     {
         _eventListener = eventListener;
         _playerService = playerService;
         _chatSettings = chatSettingsOptions.Value;
-        _commandDictionary = commandDictionary;
+        _commandRegistry = commandRegistry;
     }
 
     public void RegisterEventSubscriptions()
@@ -36,7 +36,7 @@ public class ClientEventHandler : IClientEventHandler
                 ? arg.Message[1..]
                 : arg.Message[1..spaceIndex];
 
-            if (_commandDictionary.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
+            if (_commandRegistry.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
             {
                 await command.InvokeAsync();
             }
