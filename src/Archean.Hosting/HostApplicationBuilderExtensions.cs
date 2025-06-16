@@ -1,5 +1,4 @@
-﻿using Archean.Application;
-using Archean.Application.Models.Commands;
+﻿using Archean.Application.Models.Commands;
 using Archean.Application.Services;
 using Archean.Application.Services.Commands;
 using Archean.Application.Services.Events;
@@ -11,25 +10,36 @@ using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 using Archean.Core.Services.Worlds;
 using Archean.Core.Settings;
+using Archean.Hosting.Services;
 using Archean.Networking.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Archean.Console;
+namespace Archean.Hosting;
 
-public static class Extensions
+public static class HostApplicationBuilderExtensions
 {
     /// <summary>
-    /// Registers all default Archean services.
+    /// Configures all Archean defaults.
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IHostApplicationBuilder ConfigureArcheanDefaultServices(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureArcheanDefaults(this IHostApplicationBuilder builder)
     {
-        CommandRegistrations commandRegistrations = new CommandRegistrations();
+        builder.ConfigureLoggingDefaults();
+        builder.ConfigureServiceDefaults();
 
-        // Define default log levels, while allowing configurations to override these.
+        return builder;
+    }
+
+    /// <summary>
+    /// Define default log levels, while allowing configurations to override these.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder ConfigureLoggingDefaults(this IHostApplicationBuilder builder)
+    {
         builder.Services.AddLogging(loggingBuilder =>
         {
             loggingBuilder.SetMinimumLevel(LogLevel.Information);
@@ -37,16 +47,38 @@ public static class Extensions
             loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
         });
 
+        return builder;
+    }
+
+    /// <summary>
+    /// Register a startup service.
+    /// </summary>
+    /// <typeparam name="TService"></typeparam>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddStartup<TService>(this IServiceCollection serviceCollection)
+        where TService : class, IStartupService
+    {
+        return serviceCollection.AddSingleton<IStartupService, TService>();
+    }
+
+    public static IHostApplicationBuilder ConfigureServiceDefaults(this IHostApplicationBuilder builder)
+    {
+        CommandRegistrations commandRegistrations = new CommandRegistrations();
+
+        builder
+            .ConfigureServiceDefaults<ServerSettings>("Server")
+            .ConfigureServiceDefaults<ChatSettings>("Chat")
+            .ConfigureServiceDefaults<AliasSettings>("Aliases");
+
         builder.Services
 
             // General
-            .AddSingleton<ServerStartup>()
             .AddSingleton(commandRegistrations)
 
-            // Settings
-            .Configure<ServerSettings>(builder.Configuration.GetSection("Server"))
-            .Configure<ChatSettings>(builder.Configuration.GetSection("Chat"))
-            .Configure<AliasSettings>(builder.Configuration.GetSection("Aliases"))
+            // Startup
+            .AddStartup<BlockRegistrationStartupService>()
+            .AddStartup<CommandRegistrationStartupService>()
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
@@ -84,5 +116,13 @@ public static class Extensions
         commandRegistrations.RegisterCommand<TCommand>();
         return serviceCollection
             .AddTransient<TCommand>();
+    }
+
+    public static IHostApplicationBuilder ConfigureServiceDefaults<TConfiguration>(this IHostApplicationBuilder builder, string section)
+        where TConfiguration : class
+    {
+        builder.Services.Configure<TConfiguration>(builder.Configuration.GetSection(section));
+
+        return builder;
     }
 }

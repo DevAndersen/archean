@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Archean.Application\Archean.Application.csproj" />
-    <ProjectReference Include="..\Archean.Core\Archean.Core.csproj" />
-    <ProjectReference Include="..\Archean.Networking\Archean.Networking.csproj" />
+    <ProjectReference Include="..\Archean.Hosting\Archean.Hosting.csproj" />
   </ItemGroup>
 
   <ItemGroup>
