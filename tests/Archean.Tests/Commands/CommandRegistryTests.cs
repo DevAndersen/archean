@@ -7,12 +7,12 @@ using NSubstitute;
 
 namespace Archean.Tests.Commands;
 
-public class CommandDictionaryTests
+public class CommandRegistryTests
 {
     private readonly ILogger<CommandRegistry> _mockedLogger;
     private readonly IServiceProvider _mockedServiceProvider;
 
-    public CommandDictionaryTests()
+    public CommandRegistryTests()
     {
         _mockedLogger = Substitute.For<ILogger<CommandRegistry>>();
         _mockedServiceProvider = Substitute.For<IServiceProvider>();
