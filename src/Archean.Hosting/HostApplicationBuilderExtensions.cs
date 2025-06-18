@@ -18,6 +18,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Archean.Hosting;
 
+/// <summary>
+/// Contains extension methods for setting up Archean services and configurations.
+/// </summary>
 public static class HostApplicationBuilderExtensions
 {
     /// <summary>
@@ -28,13 +31,14 @@ public static class HostApplicationBuilderExtensions
     public static IHostApplicationBuilder ConfigureArcheanDefaults(this IHostApplicationBuilder builder)
     {
         builder.ConfigureLoggingDefaults();
-        builder.ConfigureServiceDefaults();
+        builder.RegisterDefaultServices();
+        builder.RegisterDefaultCommands();
 
         return builder;
     }
 
     /// <summary>
-    /// Define default log levels, while allowing configurations to override these.
+    /// Configure default log levels, while allowing configurations to override these.
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
@@ -51,23 +55,16 @@ public static class HostApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// Register a startup service.
+    /// Register all default services.
     /// </summary>
-    /// <typeparam name="TService"></typeparam>
-    /// <param name="serviceCollection"></param>
+    /// <param name="builder"></param>
     /// <returns></returns>
-    public static IServiceCollection AddStartup<TService>(this IServiceCollection serviceCollection)
-        where TService : class, IStartupService
-    {
-        return serviceCollection.AddSingleton<IStartupService, TService>();
-    }
-
-    public static IHostApplicationBuilder ConfigureServiceDefaults(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder RegisterDefaultServices(this IHostApplicationBuilder builder)
     {
         builder
-            .ConfigureServiceDefaults<ServerSettings>("Server")
-            .ConfigureServiceDefaults<ChatSettings>("Chat")
-            .ConfigureServiceDefaults<AliasSettings>("Aliases");
+            .AddConfiguration<ServerSettings>("Server")
+            .AddConfiguration<ChatSettings>("Chat")
+            .AddConfiguration<AliasSettings>("Aliases");
 
         builder.Services
 
@@ -94,7 +91,6 @@ public static class HostApplicationBuilderExtensions
 
             // Commands
             .AddSingleton<ICommandRegistry, CommandRegistry>()
-            .RegisterCommand<TestCommand>()
 
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()
@@ -105,7 +101,41 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
-    public static IServiceCollection RegisterCommand<TCommand>(this IServiceCollection serviceCollection)
+    /// <summary>
+    /// Register all default commands.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder RegisterDefaultCommands(this IHostApplicationBuilder builder)
+    {
+        builder.Services
+            .AddCommand<TestCommand>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Register a startup service.
+    /// </summary>
+    /// <typeparam name="TService"></typeparam>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddStartup<TService>(this IServiceCollection serviceCollection)
+        where TService : class, IStartupService
+    {
+        return serviceCollection.AddSingleton<IStartupService, TService>();
+    }
+
+    /// <summary>
+    /// Register a command.
+    /// </summary>
+    /// <remarks>
+    /// To new up a command for invocation, use the methods of <see cref="ICommandRegistry"/>.
+    /// </remarks>
+    /// <typeparam name="TCommand"></typeparam>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddCommand<TCommand>(this IServiceCollection serviceCollection)
         where TCommand : class, ICommand
     {
         return serviceCollection
@@ -113,7 +143,20 @@ public static class HostApplicationBuilderExtensions
             .AddTransient<TCommand>();
     }
 
-    public static IHostApplicationBuilder ConfigureServiceDefaults<TConfiguration>(this IHostApplicationBuilder builder, string section)
+    /// <summary>
+    /// Register <typeparamref name="TConfiguration"/>, binding it to the specified configuration <paramref name="section"/>.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item>Inject an instance of <see cref="IOptions{TConfiguration}"/> to access the configured values.</item>
+    /// <item><paramref name="section"/> uses colon (":") to access nested elements, for example <c>"Category:SubCategory"</c>.</item>
+    /// </list>
+    /// </remarks>
+    /// <typeparam name="TConfiguration"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="section"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder AddConfiguration<TConfiguration>(this IHostApplicationBuilder builder, string section)
         where TConfiguration : class
     {
         builder.Services.Configure<TConfiguration>(builder.Configuration.GetSection(section));
