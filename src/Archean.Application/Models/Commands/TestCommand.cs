@@ -8,6 +8,12 @@ public class TestCommand : ICommand
 {
     private readonly ILogger<TestCommand> _logger;
 
+    [CommandParameter(0, Required = true)]
+    public int Number { get; set; }
+
+    [CommandParameter(1, Required = true)]
+    public string? Text { get; set; }
+
     public TestCommand(ILogger<TestCommand> logger)
     {
         _logger = logger;

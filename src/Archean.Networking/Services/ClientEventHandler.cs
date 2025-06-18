@@ -1,5 +1,6 @@
 ﻿using Archean.Core.Models.Commands;
 using Archean.Core.Services.Commands;
+using Archean.Networking.Models;
 
 namespace Archean.Networking.Services;
 
@@ -8,17 +9,20 @@ public class ClientEventHandler : IClientEventHandler
     private readonly IScopedEventListener _eventListener;
     private readonly IPlayerService _playerService;
     private readonly ChatSettings _chatSettings;
+    private readonly ICommandInvoker _commandInvoker;
     private readonly ICommandRegistry _commandRegistry;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
         IPlayerService playerService,
         IOptions<ChatSettings> chatSettingsOptions,
+        ICommandInvoker commandInvoker,
         ICommandRegistry commandRegistry)
     {
         _eventListener = eventListener;
         _playerService = playerService;
         _chatSettings = chatSettingsOptions.Value;
+        _commandInvoker = commandInvoker;
         _commandRegistry = commandRegistry;
     }
 
@@ -31,22 +35,18 @@ public class ClientEventHandler : IClientEventHandler
     {
         if (arg.Message.StartsWith('/'))
         {
-            int spaceIndex = arg.Message.IndexOf(' ');
-            ReadOnlySpan<char> nonDigitsOnlyShortest = spaceIndex == -1
-                ? arg.Message[1..]
-                : arg.Message[1..spaceIndex];
+            ReadOnlyMemory<char> commandText = arg.Message.AsMemory()[1..];
 
-            if (_commandRegistry.TryGetCommand(nonDigitsOnlyShortest, out ICommand? command))
+            if (await _commandInvoker.TryInvokeCommandAsync(commandText))
             {
-                await command.InvokeAsync();
-            }
-            else if (_playerService.TryGetPlayer(out IPlayer? player))
-            {
-                await player.Connection.SendAsync(new ServerMessagePacket
+                if (_playerService.TryGetPlayer(out IPlayer? player))
                 {
-                    Message = "No such command was found",
-                    PlayerId = 0
-                });
+                    await player.Connection.SendAsync(new ServerMessagePacket
+                    {
+                        Message = "No such command was found",
+                        PlayerId = 0
+                    });
+                }
             }
         }
         else if (_playerService.TryGetPlayer(out IPlayer? player))

@@ -11,17 +11,16 @@ public class CommandRegistry : ICommandRegistry
     private readonly ILogger<CommandRegistry> _logger;
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly Dictionary<string, Type> _dictionary;
+    private readonly Dictionary<string, Type> _nameRegistrations = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<Type, CommandRegistration> _registrations = [];
 
     public CommandRegistry(ILogger<CommandRegistry> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
-
-        _dictionary = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
     }
 
-    public bool RegisterCommand(Type commandType)
+    public bool RegisterCommand(Type commandType, bool useDefaultNames, string[]? additionalNames = null)
     {
         if (!commandType.IsAssignableTo(typeof(ICommand)))
         {
@@ -32,7 +31,8 @@ public class CommandRegistry : ICommandRegistry
             return false;
         }
 
-        if (GetCommandAttribute(commandType) == null)
+        CommandAttribute? commandAttribute = commandType.GetCustomAttribute<CommandAttribute>();
+        if (commandAttribute == null)
         {
             _logger.LogWarning("Failed to register command of type {commandTypeName}, type is not decorated with {attributeTypeName}",
                 commandType.FullName,
@@ -41,8 +41,43 @@ public class CommandRegistry : ICommandRegistry
             return false;
         }
 
-        string? commandName = GetCommandName(commandType);
+        CommandParameter[] parameters = [.. DetermineCommandParameters(commandType)];
+        CommandRegistration registration = new CommandRegistration(commandType, parameters, commandAttribute.Name);
 
+        if (!_registrations.TryAdd(commandType, registration))
+        {
+            _logger.LogWarning("Attempted to register already registered command of type {commandTypeName}",
+                typeof(CommandAttribute).FullName);
+
+            return false;
+        }
+
+        if (useDefaultNames)
+        {
+            RegisterCommandName(commandType, commandAttribute.Name);
+
+            if (commandAttribute.Aliases != null)
+            {
+                foreach (string alias in commandAttribute.Aliases)
+                {
+                    RegisterCommandName(commandType, alias);
+                }
+            }
+        }
+
+        if (additionalNames != null)
+        {
+            foreach (string additionalName in additionalNames)
+            {
+                RegisterCommandName(commandType, additionalName);
+            }
+        }
+
+        return true;
+    }
+
+    private bool RegisterCommandName(Type commandType, string? commandName)
+    {
         if (string.IsNullOrWhiteSpace(commandName))
         {
             _logger.LogWarning("Failed to register empty or whitespace command name for command type {commandTypeName}",
@@ -51,113 +86,50 @@ public class CommandRegistry : ICommandRegistry
             return false;
         }
 
-        if (!_dictionary.TryAdd(commandName, commandType))
+        if (!_nameRegistrations.TryAdd(commandName, commandType))
         {
-            _logger.LogWarning("Failed to register command name {commandName} for command type {commandTypeName}, command name/alias already in use",
+            _logger.LogWarning("Failed to register command name {commandName} for command of type {commandTypeName}, name already in use",
                 commandName,
                 commandType.FullName);
 
             return false;
         }
 
-        _logger.LogTrace("Succesfully registered command name {commandName} for command type {commandTypeName}",
-                commandName,
-                commandType.FullName);
-
         return true;
     }
 
-    public void RegisterCommandAliases(Type commandType)
+    public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command, [NotNullWhen(true)] out CommandParameter[]? parameters)
     {
-        if (GetCommandAttribute(commandType) == null)
+        if (_nameRegistrations.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
         {
-            _logger.LogWarning("Failed to register aliases for command of type {commandTypeName}, type is not decorated with {attributeTypeName}",
-                commandType.FullName,
-                typeof(CommandAttribute).FullName);
-
-            return;
-        }
-
-        string[]? aliases = GetCommandAliases(commandType);
-
-        if (aliases is { Length: > 0 })
-        {
-            foreach (string alias in aliases)
+            if (_registrations.TryGetValue(commandType, out CommandRegistration? registration))
             {
-                RegisterCommandAlias(commandType, alias);
+                command = _serviceProvider.GetService(registration.Type) as ICommand;
+                parameters = registration.Parameters;
+                return command != null;
             }
         }
-    }
 
-    public bool RegisterCommandAlias(Type commandType, string alias)
-    {
-        if (!commandType.IsAssignableTo(typeof(ICommand)))
-        {
-            _logger.LogWarning("Failed to register command alias {commandAlias} for command type {commandTypeName}, type cannot be assigned to {commandInterfaceTypeName}",
-                alias,
-                commandType.FullName,
-                typeof(ICommand).FullName);
-
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(alias))
-        {
-            _logger.LogWarning("Failed to register empty or whitespace command alias for command type {commandTypeName}",
-                commandType.FullName);
-
-            return false;
-        }
-
-        if (!_dictionary.TryAdd(alias, commandType))
-        {
-            _logger.LogWarning("Failed to register command name {commandAlias} for command type {commandTypeName}, command name/alias already in use",
-                alias,
-                commandType.FullName);
-
-            return false;
-        }
-
-        _logger.LogTrace("Succesfully registered command alias {commandAlias} for command type {commandTypeName}",
-                alias,
-                commandType.FullName);
-
-        return true;
-    }
-
-    private static string? GetCommandName(Type commandType)
-    {
-        return GetCommandAttribute(commandType)?.Name;
-    }
-
-    private static string[]? GetCommandAliases(Type commandType)
-    {
-        return GetCommandAttribute(commandType)?.Aliases;
-    }
-
-    private static CommandAttribute? GetCommandAttribute(Type commandType)
-    {
-        return commandType.GetCustomAttribute<CommandAttribute>();
-    }
-
-    public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command)
-    {
-        if (_dictionary.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
-        {
-            command = _serviceProvider.GetService(commandType) as ICommand;
-            return command != null;
-        }
         command = null;
+        parameters = null;
         return false;
     }
 
-    public IEnumerable<ICommand> GetCommands()
+    public IEnumerable<CommandRegistration> GetCommands()
     {
-        foreach (Type value in _dictionary.Values)
+        return _registrations.Values.OrderBy(x => x.Name);
+    }
+
+    private static IEnumerable<CommandParameter> DetermineCommandParameters(Type type)
+    {
+        PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        foreach (PropertyInfo property in properties)
         {
-            if (_serviceProvider.GetService(value) is ICommand command)
+            CommandParameterAttribute? attribute = property.GetCustomAttribute<CommandParameterAttribute>();
+            if (attribute != null)
             {
-                yield return command;
+                yield return new CommandParameter(property, attribute);
             }
         }
     }

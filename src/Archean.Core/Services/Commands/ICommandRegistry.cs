@@ -5,13 +5,9 @@ namespace Archean.Core.Services.Commands;
 
 public interface ICommandRegistry
 {
-    bool RegisterCommand(Type commandType);
+    bool RegisterCommand(Type commandType, bool useDefaultNames, string[]? additionalNames = null);
 
-    bool RegisterCommandAlias(Type commandType, string alias);
+    bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command, [NotNullWhen(true)] out CommandParameter[]? parameters);
 
-    void RegisterCommandAliases(Type commandType);
-
-    bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command);
-
-    IEnumerable<ICommand> GetCommands();
+    IEnumerable<CommandRegistration> GetCommands();
 }

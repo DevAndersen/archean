@@ -25,8 +25,7 @@ public class CommandRegistrationStartupService : IStartupService
     {
         foreach (ICommand command in _commands)
         {
-            _commandRegistry.RegisterCommand(command.GetType());
-            _commandRegistry.RegisterCommandAliases(command.GetType());
+            _commandRegistry.RegisterCommand(command.GetType(), true);
         }
 
         _logger.LogDebug("Registered {commandCount} commands", _commands.Count());

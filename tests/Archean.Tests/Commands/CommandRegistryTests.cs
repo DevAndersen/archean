@@ -22,10 +22,10 @@ public class CommandRegistryTests
     public void Register_EmptyDictionary_ReturnsTrue()
     {
         // Setup
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        bool wasCommandRegistered = commandDictionary.RegisterCommand(typeof(TestCommand));
+        bool wasCommandRegistered = commandRegistry.RegisterCommand(typeof(TestCommand), true);
 
         // Assert
         Assert.True(wasCommandRegistered);
@@ -35,11 +35,11 @@ public class CommandRegistryTests
     public void Register_CommandAlreadyInDictionary_ReturnsFalse()
     {
         // Setup
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.RegisterCommand(typeof(TestCommand));
-        bool wasCommandRegistered = commandDictionary.RegisterCommand(typeof(TestCommand));
+        commandRegistry.RegisterCommand(typeof(TestCommand), true);
+        bool wasCommandRegistered = commandRegistry.RegisterCommand(typeof(TestCommand), true);
 
         // Assert
         Assert.False(wasCommandRegistered);
@@ -50,11 +50,11 @@ public class CommandRegistryTests
     {
         // Setup
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.RegisterCommand(typeof(TestCommand));
-        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
+        commandRegistry.RegisterCommand(typeof(TestCommand), true);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 
         // Assert
         Assert.True(wasCommandFound);
@@ -66,12 +66,12 @@ public class CommandRegistryTests
     {
         // Setup
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.RegisterCommandAliases(typeof(TestCommand));
-        bool foundByAlias1 = commandDictionary.TryGetCommand("t", out ICommand? commandByAlias1);
-        bool foundByAlias2 = commandDictionary.TryGetCommand("123", out ICommand? commandByAlias2);
+        commandRegistry.RegisterCommand(typeof(TestCommand), true);
+        bool foundByAlias1 = commandRegistry.TryGetCommand("t", out ICommand? commandByAlias1, out _);
+        bool foundByAlias2 = commandRegistry.TryGetCommand("123", out ICommand? commandByAlias2, out _);
 
         // Assert
         Assert.True(foundByAlias1);
@@ -84,10 +84,10 @@ public class CommandRegistryTests
     public void TryGetCommand_IncorrectName_CommandNotFound()
     {
         // Setup
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 
         // Assert
         Assert.False(wasCommandFound);
@@ -98,11 +98,11 @@ public class CommandRegistryTests
     public void TryGetCommand_CommandNotInServiceProvider_CommandFound()
     {
         // Setup
-        ICommandRegistry commandDictionary = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
+        ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Action
-        commandDictionary.RegisterCommand(typeof(TestCommand));
-        bool wasCommandFound = commandDictionary.TryGetCommand(nameof(TestCommand), out ICommand? command);
+        commandRegistry.RegisterCommand(typeof(TestCommand), true);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 
         // Assert
         Assert.False(wasCommandFound);

@@ -91,6 +91,7 @@ public static class HostApplicationBuilderExtensions
 
             // Commands
             .AddSingleton<ICommandRegistry, CommandRegistry>()
+            .AddSingleton<ICommandInvoker, CommandInvoker>()
 
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()

@@ -27,15 +27,21 @@ public class Connection : IConnection
 
         int bufferSize = _socket.Available;
         byte[] array = ArrayPool<byte>.Shared.Rent(bufferSize);
-        Memory<byte> buffer = array.AsMemory()[..bufferSize];
-        await _socket.ReceiveAsync(buffer, cancellationToken);
 
-        foreach (IClientPacket packet in ClientPacketDeserializer.ReadPackets(buffer, cancellationToken))
+        try
         {
-            yield return packet;
-        }
+            Memory<byte> buffer = array.AsMemory()[..bufferSize];
+            await _socket.ReceiveAsync(buffer, cancellationToken);
 
-        ArrayPool<byte>.Shared.Return(array);
+            foreach (IClientPacket packet in ClientPacketDeserializer.ReadPackets(buffer, cancellationToken))
+            {
+                yield return packet;
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(array);
+        }
     }
 
     public async Task SendAsync(params IEnumerable<IServerPacket> packets)
@@ -43,11 +49,16 @@ public class Connection : IConnection
         int bufferSize = ServerPacketSizer.CalculateSize(packets);
         byte[] array = ArrayPool<byte>.Shared.Rent(bufferSize);
 
-        Memory<byte> buffer = array.AsMemory()[..bufferSize];
-        ServerPacketSerializer.WritePackets(packets, buffer.Span);
-        await _socket.SendAsync(buffer);
-
-        ArrayPool<byte>.Shared.Return(array);
+        try
+        {
+            Memory<byte> buffer = array.AsMemory()[..bufferSize];
+            ServerPacketSerializer.WritePackets(packets, buffer.Span);
+            await _socket.SendAsync(buffer);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(array);
+        }
     }
 
     public Task DisconnectAsync()
