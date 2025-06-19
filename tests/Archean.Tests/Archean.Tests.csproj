@@ -34,6 +34,7 @@
     <ProjectReference Include="..\..\src\Archean.Application\Archean.Application.csproj" />
     <ProjectReference Include="..\..\src\Archean.Core\Archean.Core.csproj" />
     <ProjectReference Include="..\..\src\Archean.Networking\Archean.Networking.csproj" />
+    <ProjectReference Include="..\..\src\Archean.Scripts\Archean.Scripts.csproj" />
   </ItemGroup>
 
 </Project>
