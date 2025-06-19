@@ -2,26 +2,23 @@
 
 namespace Archean.Networking.Services;
 
-public class ClientEventHandler : IClientEventHandler
+public class ClientEventHandler : IClientEventHandler, IDisposable
 {
     private readonly IScopedEventListener _eventListener;
     private readonly IPlayerService _playerService;
     private readonly ChatSettings _chatSettings;
     private readonly ICommandInvoker _commandInvoker;
-    private readonly ICommandRegistry _commandRegistry;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
         IPlayerService playerService,
         IOptions<ChatSettings> chatSettingsOptions,
-        ICommandInvoker commandInvoker,
-        ICommandRegistry commandRegistry)
+        ICommandInvoker commandInvoker)
     {
         _eventListener = eventListener;
         _playerService = playerService;
         _chatSettings = chatSettingsOptions.Value;
         _commandInvoker = commandInvoker;
-        _commandRegistry = commandRegistry;
     }
 
     public void RegisterEventSubscriptions()
@@ -42,7 +39,7 @@ public class ClientEventHandler : IClientEventHandler
                     await player.Connection.SendAsync(new ServerMessagePacket
                     {
                         Message = "No such command was found",
-                        PlayerId = 0
+                        PlayerId = 0 // Todo: Client self ID
                     });
                 }
             }
@@ -64,10 +61,15 @@ public class ClientEventHandler : IClientEventHandler
                 packet = new ServerMessagePacket
                 {
                     Message = string.Format(_chatSettings.ServerChatFormat, arg.Message),
-                    PlayerId = 0
+                    PlayerId = 0 // Todo: Client self ID
                 };
             }
             await player.Connection.SendAsync(packet);
         }
+    }
+
+    public void Dispose()
+    {
+        _eventListener.Unsubscribe<MessageEvent>(ReceiveMessage);
     }
 }

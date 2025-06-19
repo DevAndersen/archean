@@ -59,7 +59,7 @@ public class ConnectionHandler : IConnectionHandler
             return;
         }
 
-        IPlayer player = new Player(
+        Player player = new Player(
             connection,
             clientIdentificationPacket.Username,
             _globalEventBus);
