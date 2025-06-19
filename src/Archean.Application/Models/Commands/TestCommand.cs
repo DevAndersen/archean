@@ -1,5 +1,4 @@
-﻿using Archean.Commands;
-using Archean.Core.Models.Commands;
+﻿using Archean.Core.Models.Commands;
 
 namespace Archean.Application.Models.Commands;
 
