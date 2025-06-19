@@ -1,5 +1,6 @@
 ﻿using Archean.Core.Models.Commands;
 using Archean.Core.Services.Commands;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using static System.MemoryExtensions;
@@ -9,10 +10,12 @@ namespace Archean.Commands.Services;
 public class CommandInvoker : ICommandInvoker
 {
     private readonly ICommandRegistry _commandRegistry;
+    private readonly ILogger<CommandInvoker> _logger;
 
-    public CommandInvoker(ICommandRegistry commandRegistry)
+    public CommandInvoker(ICommandRegistry commandRegistry, ILogger<CommandInvoker> logger)
     {
         _commandRegistry = commandRegistry;
+        _logger = logger;
     }
 
     public async Task<bool> TryInvokeCommandAsync(ReadOnlyMemory<char> commandText)
@@ -47,7 +50,17 @@ public class CommandInvoker : ICommandInvoker
             }
         }
 
-        await command.InvokeAsync();
+        try
+        {
+            await command.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception was thrown when attempting to invoke command {commandText}",
+                commandText.ToString());
+
+            return false;
+        }
 
         return true;
     }
@@ -80,6 +93,13 @@ public class CommandInvoker : ICommandInvoker
 
             value = new string(span[start..end]);
             return true;
+        }
+
+        if (parameterType == typeof(bool) || parameterType == typeof(bool?))
+        {
+            bool success = bool.TryParse(slice, out bool parsedValue);
+            value = success ? parsedValue : null;
+            return success;
         }
 
         value = null;
