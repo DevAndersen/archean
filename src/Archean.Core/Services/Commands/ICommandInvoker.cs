@@ -1,5 +1,10 @@
-﻿namespace Archean.Core.Models.Commands;
+﻿using Archean.Core.Models.Commands;
 
+namespace Archean.Core.Services.Commands;
+
+/// <summary>
+/// Handles invoking commands.
+/// </summary>
 public interface ICommandInvoker
 {
     /// <summary>
