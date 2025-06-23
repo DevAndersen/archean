@@ -1,6 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using Archean.Core.Models.Events;
+using Archean.Core.Services.Events;
+using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
-namespace Archean.Application.Services.Events;
+namespace Archean.Events.Services;
 
 public class EventBus : IGlobalEventBus, IScopedEventBus
 {

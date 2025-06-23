@@ -1,6 +1,6 @@
-﻿using Archean.Application.Services.Events;
-using Archean.Core.Models.Events;
+﻿using Archean.Core.Models.Events;
 using Archean.Core.Services.Events;
+using Archean.Events.Services;
 
 namespace Archean.Tests.Events;
 

@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Scripts", "src\Arch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Blocks", "src\Archean.Blocks\Archean.Blocks.csproj", "{D2A53E65-D9DD-40EE-9E43-CBF9A3B93118}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archean.Events", "src\Archean.Events\Archean.Events.csproj", "{8D3A224C-6F29-45FC-B51E-452AF9596737}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{D2A53E65-D9DD-40EE-9E43-CBF9A3B93118}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2A53E65-D9DD-40EE-9E43-CBF9A3B93118}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2A53E65-D9DD-40EE-9E43-CBF9A3B93118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D3A224C-6F29-45FC-B51E-452AF9596737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3A224C-6F29-45FC-B51E-452AF9596737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3A224C-6F29-45FC-B51E-452AF9596737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3A224C-6F29-45FC-B51E-452AF9596737}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

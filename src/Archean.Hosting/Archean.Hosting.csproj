@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Archean.Blocks\Archean.Blocks.csproj" />
     <ProjectReference Include="..\Archean.Commands\Archean.Commands.csproj" />
     <ProjectReference Include="..\Archean.Core\Archean.Core.csproj" />
+    <ProjectReference Include="..\Archean.Events\Archean.Events.csproj" />
     <ProjectReference Include="..\Archean.Networking\Archean.Networking.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,4 @@
 ﻿using Archean.Application.Models.Commands;
-using Archean.Application.Services.Events;
 using Archean.Application.Services.Worlds;
 using Archean.Blocks.Services;
 using Archean.Commands.Services;
@@ -10,6 +9,7 @@ using Archean.Core.Services.Events;
 using Archean.Core.Services.Networking;
 using Archean.Core.Services.Worlds;
 using Archean.Core.Settings;
+using Archean.Events.Services;
 using Archean.Hosting.Services;
 using Archean.Networking.Services;
 using Microsoft.Extensions.DependencyInjection;
