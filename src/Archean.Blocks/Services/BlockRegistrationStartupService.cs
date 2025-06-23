@@ -1,6 +1,6 @@
 ﻿using Archean.Core.Services;
 
-namespace Archean.Application.Services;
+namespace Archean.Blocks.Services;
 
 public class BlockRegistrationStartupService : IStartupService
 {

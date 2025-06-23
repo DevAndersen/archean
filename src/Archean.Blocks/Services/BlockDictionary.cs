@@ -1,7 +1,10 @@
-﻿using Archean.Core.Services;
+﻿using Archean.Core.Models;
+using Archean.Core.Services;
 using Archean.Core.Settings;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Archean.Application.Services;
+namespace Archean.Blocks.Services;
 
 public class BlockDictionary : IBlockDictionary
 {
