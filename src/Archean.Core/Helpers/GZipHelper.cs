@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 
-namespace Archean.Application;
+namespace Archean.Core.Helpers;
 
 public static class GZipHelper
 {

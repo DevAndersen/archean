@@ -1,4 +1,4 @@
-﻿using Archean.Application;
+﻿using Archean.Core.Helpers;
 
 namespace Archean.Tests;
 

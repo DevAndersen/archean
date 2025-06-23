@@ -1,7 +1,15 @@
-﻿using Archean.Core.Models.Worlds;
+﻿using Archean.Core;
+using Archean.Core.Helpers;
+using Archean.Core.Models;
+using Archean.Core.Models.Events;
+using Archean.Core.Models.Networking;
+using Archean.Core.Models.Networking.ServerPackets;
+using Archean.Core.Models.Worlds;
+using Archean.Core.Services.Events;
 using Archean.Core.Settings;
+using Microsoft.Extensions.Logging;
 
-namespace Archean.Application.Models.Worlds;
+namespace Archean.Worlds.Models;
 
 public class TestWorld : IWorld
 {
@@ -56,6 +64,10 @@ public class TestWorld : IWorld
 
     public Task UnloadAsync()
     {
+        _eventListener.Unsubscribe<SetBlockEvent>(OnSetBlockAsync);
+        _eventListener.Unsubscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
+        _eventListener.Unsubscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
+
         return Task.CompletedTask;
     }
 
@@ -124,7 +136,7 @@ public class TestWorld : IWorld
     private async Task SendLevelTestAsync(BlockMap blockMap, IConnection connection)
     {
         byte[] blockGZipBuffer = GZipHelper.Compress(blockMap.AsMemory().Span);
-        int chunkCount = (blockGZipBuffer.Length / Constants.Networking.ByteArrayLength) + 1;
+        int chunkCount = blockGZipBuffer.Length / Constants.Networking.ByteArrayLength + 1;
 
         for (int i = 0; i < chunkCount; i++)
         {

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Archean.Core\Archean.Core.csproj" />
     <ProjectReference Include="..\Archean.Events\Archean.Events.csproj" />
     <ProjectReference Include="..\Archean.Networking\Archean.Networking.csproj" />
+    <ProjectReference Include="..\Archean.Worlds\Archean.Worlds.csproj" />
   </ItemGroup>
 
 </Project>

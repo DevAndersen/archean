@@ -1,8 +1,13 @@
-﻿using Archean.Application.Models.Worlds;
+﻿using Archean.Core.Models;
 using Archean.Core.Models.Worlds;
+using Archean.Core.Services.Events;
+using Archean.Core.Services.Worlds;
 using Archean.Core.Settings;
+using Archean.Worlds.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Archean.Application.Services.Worlds;
+namespace Archean.Worlds.Services;
 
 public class WorldRegistry : IWorldRegistry
 {
