@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/Archean.Application/Archean.Application.csproj" />
+  <Project Path="src/Archean.Blocks/Archean.Blocks.csproj" />
+  <Project Path="src/Archean.Commands/Archean.Commands.csproj" />
+  <Project Path="src/Archean.Console/Archean.Console.csproj" />
+  <Project Path="src/Archean.Core/Archean.Core.csproj" />
+  <Project Path="src/Archean.Events/Archean.Events.csproj" />
+  <Project Path="src/Archean.Hosting/Archean.Hosting.csproj" />
+  <Project Path="src/Archean.Networking/Archean.Networking.csproj" />
+  <Project Path="src/Archean.Scripts/Archean.Scripts.csproj" />
+  <Project Path="src/Archean.Worlds/Archean.Worlds.csproj" />
+  <Project Path="tests/Archean.Tests/Archean.Tests.csproj" />
+</Solution>
