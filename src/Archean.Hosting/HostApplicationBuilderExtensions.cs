@@ -28,7 +28,8 @@ public static class HostApplicationBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IHostApplicationBuilder ConfigureArcheanDefaults(this IHostApplicationBuilder builder)
+    public static THostApplicationBuilder ConfigureArcheanDefaults<THostApplicationBuilder>(this THostApplicationBuilder builder)
+        where THostApplicationBuilder : IHostApplicationBuilder
     {
         builder.ConfigureLoggingDefaults();
         builder.RegisterDefaultServices();
