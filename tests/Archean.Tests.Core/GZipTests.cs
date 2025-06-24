@@ -4,20 +4,14 @@ namespace Archean.Tests.Core;
 
 public class GZipTests
 {
-    public static IEnumerable<object[]> Data = [];
-
-    static GZipTests()
-    {
-        List<byte[]> byteSamples = [];
-
-        byteSamples.Add([]);
-        byteSamples.Add([1]);
-        byteSamples.Add([1, 2, 3, 4, 5]);
-        byteSamples.Add(new byte[100]);
-        byteSamples.Add("The quick brown fox jumps over the lazy dog"u8.ToArray());
-
-        Data = byteSamples.Select(x => new object[] { x });
-    }
+    public static IEnumerable<TheoryDataRow<byte[]>> Data =>
+    [
+        new ([]),
+        new ([1]),
+        new ([1, 2, 3, 4, 5]),
+        new (new byte[100]),
+        new ("The quick brown fox jumps over the lazy dog"u8.ToArray())
+    ];
 
     [Theory]
     [MemberData(nameof(Data))]

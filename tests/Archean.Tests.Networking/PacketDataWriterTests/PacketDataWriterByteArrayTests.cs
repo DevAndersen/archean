@@ -11,12 +11,12 @@ public class PacketDataWriterByteArrayTests
     private static readonly byte[] EmptyByteArray;
     private static readonly byte[] FilledByteArray;
 
-    public static TheoryData<byte[]> ValidInputData => new TheoryData<byte[]>
-    {
+    public static TheoryData<byte[]> ValidInputData =>
+    [
         EmptyByteArray,
         ShortByteArray,
         FilledByteArray
-    };
+    ];
 
     static PacketDataWriterByteArrayTests()
     {
