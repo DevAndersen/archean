@@ -1,6 +1,6 @@
 ﻿using Archean.Core.Helpers;
 
-namespace Archean.Tests;
+namespace Archean.Tests.Core;
 
 public class GZipTests
 {

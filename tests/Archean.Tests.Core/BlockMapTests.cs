@@ -1,8 +1,9 @@
+using Archean.Core;
 using Archean.Core.Models;
 using Archean.Core.Models.Worlds;
 using System.Buffers.Binary;
 
-namespace Archean.Tests;
+namespace Archean.Tests.Core;
 
 public class BlockMapTests
 {

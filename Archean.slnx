@@ -4,6 +4,14 @@
     <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Archean.Tests.Blocks/Archean.Tests.Blocks.csproj" Id="eceb9941-7129-4407-a1f0-45adb4f6db60" />
+    <Project Path="tests/Archean.Tests.Commands/Archean.Tests.Commands.csproj" Id="d450163e-67b9-47e4-b761-5dc5ebeccb5e" />
+    <Project Path="tests/Archean.Tests.Core/Archean.Tests.Core.csproj" Id="78a38313-f9b5-42fe-9c0c-d040607262f9" />
+    <Project Path="tests/Archean.Tests.Events/Archean.Tests.Events.csproj" Id="52a58716-dfce-449e-a2cb-b1e3d9176ce9" />
+    <Project Path="tests/Archean.Tests.Networking/Archean.Tests.Networking.csproj" Id="1b45b035-1846-4ff4-bec2-c455439b0182" />
+    <Project Path="tests/Archean.Tests.Scripts/Archean.Tests.Scripts.csproj" Id="12d234d2-eadf-4821-a492-2b3aeb549548" />
+  </Folder>
   <Project Path="src/Archean.Application/Archean.Application.csproj" />
   <Project Path="src/Archean.Blocks/Archean.Blocks.csproj" />
   <Project Path="src/Archean.Commands/Archean.Commands.csproj" />
@@ -14,5 +22,4 @@
   <Project Path="src/Archean.Networking/Archean.Networking.csproj" />
   <Project Path="src/Archean.Scripts/Archean.Scripts.csproj" />
   <Project Path="src/Archean.Worlds/Archean.Worlds.csproj" />
-  <Project Path="tests/Archean.Tests/Archean.Tests.csproj" />
 </Solution>

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
-namespace Archean.Tests;
+namespace Archean.Tests.Blocks;
 
 public class BlockDictionaryTests
 {
