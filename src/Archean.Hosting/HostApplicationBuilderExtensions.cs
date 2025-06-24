@@ -31,7 +31,7 @@ public static class HostApplicationBuilderExtensions
     public static THostApplicationBuilder ConfigureArcheanDefaults<THostApplicationBuilder>(this THostApplicationBuilder builder)
         where THostApplicationBuilder : IHostApplicationBuilder
     {
-        builder.ConfigureLoggingDefaults();
+        builder.ConfigureDefaultLogging();
         builder.RegisterDefaultServices();
         builder.RegisterDefaultCommands();
 
@@ -43,7 +43,7 @@ public static class HostApplicationBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IHostApplicationBuilder ConfigureLoggingDefaults(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureDefaultLogging(this IHostApplicationBuilder builder)
     {
         builder.Services.AddLogging(loggingBuilder =>
         {
