@@ -30,10 +30,10 @@ public class BlockDictionaryTests
     [Fact]
     public void TryGetBlock_ValidStandardIdentity_ExpectedValue()
     {
-        // Setup
+        // Arrange
         _blockDictionary.RegisterStandardBlocks();
 
-        // Action
+        // Act
         bool success = _blockDictionary.TryGetBlock(nameof(Block.Stone), out Block block);
 
         // Assert
@@ -44,7 +44,7 @@ public class BlockDictionaryTests
     [Fact]
     public void TryGetBlock_ValidStandardIdentityWithoutStandardRegistration_Failure()
     {
-        // Action
+        // Act
         bool success = _blockDictionary.TryGetBlock(nameof(Block.Stone), out Block _);
 
         // Assert
@@ -54,10 +54,10 @@ public class BlockDictionaryTests
     [Fact]
     public void TryGetBlock_InvalidStandardIdentity_Failure()
     {
-        // Setup
+        // Arrange
         _blockDictionary.RegisterStandardBlocks();
 
-        // Action
+        // Act
         bool success = _blockDictionary.TryGetBlock("Invalid", out _);
 
         // Assert
@@ -67,7 +67,7 @@ public class BlockDictionaryTests
     [Fact]
     public void TryGetBlock_RegisteredBlock_Success()
     {
-        // Action
+        // Act
         bool registerSuccess = _blockDictionary.RegisterBlock("CustomBlockName", Block.Stone);
         bool tryGetSuccess = _blockDictionary.TryGetBlock("CustomBlockName", out Block block);
 
@@ -80,7 +80,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterBlock_ValidBlock_Success()
     {
-        // Action
+        // Act
         bool success = _blockDictionary.RegisterBlock("CustomBlockName", Block.Stone);
 
         // Assert
@@ -90,7 +90,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterBlock_InvalidBlock_Failure()
     {
-        // Action
+        // Act
         bool success = _blockDictionary.RegisterBlock("CustomBlockName", (Block)200);
 
         // Assert
@@ -100,7 +100,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterBlock_EmptyIdentity_Failure()
     {
-        // Action
+        // Act
         bool success = _blockDictionary.RegisterBlock(string.Empty, Block.Stone);
 
         // Assert
@@ -110,7 +110,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterBlock_WhitespaceIdentity_Failure()
     {
-        // Action
+        // Act
         bool success = _blockDictionary.RegisterBlock(" ", Block.Stone);
 
         // Assert
@@ -120,7 +120,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterCustomAliases_ValidCustomAliases_Success()
     {
-        // Setup
+        // Arrange
         IOptions<AliasSettings> aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
         aliasSettingsOptions.Value.Returns(new AliasSettings
         {
@@ -135,7 +135,7 @@ public class BlockDictionaryTests
 
         BlockDictionary blockDictionary = new BlockDictionary(_logger, aliasSettingsOptions);
 
-        // Action
+        // Act
         int registeredAliases = blockDictionary.RegisterCustomAliases();
 
         // Assert
@@ -145,7 +145,7 @@ public class BlockDictionaryTests
     [Fact]
     public void RegisterCustomAliases_DuplicateCustomAliases_OnlyOneRegistered()
     {
-        // Setup
+        // Arrange
         IOptions<AliasSettings> aliasSettingsOptions = Substitute.For<IOptions<AliasSettings>>();
         aliasSettingsOptions.Value.Returns(new AliasSettings
         {
@@ -160,7 +160,7 @@ public class BlockDictionaryTests
 
         BlockDictionary blockDictionary = new BlockDictionary(_logger, aliasSettingsOptions);
 
-        // Action
+        // Act
         int registeredAliases = blockDictionary.RegisterCustomAliases();
 
         // Assert

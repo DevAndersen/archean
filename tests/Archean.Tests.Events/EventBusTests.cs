@@ -9,13 +9,13 @@ public class EventBusTests
     [Fact]
     public async Task InvokeEventAsync_SubscribedEvent_ExpectedEventInvocation()
     {
-        // Setup
+        // Arrange
         bool hasEventBeenInvoked = false;
         IScopedEventBus bus = new EventBus(null!);
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         bus.Subscribe(eventHandle, default);
 
-        // Action
+        // Act
         await bus.InvokeEventAsync(new TestEvent());
 
         // Assert
@@ -25,11 +25,11 @@ public class EventBusTests
     [Fact]
     public async Task InvokeEventAsync_NotSubscribedEvent_ExpectedNoEventInvocation()
     {
-        // Setup
+        // Arrange
         bool hasEventBeenInvoked = false;
         IScopedEventBus bus = new EventBus(null!);
 
-        // Action
+        // Act
         await bus.InvokeEventAsync(new TestEvent());
 
         // Assert
@@ -39,14 +39,14 @@ public class EventBusTests
     [Fact]
     public async Task InvokeEventAsync_UnsubscribedEvent_ExpectedNoEventInvocation()
     {
-        // Setup
+        // Arrange
         bool hasEventBeenInvoked = false;
         IScopedEventBus bus = new EventBus(null!);
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         bus.Subscribe(eventHandle, default);
         bus.Unsubscribe<TestEvent>(eventHandle);
 
-        // Action
+        // Act
         await bus.InvokeEventAsync(new TestEvent());
 
         // Assert

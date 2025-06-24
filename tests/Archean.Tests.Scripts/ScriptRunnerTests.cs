@@ -8,12 +8,12 @@ public class ScriptRunnerTests
     [Fact]
     public async Task TickScriptsAsync_RunningScript_TickMethodCalled()
     {
-        // Setup
+        // Arrange
         GlobalScriptRunner runner = new GlobalScriptRunner();
         TestScript script = new TestScript();
         runner.RegisterScript(script);
 
-        // Action
+        // Act
         await runner.TickScriptsAsync();
 
         // Assertion
@@ -25,13 +25,13 @@ public class ScriptRunnerTests
     [Fact]
     public async Task TickScriptsAsync_StoppedScript_TickMethodNotCalled()
     {
-        // Setup
+        // Arrange
         GlobalScriptRunner runner = new GlobalScriptRunner();
         TestScript script = new TestScript();
         runner.RegisterScript(script);
         script.Stop();
 
-        // Action
+        // Act
         await runner.TickScriptsAsync();
 
         // Assertion
@@ -43,7 +43,7 @@ public class ScriptRunnerTests
     [Fact]
     public async Task TickScriptsAsync_ScriptStoppingAfterTick_TickMethodNotCalled()
     {
-        // Setup
+        // Arrange
         GlobalScriptRunner runner = new GlobalScriptRunner();
         TestScript script = new TestScript
         {
@@ -52,7 +52,7 @@ public class ScriptRunnerTests
 
         runner.RegisterScript(script);
 
-        // Action
+        // Act
         await runner.TickScriptsAsync();
 
         // Assertion
@@ -64,12 +64,12 @@ public class ScriptRunnerTests
     [Fact]
     public async Task TickScriptsAsync_RunningScript_ScriptNotRemovedFromRunner()
     {
-        // Setup
+        // Arrange
         GlobalScriptRunner runner = new GlobalScriptRunner();
         TestScript script = new TestScript();
         runner.RegisterScript(script);
 
-        // Action
+        // Act
         await runner.TickScriptsAsync();
 
         // Assertion
@@ -79,13 +79,13 @@ public class ScriptRunnerTests
     [Fact]
     public async Task TickScriptsAsync_StoppedScript_ScriptRemovedFromRunner()
     {
-        // Setup
+        // Arrange
         GlobalScriptRunner runner = new GlobalScriptRunner();
         TestScript script = new TestScript();
         runner.RegisterScript(script);
         script.Stop();
 
-        // Action
+        // Act
         await runner.TickScriptsAsync();
 
         // Assertion

@@ -20,14 +20,14 @@ public class PlayerRegistryTests
     [Fact]
     public void TryAdd_SinglePlayer_ExpectedGetAllResult()
     {
-        // Setup
+        // Arrange
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
 
         IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer player = Substitute.For<IPlayer>();
 
-        // Action
+        // Act
         bool wasPlayerAdded = playerRegistry.TryAdd(player);
 
         // Assert
@@ -38,7 +38,7 @@ public class PlayerRegistryTests
     [Fact]
     public void TryAdd_MultiplePlayers_ExpectedPlayerIds()
     {
-        // Setup
+        // Arrange
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
 
@@ -47,7 +47,7 @@ public class PlayerRegistryTests
         IPlayer playerB = Substitute.For<IPlayer>();
         IPlayer playerC = Substitute.For<IPlayer>();
 
-        // Action
+        // Act
         bool wasPlayerAAdded = playerRegistry.TryAdd(playerA);
         bool wasPlayerBAdded = playerRegistry.TryAdd(playerB);
         bool wasPlayerCAdded = playerRegistry.TryAdd(playerC);
@@ -69,7 +69,7 @@ public class PlayerRegistryTests
     [InlineData(Constants.Players.HighestPlayerId)]
     public void TryAdd_ExceedingMaxPlayerCount_ExpectedFailure(byte maxPlayerCount)
     {
-        // Setup
+        // Arrange
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
         _defaultServerSettings.MaxPlayers.Returns(maxPlayerCount);
@@ -77,7 +77,7 @@ public class PlayerRegistryTests
         IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
         IPlayer exceedingPlayer = Substitute.For<IPlayer>();
 
-        // Action
+        // Act
         for (int i = 1; i < maxPlayerCount; i++)
         {
             IPlayer player = Substitute.For<IPlayer>();

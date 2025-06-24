@@ -18,14 +18,14 @@ public class EventListenerTests
     [Fact]
     public async Task Subscribe_InvokeSubscribedEvent_ExpectedListenerCallback()
     {
-        // Setup
+        // Arrange
         bool hasEventBeenInvoked = false;
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
         listener.Subscribe(eventHandle, default);
 
-        // Action
+        // Act
         await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
@@ -35,7 +35,7 @@ public class EventListenerTests
     [Fact]
     public async Task Subscribe_InvokeUnsubscribedEvent_ExpectedNoListenerCallback()
     {
-        // Setup
+        // Arrange
         bool hasEventBeenInvoked = false;
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
@@ -43,7 +43,7 @@ public class EventListenerTests
         listener.Subscribe(eventHandle, default);
         listener.Unsubscribe(eventHandle);
 
-        // Action
+        // Act
         await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
@@ -53,7 +53,7 @@ public class EventListenerTests
     [Fact]
     public async Task Subscribe_PrioritizedSubscriptions_ExpectedCallbackOrder()
     {
-        // Setup
+        // Arrange
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         List<int> numbers = [];
@@ -61,7 +61,7 @@ public class EventListenerTests
         listener.Subscribe<TestEvent>(_ => numbers.Add(2), (EventPriority)2);
         listener.Subscribe<TestEvent>(_ => numbers.Add(3), (EventPriority)3);
 
-        // Action
+        // Act
         await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert
@@ -71,7 +71,7 @@ public class EventListenerTests
     [Fact]
     public async Task Subscribe_EventCancellation_ExpectedCallbackOrder()
     {
-        // Setup
+        // Arrange
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         List<int> numbers = [];
@@ -83,7 +83,7 @@ public class EventListenerTests
         }, (EventPriority)2);
         listener.Subscribe<TestEvent>(_ => numbers.Add(3), (EventPriority)3);
 
-        // Action
+        // Act
         await _bus.InvokeEventAsync(new TestEvent());
 
         // Assert

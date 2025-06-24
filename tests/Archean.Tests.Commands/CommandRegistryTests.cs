@@ -20,10 +20,10 @@ public class CommandRegistryTests
     [Fact]
     public void Register_EmptyDictionary_ReturnsTrue()
     {
-        // Setup
+        // Arrange
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         bool wasCommandRegistered = commandRegistry.RegisterCommand(typeof(TestCommand), true);
 
         // Assert
@@ -33,10 +33,10 @@ public class CommandRegistryTests
     [Fact]
     public void Register_CommandAlreadyInDictionary_ReturnsFalse()
     {
-        // Setup
+        // Arrange
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
         bool wasCommandRegistered = commandRegistry.RegisterCommand(typeof(TestCommand), true);
 
@@ -47,11 +47,11 @@ public class CommandRegistryTests
     [Fact]
     public void TryGetCommand_CommandName_CommandFound()
     {
-        // Setup
+        // Arrange
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
         bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 
@@ -63,11 +63,11 @@ public class CommandRegistryTests
     [Fact]
     public void TryGetCommand_CommandAliases_CommandFound()
     {
-        // Setup
+        // Arrange
         _mockedServiceProvider.GetService(typeof(TestCommand)).Returns(new TestCommand());
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
         bool foundByAlias1 = commandRegistry.TryGetCommand("t", out ICommand? commandByAlias1, out _);
         bool foundByAlias2 = commandRegistry.TryGetCommand("123", out ICommand? commandByAlias2, out _);
@@ -82,10 +82,10 @@ public class CommandRegistryTests
     [Fact]
     public void TryGetCommand_IncorrectName_CommandNotFound()
     {
-        // Setup
+        // Arrange
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 
         // Assert
@@ -96,10 +96,10 @@ public class CommandRegistryTests
     [Fact]
     public void TryGetCommand_CommandNotInServiceProvider_CommandFound()
     {
-        // Setup
+        // Arrange
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
-        // Action
+        // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
         bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
 

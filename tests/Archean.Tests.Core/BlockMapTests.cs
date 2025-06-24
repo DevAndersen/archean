@@ -10,7 +10,7 @@ public class BlockMapTests
     [Fact]
     public void Constructor_ValidData_ExpectedDimensions()
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
@@ -22,10 +22,10 @@ public class BlockMapTests
     [Fact]
     public void Constructor_ValidData_ExpectedBufferLength()
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 32, 48);
 
-        // Action
+        // Act
         ReadOnlyMemory<byte> buffer = blockMap.AsMemory();
         int blockBufferLength = BinaryPrimitives.ReadInt32BigEndian(buffer.Span);
         int expectedBlockCount = 16 * 32 * 48;
@@ -69,14 +69,14 @@ public class BlockMapTests
     [Fact]
     public void Constructor_ValidBlockData_ExpectedSuccess()
     {
-        // Setup
+        // Arrange
         int width = 16;
         int height = 32;
         int depth = 48;
         int blockDataLength = width * height * depth;
         Block[] blockData = new Block[blockDataLength];
 
-        // Action
+        // Act
         BlockMap blockMap = new BlockMap(width, depth, height, blockData);
 
         // Assert
@@ -86,7 +86,7 @@ public class BlockMapTests
     [Fact]
     public void Constructor_MismatchingDimensions_ThrowsException()
     {
-        // Setup
+        // Arrange
         int width = 16;
         int height = 32;
         int depth = 48;
@@ -110,10 +110,10 @@ public class BlockMapTests
     [Fact]
     public void GetBlock_ValidCoordinates_ReturnsBlock()
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 32, 48);
 
-        // Action
+        // Act
         blockMap[1, 2, 3] = Block.Stone;
 
         // Assert
@@ -123,14 +123,14 @@ public class BlockMapTests
     [Fact]
     public void AsMemory_ValidData_ExpectedBlockBytes()
     {
-        // Setup
+        // Arrange
         int width = 16;
         int height = 32;
         int depth = 48;
         int blockDataLength = width * height * depth;
         BlockMap blockMap = new BlockMap(width, depth, height);
 
-        // Action
+        // Act
         blockMap[0, 0, 0] = Block.Stone;
         blockMap[1, 0, 0] = Block.Dirt;
         blockMap[0, 0, 1] = Block.Grass;
@@ -147,10 +147,10 @@ public class BlockMapTests
     [InlineData(16, 32, 48, 16 * 32 * 48)]
     public void AsMemory_ValidData_ExpectedLengthBytes(int width, int height, int depth, int expectedLength)
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(width, height, depth);
 
-        // Action
+        // Act
         ReadOnlySpan<byte> lengthBytes = blockMap.AsMemory().Span[..sizeof(int)];
         int length = BinaryPrimitives.ReadInt32BigEndian(lengthBytes);
 
@@ -161,7 +161,7 @@ public class BlockMapTests
     [Fact]
     public void IsValidBlockPosition_ValidInput_ExpectedSuccess()
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
@@ -174,7 +174,7 @@ public class BlockMapTests
     [Fact]
     public void IsValidBlockPosition_InvalidInput_ExpectedFailure()
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 32, 48);
 
         // Assert
@@ -193,10 +193,10 @@ public class BlockMapTests
     [InlineData(15, 15, 15, 4095)]
     public void TryGetBlockIndex_ValidInput_ExpectedOutput(int x, int y, int z, int expectedIndex)
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 16, 16);
 
-        // Action
+        // Act
         bool isValidIndex = blockMap.TryGetBlockIndex(x, y, z, out int actualIndex);
 
         // Assert
@@ -215,10 +215,10 @@ public class BlockMapTests
     [InlineData(16, 16, 16)]
     public void TryGetBlockIndex_InputOutOfRange_ExpectedFailure(int x, int y, int z)
     {
-        // Setup
+        // Arrange
         BlockMap blockMap = new BlockMap(16, 16, 16);
 
-        // Action
+        // Act
         bool isValidIndex = blockMap.TryGetBlockIndex(x, y, z, out _);
 
         // Assert

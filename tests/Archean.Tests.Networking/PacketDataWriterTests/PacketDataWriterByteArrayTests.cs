@@ -31,10 +31,10 @@ public class PacketDataWriterByteArrayTests
     [MemberData(nameof(ValidInputData))]
     public void WriteByteArray_ValidData_ExpectedWrittenBytes(byte[] data)
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength];
 
-        // Action
+        // Act
         PacketDataWriter.WriteByteArray(data, buffer.Span, out _);
 
         // Assert
@@ -45,11 +45,11 @@ public class PacketDataWriterByteArrayTests
     [MemberData(nameof(ValidInputData))]
     public void WriteByteArray_ValidData_ExpectedRestBufferLength(byte[] data)
     {
-        // Setup
+        // Arrange
         int extraBytes = 4;
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
-        // Action
+        // Act
         PacketDataWriter.WriteByteArray(data, buffer.Span, out Span<byte> restBuffer);
 
         // Assert
@@ -60,11 +60,11 @@ public class PacketDataWriterByteArrayTests
     [MemberData(nameof(ValidInputData))]
     public void WriteByteArray_ValidData_ZeroFilledRestBuffer(byte[] data)
     {
-        // Setup
+        // Arrange
         int extraBytes = 4;
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
-        // Action
+        // Act
         PacketDataWriter.WriteByteArray(data, buffer.Span, out Span<byte> restBuffer);
 
         // Assert
@@ -76,11 +76,11 @@ public class PacketDataWriterByteArrayTests
     [MemberData(nameof(ValidInputData))]
     public void WriteByteArray_ValidData_ZeroFilledUnwrittenBuffer(byte[] data)
     {
-        // Setup
+        // Arrange
         int extraBytes = 4;
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
 
-        // Action
+        // Act
         PacketDataWriter.WriteByteArray(data, buffer.Span, out _);
 
         // Assert
@@ -92,7 +92,7 @@ public class PacketDataWriterByteArrayTests
     [Fact]
     public void WriteByteArray_DataTooLong_ThrowsException()
     {
-        // Setup
+        // Arrange
         int extraBytes = 4;
         Memory<byte> undersizedBuffer = new byte[Constants.Networking.ByteArrayLength + extraBytes];
         byte[] value = new byte[Constants.Networking.ByteArrayLength + 1];
@@ -104,7 +104,7 @@ public class PacketDataWriterByteArrayTests
     [Fact]
     public void WriteByteArray_BufferTooShort_ThrowsException()
     {
-        // Setup
+        // Arrange
         Memory<byte> undersizedBuffer = new byte[Constants.Networking.ByteArrayLength - 1];
         byte[] value = ShortByteArray;
 

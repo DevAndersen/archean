@@ -16,10 +16,10 @@ public class FixedSByteTests
     [InlineData(-MathF.PI, -3.15625F)]
     public void ConstructFromFloat_WithinRange_ReturnsExpected(float input, float expected)
     {
-        // Setup
+        // Arrange
         sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
@@ -32,10 +32,10 @@ public class FixedSByteTests
     [InlineData(float.PositiveInfinity, FixedPointHelper.FixedByteMaxValue)]
     public void ConstructFromFloat_Positive_ReturnsClamped(float input, float expected)
     {
-        // Setup
+        // Arrange
         sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
@@ -48,10 +48,10 @@ public class FixedSByteTests
     [InlineData(float.NegativeInfinity, FixedPointHelper.FixedByteMinValue)]
     public void ConstructFromFloat_Negative_ReturnsClamped(float input, float expected)
     {
-        // Setup
+        // Arrange
         sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion
@@ -62,10 +62,10 @@ public class FixedSByteTests
     [InlineData(float.NaN, 0F)]
     public void ConstructFromFloat_NaN_ReturnsZero(float input, float expected)
     {
-        // Setup
+        // Arrange
         sbyte fbyte = FixedPointHelper.WriteFixedSByte(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedSByte(fbyte);
 
         // Assertion

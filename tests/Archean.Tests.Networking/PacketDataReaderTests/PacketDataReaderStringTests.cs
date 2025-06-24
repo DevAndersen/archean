@@ -35,10 +35,10 @@ public class PacketDataReaderStringTests
     [MemberData(nameof(DataSets))]
     public void ReadString_ValidBuffer_ExpectedReadString(byte[] data, string originalString)
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = data;
 
-        // Action
+        // Act
         string readString = PacketDataReader.ReadString(buffer.Span, out _);
 
         // Assert
@@ -49,10 +49,10 @@ public class PacketDataReaderStringTests
     [MemberData(nameof(DataSets))]
     public void ReadString_ValidBuffer_ExpectedRestBufferLength(byte[] data, string _)
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = data;
 
-        // Action
+        // Act
         PacketDataReader.ReadString(buffer.Span, out ReadOnlySpan<byte> restBuffer);
 
         // Assert
@@ -62,7 +62,7 @@ public class PacketDataReaderStringTests
     [Fact]
     public void ReadString_BufferTooSmall_ThrowsException()
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = new byte[Constants.Networking.StringLength - 1];
 
         // Assert

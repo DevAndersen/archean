@@ -23,7 +23,7 @@ public class GZipTests
     [MemberData(nameof(Data))]
     public void GZipHelper_CompressAndDecompress_ReturnsOriginalBytes(byte[] bytes)
     {
-        // Action
+        // Act
         byte[] compressedBytes = GZipHelper.Compress(bytes);
         byte[] decompressedBytes = GZipHelper.Decompress(compressedBytes);
 

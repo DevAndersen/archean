@@ -16,10 +16,10 @@ public class FixedShortTests
     [InlineData(-MathF.PI, -3.15625F)]
     public void ConstructFromFloat_WithinRange_ReturnsExpected(float input, float expected)
     {
-        // Setup
+        // Arrange
         short fshort = FixedPointHelper.WriteFixedShort(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
@@ -32,10 +32,10 @@ public class FixedShortTests
     [InlineData(float.PositiveInfinity, FixedPointHelper.FixedShortMaxValue)]
     public void ConstructFromFloat_Positive_ReturnsClamped(float input, float expected)
     {
-        // Setup
+        // Arrange
         short fshort = FixedPointHelper.WriteFixedShort(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
@@ -48,10 +48,10 @@ public class FixedShortTests
     [InlineData(float.NegativeInfinity, FixedPointHelper.FixedShortMinValue)]
     public void ConstructFromFloat_Negative_ReturnsClamped(float input, float expected)
     {
-        // Setup
+        // Arrange
         short fshort = FixedPointHelper.WriteFixedShort(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion
@@ -62,10 +62,10 @@ public class FixedShortTests
     [InlineData(float.NaN, 0F)]
     public void ConstructFromFloat_NaN_ReturnsZero(float input, float expected)
     {
-        // Setup
+        // Arrange
         short fshort = FixedPointHelper.WriteFixedShort(input);
 
-        // Action
+        // Act
         float actual = FixedPointHelper.ReadFixedShort(fshort);
 
         // Assertion

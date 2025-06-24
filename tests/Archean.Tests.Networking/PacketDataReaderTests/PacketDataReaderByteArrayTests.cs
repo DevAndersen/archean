@@ -10,11 +10,11 @@ public class PacketDataReaderByteArrayTests
     [Fact]
     public void ReadByteArray_ValidBuffer_ExpectedReadBytes()
     {
-        // Setup
+        // Arrange
         byte[] buffer = new byte[Constants.Networking.ByteArrayLength + RestBufferSize];
         buffer.AsSpan()[..Constants.Networking.ByteArrayLength].Fill(FillByte);
 
-        // Action
+        // Act
         byte[] readBytes = PacketDataReader.ReadByteArray(buffer, out _);
 
         // Assert
@@ -26,11 +26,11 @@ public class PacketDataReaderByteArrayTests
     [Fact]
     public void ReadByteArray_ValidBuffer_ExpectedRestBufferSize()
     {
-        // Setup
+        // Arrange
         byte[] buffer = new byte[Constants.Networking.ByteArrayLength + RestBufferSize];
         buffer.AsSpan()[..Constants.Networking.ByteArrayLength].Fill(FillByte);
 
-        // Action
+        // Act
         PacketDataReader.ReadByteArray(buffer, out ReadOnlySpan<byte> restBuffer);
 
         // Assert
@@ -40,7 +40,7 @@ public class PacketDataReaderByteArrayTests
     [Fact]
     public void ReadByteArray_BufferTooSmall_ThrowsException()
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = new byte[Constants.Networking.ByteArrayLength - 1];
 
         // Assert
@@ -50,7 +50,7 @@ public class PacketDataReaderByteArrayTests
     [Fact]
     public void ReadByteArray_EmptyBuffer_ThrowsException()
     {
-        // Setup
+        // Arrange
         Memory<byte> buffer = Array.Empty<byte>();
 
         // Assert

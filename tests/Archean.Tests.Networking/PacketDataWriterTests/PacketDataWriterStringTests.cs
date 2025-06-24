@@ -20,11 +20,11 @@ public class PacketDataWriterStringTests
     [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ExpectedWrittenBytes(string value)
     {
-        // Setup
+        // Arrange
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out _);
 
         // Assert
@@ -40,11 +40,11 @@ public class PacketDataWriterStringTests
     [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ExpectedRestBufferLength(string value)
     {
-        // Setup
+        // Arrange
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out Span<byte> restBuffer);
 
         // Assert
@@ -58,11 +58,11 @@ public class PacketDataWriterStringTests
     [InlineData(MaxSizedString)]
     public void WriteString_ValidString_ZeroFilledRestBuffer(string value)
     {
-        // Setup
+        // Arrange
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out Span<byte> restBuffer);
 
         // Assert
@@ -77,11 +77,11 @@ public class PacketDataWriterStringTests
     [InlineData(MaxSizedString)]
     public void WriteString_ValidString_SpaceFilledUnwrittenBuffer(string value)
     {
-        // Setup
+        // Arrange
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out _);
 
         // Assert
@@ -94,12 +94,12 @@ public class PacketDataWriterStringTests
     [Fact]
     public void WriteString_StringTooLong_ExpectedTruncatedWrittenBytes()
     {
-        // Setup
+        // Arrange
         string value = OversizedString;
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out _);
 
         // Assert
@@ -111,12 +111,12 @@ public class PacketDataWriterStringTests
     [Fact]
     public void WriteString_StringTooLong_ZeroFilledRestBuffer()
     {
-        // Setup
+        // Arrange
         string value = OversizedString;
         int additionalBufferSize = 4;
         Memory<byte> buffer = new byte[Constants.Networking.StringLength + additionalBufferSize];
 
-        // Action
+        // Act
         PacketDataWriter.WriteString(value, buffer.Span, out Span<byte> restBuffer);
 
         // Assert
@@ -127,7 +127,7 @@ public class PacketDataWriterStringTests
     [Fact]
     public void WriteString_BufferTooSmall_ThrowsException()
     {
-        // Setup
+        // Arrange
         Memory<byte> undersizedBuffer = new byte[Constants.Networking.StringLength - 1];
         string value = SingleWordString;
 
