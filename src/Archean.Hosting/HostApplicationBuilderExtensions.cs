@@ -15,6 +15,7 @@ using Archean.Worlds.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Archean.Hosting;
 
@@ -150,7 +151,7 @@ public static class HostApplicationBuilderExtensions
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item>Inject an instance of <see cref="IOptions{TConfiguration}"/> to access the configured values.</item>
+    /// <item>Inject an instance of <see cref="IOptions{TOptions}"/> to access the configured values.</item>
     /// <item><paramref name="section"/> uses colon (":") to access nested elements, for example <c>"Category:SubCategory"</c>.</item>
     /// </list>
     /// </remarks>
