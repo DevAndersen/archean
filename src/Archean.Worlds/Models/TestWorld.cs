@@ -14,7 +14,7 @@ namespace Archean.Worlds.Models;
 
 public class TestWorld : IWorld
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<TestWorld> _logger;
     private readonly IGlobalEventListener _eventListener;
     private readonly ServerSettings _serverSettings;
 
@@ -33,7 +33,7 @@ public class TestWorld : IWorld
 
     public TestWorld(
         string name,
-        ILogger logger,
+        ILogger<TestWorld> logger,
         IGlobalEventListener eventListener,
         ServerSettings serverSettings)
     {
