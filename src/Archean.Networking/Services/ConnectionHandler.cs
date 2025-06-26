@@ -83,6 +83,7 @@ public class ConnectionHandler : IConnectionHandler
         }
         else
         {
+            // Todo: Differentiate between failure to add due to full server, or already being logged in.
             _logger.LogInformation("Unable to register player {username}, server is full",
                 player.Username);
 
