@@ -11,7 +11,7 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IWorldRegistry _worldRegistry;
     private readonly IGlobalEventBus _globalEventBus;
-    private readonly ServerSettings _serverSettings;
+    private readonly IOptions<ServerSettings> _serverSettings;
 
     public ConnectionHandler(
         IPlayerRegistry playerRegistry,
@@ -26,7 +26,7 @@ public class ConnectionHandler : IConnectionHandler
         _serviceScopeFactory = serviceScopeFactory;
         _worldRegistry = worldRegistry;
         _globalEventBus = globalEventBus;
-        _serverSettings = serverSettingsOptions.Value;
+        _serverSettings = serverSettingsOptions;
     }
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
@@ -60,6 +60,13 @@ public class ConnectionHandler : IConnectionHandler
             return;
         }
 
+        // Validate username.
+        if (string.IsNullOrWhiteSpace(clientIdentificationPacket.Username))
+        {
+            await connection.DisconnectAsync();
+            return;
+        }
+
         Player player = new Player(
             connection,
             clientIdentificationPacket.Username,
@@ -79,7 +86,7 @@ public class ConnectionHandler : IConnectionHandler
             _logger.LogInformation("Unable to register player {username}, server is full",
                 player.Username);
 
-            await connection.DisconnectAsync(_serverSettings.ServerFullMessage);
+            await connection.DisconnectAsync(_serverSettings.Value.ServerFullMessage);
         }
     }
 
@@ -170,8 +177,8 @@ public class ConnectionHandler : IConnectionHandler
         {
             PlayerType = PlayerType.Normal,
             ProtocolVersion = Constants.Networking.ProtocolVersion,
-            ServerMotd = _serverSettings.Motd,
-            ServerName = _serverSettings.Name,
+            ServerMotd = _serverSettings.Value.Motd,
+            ServerName = _serverSettings.Value.Name,
         });
 
         IWorld? world = _worldRegistry.GetDefaultWorld();
