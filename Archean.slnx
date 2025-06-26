@@ -11,6 +11,7 @@
     <Project Path="tests/Archean.Tests.Events/Archean.Tests.Events.csproj" Id="52a58716-dfce-449e-a2cb-b1e3d9176ce9" />
     <Project Path="tests/Archean.Tests.Networking/Archean.Tests.Networking.csproj" Id="1b45b035-1846-4ff4-bec2-c455439b0182" />
     <Project Path="tests/Archean.Tests.Scripts/Archean.Tests.Scripts.csproj" Id="12d234d2-eadf-4821-a492-2b3aeb549548" />
+    <Project Path="tests/Archean.Tests.Worlds/Archean.Tests.Worlds.csproj" Id="91306558-a304-4a1b-a81c-4fed2747be72" />
   </Folder>
   <Project Path="src/Archean.Application/Archean.Application.csproj" />
   <Project Path="src/Archean.Blocks/Archean.Blocks.csproj" />
