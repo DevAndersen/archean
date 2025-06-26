@@ -66,13 +66,15 @@ public static class HostApplicationBuilderExtensions
         builder
             .AddConfiguration<ServerSettings>("Server")
             .AddConfiguration<ChatSettings>("Chat")
-            .AddConfiguration<AliasSettings>("Aliases");
+            .AddConfiguration<AliasSettings>("Aliases")
+            .AddConfiguration<WorldSettings>("Worlds");
 
         builder.Services
 
             // Startup
             .AddStartup<BlockRegistrationStartupService>()
             .AddStartup<CommandRegistrationStartupService>()
+            .AddStartup<WorldRegistrationStartupService>()
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
@@ -97,6 +99,7 @@ public static class HostApplicationBuilderExtensions
 
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()
+            .AddSingleton<WorldFactory>()
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();

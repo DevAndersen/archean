@@ -1,4 +1,5 @@
-﻿using Archean.Core.Services.Worlds;
+﻿using Archean.Core.Models.Worlds;
+using Archean.Core.Services.Worlds;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Archean.Networking.Services;
@@ -173,6 +174,16 @@ public class ConnectionHandler : IConnectionHandler
             ServerName = _serverSettings.Name,
         });
 
-        await _worldRegistry.GetDefaultWorld().JoinAsync(player);
+        IWorld? world = _worldRegistry.GetDefaultWorld();
+        if (world == null)
+        {
+            await player.Connection.DisconnectAsync(); // Todo
+
+            _logger.LogError("Failed to join player {playerName}, default world was not found",
+                player.DisplayName);
+
+            return;
+        }
+        await world.JoinAsync(player);
     }
 }
