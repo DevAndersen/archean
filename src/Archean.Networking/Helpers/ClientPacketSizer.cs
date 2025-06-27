@@ -17,7 +17,7 @@ public static class ClientPacketSizer
         + sizeof(short) // X
         + sizeof(short) // Y
         + sizeof(short) // Z
-        + sizeof(byte) // YaW
+        + sizeof(byte) // Yaw
         + sizeof(byte); // Pitch
 
     public const int ClientSetBlockPacketSize
