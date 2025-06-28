@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Archean.Worlds.Services.Persistence;
 
-public  class BlockMapPersistenceHandler
+public class BlockMapPersistenceHandler
 {
     private readonly ILogger<BlockMapPersistenceHandler> _logger;
 
