@@ -75,7 +75,10 @@ public static class HostApplicationBuilderExtensions
             // Startup
             .AddStartup<BlockRegistrationStartupService>()
             .AddStartup<CommandRegistrationStartupService>()
-            .AddStartup<WorldRegistrationStartupService>()
+            .AddStartup<WorldRegistrationLifetimeService>()
+
+            // Shutdown
+            .AddShutdown<WorldRegistrationLifetimeService>()
 
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()

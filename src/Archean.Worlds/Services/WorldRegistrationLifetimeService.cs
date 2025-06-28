@@ -8,20 +8,20 @@ using Microsoft.Extensions.Options;
 
 namespace Archean.Worlds.Services;
 
-public class WorldRegistrationStartupService : IStartupService
+public class WorldRegistrationLifetimeService : IStartupService, IShutdownService
 {
     private readonly IOptions<WorldSettings> _worldSettings;
     private readonly IWorldRegistry _worldRegistry;
     private readonly WorldFactory _worldFactory;
-    private readonly ILogger<WorldRegistrationStartupService> _logger;
+    private readonly ILogger<WorldRegistrationLifetimeService> _logger;
     private readonly BlockMapPersistenceHandler _blockMapPersistenceHandler;
     private readonly BlockMapFactory _blockMapFactory;
 
-    public WorldRegistrationStartupService(
+    public WorldRegistrationLifetimeService(
         IOptions<WorldSettings> worldSettings,
         IWorldRegistry worldRegistry,
         WorldFactory worldFactory,
-        ILogger<WorldRegistrationStartupService> logger,
+        ILogger<WorldRegistrationLifetimeService> logger,
         BlockMapPersistenceHandler blockMapPersistenceHandler,
         BlockMapFactory blockMapFactory)
     {
@@ -71,7 +71,13 @@ public class WorldRegistrationStartupService : IStartupService
             _logger.LogError(e, "Failed to load default world");
             throw e;
         }
+    }
 
-        // Todo: Unload worlds on server shutdown
+    public async Task OnShutdownAsync()
+    {
+        foreach (IWorld world in _worldRegistry.GetWorlds())
+        {
+            await world.UnloadAsync();
+        }
     }
 }
