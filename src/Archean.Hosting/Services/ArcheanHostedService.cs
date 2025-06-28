@@ -36,6 +36,8 @@ public class ArcheanHostedService : IHostedService
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
+        await _socketServer.StopAsync();
+
         foreach (IShutdownService shutdownService in _shutdownServices)
         {
             try
@@ -47,7 +49,5 @@ public class ArcheanHostedService : IHostedService
                 _logger.LogError(e, "An error occurred during shutdown");
             }
         }
-
-        await _socketServer.StopAsync();
     }
 }
