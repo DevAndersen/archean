@@ -12,37 +12,42 @@ public class WorldRegistry : IWorldRegistry
 {
     private readonly ILogger<WorldRegistry> _logger;
     private readonly IOptions<WorldSettings> _worldSettings;
+    private readonly WorldFactory _worldFactory;
 
     private readonly Dictionary<string, IWorld> _worlds = [];
 
     public WorldRegistry(
         ILogger<WorldRegistry> logger,
-        IOptions<WorldSettings> worldSettings)
+        IOptions<WorldSettings> worldSettings,
+        WorldFactory worldFactory)
     {
         _logger = logger;
         _worldSettings = worldSettings;
+        _worldFactory = worldFactory;
     }
 
-    public Task<bool> AddWorldAsync(string name, IWorld world)
+    public Task<bool> RegisterWorldAsync(IWorld world)
     {
-        return Task.FromResult(_worlds.TryAdd(name, world));
+        return Task.FromResult(_worlds.TryAdd(world.Name, world));
     }
 
-    public Task<bool> CreateWorldAsync(string name)
+    public async Task<IWorld?> CreateWorldAsync(string name)
     {
-        // Todo: Create world
-
-        return Task.FromResult(true);
+        IWorld world = _worldFactory.CreateNewWorld(name);
+        return await RegisterWorldAsync(world)
+            ? world
+            : null;
     }
 
     public async Task<bool> DeleteWorldAsync(IWorld world)
     {
         if (world == GetDefaultWorld())
         {
+            // Todo: Handle attempt to delete default world
             return false;
         }
 
-        await world.UnloadAsync();
+        await UnregisterWorldAsync(world.Name);
 
         // Todo: Delete world
 
@@ -59,9 +64,16 @@ public class WorldRegistry : IWorldRegistry
         return _worlds.Values;
     }
 
-    public Task<bool> RemoveWorldAsync(string name)
+    public async Task<bool> UnregisterWorldAsync(string name)
     {
-        return Task.FromResult(_worlds.Remove(name));
+        if (!TryGetWorld(name, out IWorld? world))
+        {
+            // Todo: Log attempt to unregister non-existing world.
+            return false;
+        }
+
+        await world.UnloadAsync();
+        return _worlds.Remove(name);
     }
 
     public async Task TransferPlayerAsync(IPlayer player, IWorld destinationWorld)

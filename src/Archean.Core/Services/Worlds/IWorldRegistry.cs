@@ -8,13 +8,13 @@ public interface IWorldRegistry
 {
     IWorld? GetDefaultWorld();
 
-    Task<bool> AddWorldAsync(string name, IWorld world);
+    Task<bool> RegisterWorldAsync(IWorld world);
 
-    Task<bool> CreateWorldAsync(string name);
+    Task<IWorld?> CreateWorldAsync(string name);
 
     Task<bool> DeleteWorldAsync(IWorld world);
 
-    Task<bool> RemoveWorldAsync(string name);
+    Task<bool> UnregisterWorldAsync(string name);
 
     IEnumerable<IWorld> GetWorlds();
 

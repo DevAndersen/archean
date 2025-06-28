@@ -7,6 +7,7 @@ using Archean.Core.Models.Networking.ServerPackets;
 using Archean.Core.Models.Worlds;
 using Archean.Core.Services.Events;
 using Archean.Core.Settings;
+using Archean.Worlds.Services.Persistence;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 
@@ -14,13 +15,17 @@ namespace Archean.Worlds.Models;
 
 public class TestWorld : IWorld
 {
+    private const int LoadSemaphoreTimeout = 1000 * 10;
+
     private readonly ILogger<TestWorld> _logger;
     private readonly IGlobalEventListener _eventListener;
     private readonly ServerSettings _serverSettings;
+    private readonly WorldPersistenceHandler _worldPersistenceHandler;
 
     private readonly List<IPlayer> _players = [];
+    private readonly SemaphoreSlim _loadSemaphore;
 
-    public BlockMap? Blocks { get; private set; }
+    public BlockMap? Blocks { get; internal set; }
 
     public string Name { get; private set; }
 
@@ -29,13 +34,12 @@ public class TestWorld : IWorld
 
     public IReadOnlyList<IPlayer> Players => _players;
 
-    private readonly Lock _loadLock = new Lock();
-
     public TestWorld(
         string name,
         ILogger<TestWorld> logger,
         IGlobalEventListener eventListener,
-        ServerSettings serverSettings)
+        ServerSettings serverSettings,
+        WorldPersistenceHandler worldPersistenceHandler)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -43,34 +47,29 @@ public class TestWorld : IWorld
         _logger = logger;
         _eventListener = eventListener;
         _serverSettings = serverSettings;
+        _worldPersistenceHandler = worldPersistenceHandler;
 
-        short width = 16;
-        short height = 16;
-        short depth = 16;
-
-        Blocks = new BlockMap(width, height, depth);
-
-        for (int x = 0; x < Blocks.Width; x++)
-        {
-            for (int z = 0; z < Blocks.Depth; z++)
-            {
-                for (int y = 0; y < 7; y++)
-                {
-                    Blocks[x, y, z] = Block.Dirt;
-                }
-
-                Blocks[x, 7, z] = Block.Grass;
-            }
-        }
+        _loadSemaphore = new SemaphoreSlim(1);
     }
 
-    public Task LoadAsync()
+    public async Task<bool> LoadAsync()
     {
-        lock (_loadLock)
+        if (await _loadSemaphore.WaitAsync(LoadSemaphoreTimeout))
         {
             if (IsLoaded)
             {
-                return Task.CompletedTask;
+                _logger.LogWarning("Attempted to load already loaded world {worldName}",
+                    Name);
+
+                return false;
+            }
+
+            if (!await _worldPersistenceHandler.LoadWorldAsync(this))
+            {
+                _logger.LogWarning("Failed to load world {worldName}",
+                    Name);
+
+                return false;
             }
 
             _eventListener.Subscribe<SetBlockEvent>(OnSetBlockAsync);
@@ -78,30 +77,31 @@ public class TestWorld : IWorld
             _eventListener.Subscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
 
             IsLoaded = true;
+            return true;
         }
 
-        return Task.CompletedTask;
+        return false;
     }
 
-    public Task UnloadAsync()
+    public async Task UnloadAsync()
     {
-        lock (_loadLock)
+        if (await _loadSemaphore.WaitAsync(LoadSemaphoreTimeout))
         {
             if (!IsLoaded)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             IsLoaded = false;
 
             // Todo: Transfer all players to the default world.
 
+            await _worldPersistenceHandler.SaveWorldAsync(this);
+
             _eventListener.Unsubscribe<SetBlockEvent>(OnSetBlockAsync);
             _eventListener.Unsubscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
             _eventListener.Unsubscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
         }
-
-        return Task.CompletedTask;
     }
 
     public async Task JoinAsync(IPlayer player)

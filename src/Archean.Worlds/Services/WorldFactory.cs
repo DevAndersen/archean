@@ -2,6 +2,7 @@
 using Archean.Core.Services.Events;
 using Archean.Core.Settings;
 using Archean.Worlds.Models;
+using Archean.Worlds.Services.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -23,6 +24,7 @@ public class WorldFactory
             name,
             _serviceProvider.GetRequiredService<ILogger<TestWorld>>(),
             _serviceProvider.GetRequiredService<IGlobalEventListener>(),
-            _serviceProvider.GetRequiredService<IOptions<ServerSettings>>().Value);
+            _serviceProvider.GetRequiredService<IOptions<ServerSettings>>().Value,
+            _serviceProvider.GetRequiredService<WorldPersistenceHandler>());
     }
 }

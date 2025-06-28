@@ -14,7 +14,7 @@ public interface IWorld
 
     Task LeaveAsync(IPlayer player);
 
-    Task LoadAsync();
+    Task<bool> LoadAsync();
 
     Task UnloadAsync();
 }

@@ -12,6 +12,7 @@ using Archean.Events.Services;
 using Archean.Hosting.Services;
 using Archean.Networking.Services;
 using Archean.Worlds.Services;
+using Archean.Worlds.Services.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -100,6 +101,9 @@ public static class HostApplicationBuilderExtensions
             // Worlds
             .AddSingleton<IWorldRegistry, WorldRegistry>()
             .AddSingleton<WorldFactory>()
+            .AddSingleton<BlockMapFactory>()
+            .AddSingleton<WorldPersistenceHandler>()
+            .AddSingleton<BlockMapPersistenceHandler>()
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();
