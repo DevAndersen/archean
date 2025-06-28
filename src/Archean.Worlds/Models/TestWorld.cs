@@ -77,6 +77,8 @@ public class TestWorld : IWorld
             _eventListener.Subscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
 
             IsLoaded = true;
+
+            _loadSemaphore.Release();
             return true;
         }
 
@@ -101,6 +103,8 @@ public class TestWorld : IWorld
             _eventListener.Unsubscribe<SetBlockEvent>(OnSetBlockAsync);
             _eventListener.Unsubscribe<PositionAndOrientationEvent>(OnPlayerMoveAsync);
             _eventListener.Unsubscribe<PlayerDisconnectEvent>(OnPlayerLeaveAsync);
+
+            _loadSemaphore.Release();
         }
     }
 
