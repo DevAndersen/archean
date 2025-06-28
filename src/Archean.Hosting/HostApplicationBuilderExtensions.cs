@@ -137,6 +137,18 @@ public static class HostApplicationBuilderExtensions
     }
 
     /// <summary>
+    /// Register a shutdown service.
+    /// </summary>
+    /// <typeparam name="TService"></typeparam>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddShutdown<TService>(this IServiceCollection serviceCollection)
+        where TService : class, IShutdownService
+    {
+        return serviceCollection.AddSingleton<IShutdownService, TService>();
+    }
+
+    /// <summary>
     /// Register a command.
     /// </summary>
     /// <remarks>
