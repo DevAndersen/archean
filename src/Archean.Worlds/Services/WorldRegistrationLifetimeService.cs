@@ -57,7 +57,14 @@ public class WorldRegistrationLifetimeService : IStartupService, IShutdownServic
             Directory.CreateDirectory(defaultWorldDirectory);
 
             // Create block map
-            BlockMap blockMap = _blockMapFactory.CreateBlockMap(16, 16, 16);
+            BlockMap? blockMap = _blockMapFactory.CreateBlockMap("Flat", 16, 16, 16); // Todo
+            if (blockMap == null)
+            {
+                Exception e = new Exception("Failed to generate world block map"); // Todo: Use an appropriate exception type.
+                _logger.LogError(e, "Failed to generate world block map");
+                throw e;
+            }
+
             await _blockMapPersistenceHandler.SaveBlockMapAsync(
                 Path.Combine(defaultWorldDirectory, _worldSettings.Value.BlockMapFileName),
                 blockMap);
@@ -67,7 +74,7 @@ public class WorldRegistrationLifetimeService : IStartupService, IShutdownServic
 
         if (!await defaultWorld.LoadAsync())
         {
-            Exception e = new Exception("Failed to load default world");
+            Exception e = new Exception("Failed to load default world"); // Todo: Use an appropriate exception type.
             _logger.LogError(e, "Failed to load default world");
             throw e;
         }

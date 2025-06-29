@@ -13,6 +13,7 @@ using Archean.Hosting.Services;
 using Archean.Networking.Services;
 using Archean.Worlds.Services;
 using Archean.Worlds.Services.Persistence;
+using Archean.Worlds.Services.TerrainGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -75,6 +76,7 @@ public static class HostApplicationBuilderExtensions
             // Startup
             .AddStartup<BlockRegistrationStartupService>()
             .AddStartup<CommandRegistrationStartupService>()
+            .AddStartup<TerrainGeneratorStartupService>()
             .AddStartup<WorldRegistrationLifetimeService>()
 
             // Shutdown
@@ -107,6 +109,11 @@ public static class HostApplicationBuilderExtensions
             .AddSingleton<BlockMapFactory>()
             .AddSingleton<WorldPersistenceHandler>()
             .AddSingleton<BlockMapPersistenceHandler>()
+
+            // Terrain generation
+            .AddSingleton<ITerrainGeneratorRegistry, TerrainGeneratorRegistry>()
+            .AddTerrainGenerator<FlatTerrainGenerator>()
+            .AddTerrainGenerator<EmptyTerrainGenerator>()
 
             // Hosted service
             .AddHostedService<ArcheanHostedService>();
@@ -166,6 +173,21 @@ public static class HostApplicationBuilderExtensions
         return serviceCollection
             .AddSingleton<ICommand, TCommand>()
             .AddTransient<TCommand>();
+    }
+
+    /// <summary>
+    /// Register a terrain generator.
+    /// </summary>
+    /// <remarks>
+    /// To new up a command for invocation, use the methods of <see cref="ITerrainGeneratorRegistry"/>.
+    /// </remarks>
+    /// <typeparam name="TTerrainGenerator"></typeparam>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddTerrainGenerator<TTerrainGenerator>(this IServiceCollection serviceCollection)
+        where TTerrainGenerator : class, ITerrainGenerator
+    {
+        return serviceCollection.AddSingleton<ITerrainGenerator, TTerrainGenerator>();
     }
 
     /// <summary>

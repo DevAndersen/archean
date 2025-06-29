@@ -24,7 +24,7 @@ public class CommandRegistry : ICommandRegistry
     {
         if (!commandType.IsAssignableTo(typeof(ICommand)))
         {
-            _logger.LogWarning("Failed to register command of type {commandTypeName}, type cannot be assigned to {commandInterfaceTypeName}",
+            _logger.LogWarning("Failed to register command of type {typeName}, type cannot be assigned to {interfaceTypeName}",
                 commandType.FullName,
                 typeof(ICommand).FullName);
 

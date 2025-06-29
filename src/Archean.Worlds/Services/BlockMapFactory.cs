@@ -1,26 +1,34 @@
-﻿using Archean.Core.Models;
-using Archean.Core.Models.Worlds;
+﻿using Archean.Core.Models.Worlds;
+using Archean.Core.Services.Worlds;
+using Microsoft.Extensions.Logging;
 
 namespace Archean.Worlds.Services;
 
 public class BlockMapFactory
 {
-    public BlockMap CreateBlockMap(short width, short height, short depth)
+    private readonly ITerrainGeneratorRegistry _terrainGeneratorRegistry;
+    private readonly ILogger<BlockMapFactory> _logger;
+
+    public BlockMapFactory(
+        ITerrainGeneratorRegistry terrainGeneratorRegistry,
+        ILogger<BlockMapFactory> logger)
     {
-        BlockMap blocks = new BlockMap(width, height, depth);
+        _terrainGeneratorRegistry = terrainGeneratorRegistry;
+        _logger = logger;
+    }
 
-        for (int x = 0; x < width; x++)
+    public BlockMap? CreateBlockMap(string terrainGenerator, short width, short height, short depth)
+    {
+        if (!_terrainGeneratorRegistry.TryGetTerrainGenerator(terrainGenerator, out ITerrainGenerator? generator))
         {
-            for (int z = 0; z < depth; z++)
-            {
-                for (int y = 0; y < 7; y++)
-                {
-                    blocks[x, y, z] = Block.Dirt;
-                }
+            _logger.LogError("Unable to find terrain generator '{terrainGenerator}'",
+                terrainGenerator);
 
-                blocks[x, 7, z] = Block.Grass;
-            }
+            return null;
         }
+
+        BlockMap blocks = new BlockMap(width, height, depth);
+        generator.PopulateBlockMap(blocks, width, height, depth);
 
         return blocks;
     }
