@@ -31,9 +31,8 @@ public class ConnectionHandler : IConnectionHandler
 
     public async Task HandleNewConnectionAsync(IConnection connection, CancellationToken cancellationToken)
     {
-        IClientPacket[] initialConnectionPackets = connection.ReadAsync(cancellationToken)
-            .ToBlockingEnumerable(cancellationToken)
-            .ToArray();
+        IEnumerable<IClientPacket> initialConnectionPackets = connection.ReadAsync(cancellationToken)
+            .ToBlockingEnumerable(cancellationToken);
 
         if (initialConnectionPackets.ToArray() is not [ClientIdentificationPacket clientIdentificationPacket])
         {
