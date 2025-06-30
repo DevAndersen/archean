@@ -79,7 +79,9 @@ public class ConnectionHandler : IConnectionHandler
                 player.Id);
 
             await SendJoinServerTestAsync(player);
-            new Thread(async () => await ReceiveFromClientAsync(player, cancellationToken)).Start();
+
+            // Todo: Better handling of tasks than fire-and-forget
+            _ = Task.Run(async () => await ReceiveFromClientAsync(player, cancellationToken), cancellationToken);
         }
         else
         {
