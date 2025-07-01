@@ -17,6 +17,7 @@ using Archean.Worlds.Services.TerrainGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
 
 namespace Archean.Hosting;
@@ -50,9 +51,16 @@ public static class HostApplicationBuilderExtensions
     {
         builder.Services.AddLogging(loggingBuilder =>
         {
+            // Logging levels
             loggingBuilder.SetMinimumLevel(LogLevel.Information);
             loggingBuilder.AddFilter("Microsoft", LogLevel.Warning);
             loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
+            // Console logging formatting
+            builder.Logging.AddConsole().AddConsoleFormatter<ArcheanConsoleLoggerFormatter, ConsoleFormatterOptions>();
+            string formatterName = builder.Configuration.GetSection("Logging:Console:FormatterName").Value
+                ?? nameof(ArcheanConsoleLoggerFormatter);
+            loggingBuilder.AddConsole(x => x.FormatterName = formatterName);
         });
 
         return builder;
