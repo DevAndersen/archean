@@ -137,7 +137,8 @@ public static class HostApplicationBuilderExtensions
     public static IHostApplicationBuilder RegisterDefaultCommands(this IHostApplicationBuilder builder)
     {
         builder.Services
-            .AddCommand<TestCommand>();
+            .AddCommand<TestCommand>()
+            .AddCommand<TeleportCommand>();
 
         return builder;
     }
