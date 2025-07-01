@@ -64,6 +64,9 @@ public class TestWorld : IWorld
                 return false;
             }
 
+            _logger.LogDebug("Loading world {worldName}",
+                Name);
+
             if (!await _worldPersistenceHandler.LoadWorldAsync(this))
             {
                 _logger.LogWarning("Failed to load world {worldName}",
@@ -93,6 +96,9 @@ public class TestWorld : IWorld
             {
                 return;
             }
+
+            _logger.LogDebug("Unloading world {worldName}",
+                Name);
 
             IsLoaded = false;
 

@@ -16,6 +16,11 @@ public class TerrainGeneratorRegistry : ITerrainGeneratorRegistry
         _logger = logger;
     }
 
+    public IEnumerable<ITerrainGenerator> GetTerrainGenerators()
+    {
+        return _registrations.Values;
+    }
+
     public bool RegisterTerrainGenerator(ITerrainGenerator terrainGenerator)
     {
         TerrainGeneratorAttribute? attribute = terrainGenerator.GetType().GetCustomAttribute<TerrainGeneratorAttribute>();

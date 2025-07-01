@@ -7,4 +7,6 @@ public interface ITerrainGeneratorRegistry
     bool RegisterTerrainGenerator(ITerrainGenerator terrainGenerator);
 
     bool TryGetTerrainGenerator(string name, [NotNullWhen(true)] out ITerrainGenerator? generator);
+
+    IEnumerable<ITerrainGenerator> GetTerrainGenerators();
 }
