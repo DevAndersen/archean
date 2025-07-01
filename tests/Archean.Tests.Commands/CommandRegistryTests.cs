@@ -53,7 +53,7 @@ public class CommandRegistryTests
 
         // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
-        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out Command? command, out _);
 
         // Assert
         Assert.True(wasCommandFound);
@@ -69,8 +69,8 @@ public class CommandRegistryTests
 
         // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
-        bool foundByAlias1 = commandRegistry.TryGetCommand("t", out ICommand? commandByAlias1, out _);
-        bool foundByAlias2 = commandRegistry.TryGetCommand("123", out ICommand? commandByAlias2, out _);
+        bool foundByAlias1 = commandRegistry.TryGetCommand("t", out Command? commandByAlias1, out _);
+        bool foundByAlias2 = commandRegistry.TryGetCommand("123", out Command? commandByAlias2, out _);
 
         // Assert
         Assert.True(foundByAlias1);
@@ -86,7 +86,7 @@ public class CommandRegistryTests
         ICommandRegistry commandRegistry = new CommandRegistry(_mockedLogger, _mockedServiceProvider);
 
         // Act
-        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out Command? command, out _);
 
         // Assert
         Assert.False(wasCommandFound);
@@ -101,7 +101,7 @@ public class CommandRegistryTests
 
         // Act
         commandRegistry.RegisterCommand(typeof(TestCommand), true);
-        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out ICommand? command, out _);
+        bool wasCommandFound = commandRegistry.TryGetCommand(nameof(TestCommand), out Command? command, out _);
 
         // Assert
         Assert.False(wasCommandFound);
@@ -109,8 +109,8 @@ public class CommandRegistryTests
     }
 
     [Command(nameof(TestCommand), Aliases = ["t", "123"])]
-    private class TestCommand : ICommand
+    private class TestCommand : Command
     {
-        public Task InvokeAsync() => Task.CompletedTask;
+        public override Task InvokeAsync() => Task.CompletedTask;
     }
 }

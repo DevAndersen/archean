@@ -38,7 +38,7 @@ public class CommandInvokerTests
         _commandRegistry.RegisterCommand(typeof(CommandWithoutParameters), true);
 
         // Act
-        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync($"{nameof(CommandWithoutParameters)}".AsMemory());
+        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync($"{nameof(CommandWithoutParameters)}".AsMemory(), null);
 
         // Assert
         Assert.True(commandInvokedSuccessfully);
@@ -48,7 +48,7 @@ public class CommandInvokerTests
     public async Task TryInvokeCommandAsync_NameOfUnregisteredCommand_InvokedSuccessfully()
     {
         // Act
-        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync($"{nameof(CommandWithoutParameters)}".AsMemory());
+        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync($"{nameof(CommandWithoutParameters)}".AsMemory(), null);
 
         // Assert
         Assert.False(commandInvokedSuccessfully);
@@ -61,15 +61,15 @@ public class CommandInvokerTests
         _commandRegistry.RegisterCommand(typeof(CommandWithoutParameters), true);
 
         // Act
-        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync("NotARegisteredCommandName".AsMemory());
+        bool commandInvokedSuccessfully = await _invoker.TryInvokeCommandAsync("NotARegisteredCommandName".AsMemory(), null);
 
         // Assert
         Assert.False(commandInvokedSuccessfully);
     }
 
     [Command(nameof(CommandWithoutParameters))]
-    private class CommandWithoutParameters : ICommand
+    private class CommandWithoutParameters : Command
     {
-        public Task InvokeAsync() => Task.CompletedTask;
+        public override Task InvokeAsync() => Task.CompletedTask;
     }
 }

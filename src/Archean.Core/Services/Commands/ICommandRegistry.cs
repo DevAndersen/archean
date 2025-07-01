@@ -25,7 +25,7 @@ public interface ICommandRegistry
     /// <param name="command"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command, [NotNullWhen(true)] out CommandParameter[]? parameters);
+    bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out Command? command, [NotNullWhen(true)] out CommandParameter[]? parameters);
 
     /// <summary>
     /// Retrieve a collection of all registered commands.

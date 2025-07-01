@@ -32,7 +32,7 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
         {
             ReadOnlyMemory<char> commandText = arg.Message.AsMemory()[1..];
 
-            if (await _commandInvoker.TryInvokeCommandAsync(commandText))
+            if (!await _commandInvoker.TryInvokeCommandAsync(commandText, arg.PlayerSender))
             {
                 if (_playerService.TryGetPlayer(out IPlayer? player))
                 {

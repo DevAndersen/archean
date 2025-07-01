@@ -22,11 +22,11 @@ public class CommandRegistry : ICommandRegistry
 
     public bool RegisterCommand(Type commandType, bool useDefaultNames, string[]? additionalNames = null)
     {
-        if (!commandType.IsAssignableTo(typeof(ICommand)))
+        if (!commandType.IsAssignableTo(typeof(Command)))
         {
             _logger.LogWarning("Failed to register command of type {typeName}, type cannot be assigned to {interfaceTypeName}",
                 commandType.FullName,
-                typeof(ICommand).FullName);
+                typeof(Command).FullName);
 
             return false;
         }
@@ -98,13 +98,13 @@ public class CommandRegistry : ICommandRegistry
         return true;
     }
 
-    public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out ICommand? command, [NotNullWhen(true)] out CommandParameter[]? parameters)
+    public bool TryGetCommand(ReadOnlySpan<char> commandName, [NotNullWhen(true)] out Command? command, [NotNullWhen(true)] out CommandParameter[]? parameters)
     {
         if (_nameRegistrations.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(commandName, out Type? commandType))
         {
             if (_registrations.TryGetValue(commandType, out CommandRegistration? registration))
             {
-                command = _serviceProvider.GetService(registration.Type) as ICommand;
+                command = _serviceProvider.GetService(registration.Type) as Command;
                 parameters = registration.Parameters;
                 return command != null;
             }

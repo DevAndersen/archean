@@ -7,12 +7,12 @@ namespace Archean.Commands.Services;
 
 public class CommandRegistrationStartupService : IStartupService
 {
-    private readonly IEnumerable<ICommand> _commands;
+    private readonly IEnumerable<Command> _commands;
     private readonly ICommandRegistry _commandRegistry;
     private readonly ILogger<CommandRegistrationStartupService> _logger;
 
     public CommandRegistrationStartupService(
-        IEnumerable<ICommand> commands,
+        IEnumerable<Command> commands,
         ICommandRegistry commandRegistry,
         ILogger<CommandRegistrationStartupService> logger)
     {
@@ -23,7 +23,7 @@ public class CommandRegistrationStartupService : IStartupService
 
     public Task OnStartupAsync()
     {
-        foreach (ICommand command in _commands)
+        foreach (Command command in _commands)
         {
             _commandRegistry.RegisterCommand(command.GetType(), true);
         }

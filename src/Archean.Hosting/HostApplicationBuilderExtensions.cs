@@ -176,10 +176,10 @@ public static class HostApplicationBuilderExtensions
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
     public static IServiceCollection AddCommand<TCommand>(this IServiceCollection serviceCollection)
-        where TCommand : class, ICommand
+        where TCommand : Command
     {
         return serviceCollection
-            .AddSingleton<ICommand, TCommand>()
+            .AddSingleton<Command, TCommand>()
             .AddTransient<TCommand>();
     }
 

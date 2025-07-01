@@ -1,4 +1,5 @@
-﻿using Archean.Core.Models.Commands;
+﻿using Archean.Core.Models;
+using Archean.Core.Models.Commands;
 using Archean.Core.Services.Commands;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
@@ -18,7 +19,7 @@ public class CommandInvoker : ICommandInvoker
         _logger = logger;
     }
 
-    public async Task<bool> TryInvokeCommandAsync(ReadOnlyMemory<char> commandText)
+    public async Task<bool> TryInvokeCommandAsync(ReadOnlyMemory<char> commandText, IPlayer? invokingPlayer)
     {
         if (commandText.Span.IsWhiteSpace())
         {
@@ -31,7 +32,7 @@ public class CommandInvoker : ICommandInvoker
         splitRanges.MoveNext();
         ReadOnlySpan<char> commandName = span[splitRanges.Current];
 
-        if (!_commandRegistry.TryGetCommand(commandName, out ICommand? command, out CommandParameter[]? parameters))
+        if (!_commandRegistry.TryGetCommand(commandName, out Command? command, out CommandParameter[]? parameters))
         {
             // Todo: Error response, unable to find command.
             return false;
@@ -52,6 +53,7 @@ public class CommandInvoker : ICommandInvoker
 
         try
         {
+            command.InvokingPlayer = invokingPlayer;
             await command.InvokeAsync();
         }
         catch (Exception e)

@@ -4,7 +4,7 @@
 /// Indicates that the decorated class is a command, as well as specifying related metadata.
 /// </summary>
 /// <remarks>
-/// This is only exepcted to be used on classes inheriting from <see cref="ICommand"/>.
+/// This is only exepcted to be used on classes inheriting from <see cref="Command"/>.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class CommandAttribute : Attribute

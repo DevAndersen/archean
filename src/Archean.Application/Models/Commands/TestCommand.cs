@@ -3,7 +3,7 @@
 namespace Archean.Application.Models.Commands;
 
 [Command("Test", Aliases = ["t"])]
-public class TestCommand : ICommand
+public class TestCommand : Command
 {
     private readonly ILogger<TestCommand> _logger;
 
@@ -18,7 +18,7 @@ public class TestCommand : ICommand
         _logger = logger;
     }
 
-    public Task InvokeAsync()
+    public override Task InvokeAsync()
     {
         _logger.LogInformation("Test command invoked.");
         return Task.CompletedTask;

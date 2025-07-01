@@ -4,7 +4,7 @@
 /// Indicates that the decorated property should be considered a parameter for a command.
 /// </summary>
 /// <remarks>
-/// This is only exepcted to be used on the properties of classes inheriting from <see cref="ICommand"/>.
+/// This is only exepcted to be used on the properties of classes inheriting from <see cref="Command"/>.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property, Inherited = true)]
 public class CommandParameterAttribute : Attribute
