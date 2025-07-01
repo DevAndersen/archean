@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Apps/">
+    <Project Path="src/Archean.App.ConsoleApp/Archean.App.ConsoleApp.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -16,7 +19,6 @@
   <Project Path="src/Archean.Application/Archean.Application.csproj" />
   <Project Path="src/Archean.Blocks/Archean.Blocks.csproj" />
   <Project Path="src/Archean.Commands/Archean.Commands.csproj" />
-  <Project Path="src/Archean.Console/Archean.Console.csproj" />
   <Project Path="src/Archean.Core/Archean.Core.csproj" />
   <Project Path="src/Archean.Events/Archean.Events.csproj" />
   <Project Path="src/Archean.Hosting/Archean.Hosting.csproj" />
