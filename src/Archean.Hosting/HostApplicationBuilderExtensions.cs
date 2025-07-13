@@ -77,7 +77,8 @@ public static class HostApplicationBuilderExtensions
             .AddConfiguration<ServerSettings>("Server")
             .AddConfiguration<ChatSettings>("Chat")
             .AddConfiguration<AliasSettings>("Aliases")
-            .AddConfiguration<WorldSettings>("Worlds");
+            .AddConfiguration<WorldSettings>("Worlds")
+            .AddConfiguration<SkinSettings>("Skin");
 
         builder.Services
 
@@ -94,6 +95,9 @@ public static class HostApplicationBuilderExtensions
             .AddSingleton<ISocketServer, SocketServer>()
             .AddSingleton<IConnectionHandler, ConnectionHandler>()
             .AddSingleton<IPlayerRegistry, PlayerRegistry>()
+
+            // Skins
+            .AddSingleton<ISkinService, SkinService>()
 
             // Events
             .AddScoped<IClientPacketHandler, ClientPacketHandler>()
