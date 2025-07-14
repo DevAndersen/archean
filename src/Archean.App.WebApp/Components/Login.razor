@@ -1,0 +1,16 @@
+﻿<form method="post" action="@WebAppExtensions.LoginApiUrl">
+    <AntiforgeryToken />
+    <input type="password" name="password" />
+    <button type="submit">Sign in</button>
+</form>
+
+@if (LoginFail != null)
+{
+    <div>Login failed</div>
+}
+
+@code
+{
+    [SupplyParameterFromQuery]
+    public string? LoginFail { get; set; }
+}

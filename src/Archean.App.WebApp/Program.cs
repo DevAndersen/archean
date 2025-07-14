@@ -1,3 +1,4 @@
+using Archean.App.WebApp;
 using Archean.App.WebApp.Components;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.AddCookieAuthentication();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -13,6 +16,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
+
+app.UseCookieAuthentication();
 
 app.UseAntiforgery();
 
