@@ -1,13 +1,17 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Archean.App.WebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <CascadingAuthenticationState>
             <AuthorizeView>
                 <Authorized>
-                    <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+                    <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
                 </Authorized>
                 <NotAuthorized>
-                    <Login />
+                    <LayoutView Layout="typeof(LoginLayout)">
+                        <Login />
+                    </LayoutView>
                 </NotAuthorized>
             </AuthorizeView>
         </CascadingAuthenticationState>

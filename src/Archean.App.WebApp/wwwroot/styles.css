@@ -1,0 +1,28 @@
+﻿:root
+{
+    font-family: monospace;
+}
+
+html, body
+{
+    margin: 0;
+    padding: 0;
+}
+
+body
+{
+    display: flex;
+    min-height: 100vh;
+
+    --color-grass: #64a140;
+    --color-sky: #a9d4ff;
+    --color-dirt: #7b5b41;
+
+    background: linear-gradient(180deg,
+        var(--color-sky) 0,
+        var(--color-sky) 128px,
+        var(--color-grass) 128px,
+        var(--color-grass) 192px,
+        var(--color-dirt) 192px,
+        var(--color-dirt) 100%);
+}
