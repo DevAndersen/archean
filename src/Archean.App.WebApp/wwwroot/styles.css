@@ -26,3 +26,8 @@ body
         var(--color-dirt) 192px,
         var(--color-dirt) 100%);
 }
+
+a
+{
+    text-decoration: none;
+}
