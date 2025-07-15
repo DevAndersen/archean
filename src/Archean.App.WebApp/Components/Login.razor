@@ -1,4 +1,6 @@
-﻿<div style="display: grid; margin: auto">
+﻿<PageTitle>Login</PageTitle>
+
+<div style="display: grid; margin: auto">
     <form method="post" action="@WebAppExtensions.LoginApiUrl">
         <div class="interface interface-dialog">
             <AntiforgeryToken />
@@ -16,5 +18,5 @@
 @code
 {
     [SupplyParameterFromQuery]
-    public string? LoginFail { get; set; }
+    private string? LoginFail { get; init; }
 }
