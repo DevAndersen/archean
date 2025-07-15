@@ -52,9 +52,57 @@ main
 
 .interface
 {
-    background: #888;
-    border: 1px solid #000;
     padding: var(--spacing);
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px #fff8, inset -1px -1px #0008, 4px 4px 8px #0004;
+    border-radius: 5px;
+    background-color: color-mix(in srgb, var(--color-light), var(--interface-color, var(--color-light)) 50%);
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing);
+    gap: var(--spacing);
+}
+
+.interface-gray
+{
+    --interface-color: var(--color-light);
+}
+
+.interface-red
+{
+    --interface-color: var(--color-red);
+}
+
+.interface-yellow
+{
+    --interface-color: var(--color-yellow);
+}
+
+.interface-green
+{
+    --interface-color: var(--color-green);
+}
+
+.interface-blue
+{
+    --interface-color: var(--color-blue);
+}
+
+.interface-purple
+{
+    --interface-color: var(--color-purple);
+}
+
+.interface-indentation
+{
+    padding: 4px;
+    background-color: #0008;
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px #0008,
+                inset -1px -1px #fff4;
+    
+    display: flex;
+    flex-direction: column;
 }
 
 button, input[type="button"], input[type="submit"]
