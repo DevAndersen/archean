@@ -17,14 +17,30 @@ public class SkinService : ISkinService
         _logger = logger;
     }
 
+    public bool DoesDefaultSkinFileExist()
+    {
+        return File.Exists(GetAbsoluteSkinPath(GetDefaultSkinFileName()));
+    }
+
     public bool DoesSkinFileExist(string username)
     {
         return File.Exists(GetAbsoluteSkinPath(username));
     }
 
+    public async Task<bool> DownloadDefaultSkinAsync()
+    {
+        string? skinUrl = "https://assets.mojang.com/SkinTemplates/steve.png";
+        return await DownloadSkinFromUrlAsync(GetDefaultSkinFileName(), skinUrl);
+    }
+
     public async Task<bool> DownloadSkinAsync(string username)
     {
         string? skinUrl = await GetSkinUrlAsync(username);
+        return await DownloadSkinFromUrlAsync(username, skinUrl);
+    }
+
+    private async Task<bool> DownloadSkinFromUrlAsync(string username, string? skinUrl)
+    {
         if (skinUrl == null)
         {
             return false;
@@ -45,6 +61,11 @@ public class SkinService : ISkinService
 
             return false;
         }
+    }
+
+    public string GetDefaultSkinFileName()
+    {
+        return "_";
     }
 
     public string GetSkinFileName(string username)
