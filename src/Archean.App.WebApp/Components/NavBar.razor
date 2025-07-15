@@ -1,8 +1,18 @@
 ﻿<div class="interface navbar">
     <div class="navbar-items">
-        <div>Nav</div>
-        <div>Nav</div>
-        <div>Nav</div>
+
+        <NavLink href="/">
+            <button>Home</button>
+        </NavLink>
+
+        <NavLink href="/players">
+            <button>Players</button>
+        </NavLink>
+
+        <NavLink href="/worlds">
+            <button>Worlds</button>
+        </NavLink>
+
     </div>
     <div class="navbar-items navbar-items-left">
         <form method="post" action="@WebAppExtensions.LogoutApiUrl">
