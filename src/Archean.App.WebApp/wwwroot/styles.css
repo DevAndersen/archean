@@ -1,5 +1,12 @@
 ﻿:root
 {
+    --color-light: #c6c6c6;
+    --color-gray: #717171;
+    --color-red: #d64747;
+    --color-yellow: #979720;
+    --color-green: #56ab56;
+    --color-blue: #1c53a8;
+    --color-purple: #6b23b1;
     --spacing: 8px;
     font-family: monospace;
 }
@@ -48,4 +55,54 @@ main
     background: #888;
     border: 1px solid #000;
     padding: var(--spacing);
+}
+
+button, input[type="button"], input[type="submit"]
+{
+    color: #e8e8e8;
+    background-color: var(--button-color, var(--color-gray));
+    font-size: 18px;
+    padding: 0.3em 1em;
+    box-shadow: inset 1px 1px #fff8, inset -1px -1px #0008;
+    border: 1px solid #000;
+    text-shadow: 1px 1px #000a;
+    cursor: pointer;
+
+    &:hover
+    {
+        background-color: hsl(from var(--button-color, #c6cae3) h s calc(l * 0.7));
+    }
+
+    &:disabled, a.active &
+    {
+        color: #a0a0a0;
+        background-color: hsl(from var(--button-color, var(--color-gray)) h s calc(l * 0.4));
+        box-shadow: none;
+        cursor: initial;
+    }
+}
+
+.button-red
+{
+    --button-color: var(--color-red);
+}
+
+.button-yellow
+{
+    --button-color: var(--color-yellow);
+}
+
+.button-green
+{
+    --button-color: var(--color-green);
+}
+
+.button-blue
+{
+    --button-color: var(--color-blue);
+}
+
+.button-purple
+{
+    --button-color: var(--color-purple);
 }

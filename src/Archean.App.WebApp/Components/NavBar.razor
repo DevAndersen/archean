@@ -1,7 +1,7 @@
 ﻿<div class="interface navbar">
     <div class="navbar-items">
 
-        <NavLink href="/">
+        <NavLink href="/" Match="NavLinkMatch.All">
             <button>Home</button>
         </NavLink>
 
@@ -16,7 +16,7 @@
     </div>
     <div class="navbar-items navbar-items-left">
         <form method="post" action="@WebAppExtensions.LogoutApiUrl">
-            <button type="submit">Sign out</button>
+            <button type="submit" class="button-red">Sign out</button>
         </form>
     </div>
 </div>
