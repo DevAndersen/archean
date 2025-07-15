@@ -1,8 +1,12 @@
-﻿<form method="post" action="@WebAppExtensions.LoginApiUrl">
-    <AntiforgeryToken />
-    <input type="password" name="password" />
-    <button type="submit">Sign in</button>
-</form>
+﻿<div style="display: grid; margin: auto">
+    <div class="interface">
+        <form method="post" action="@WebAppExtensions.LoginApiUrl">
+            <AntiforgeryToken />
+            <input type="password" name="password" />
+            <button type="submit">Sign in</button>
+        </form>
+    </div>
+</div>
 
 @if (LoginFail != null)
 {

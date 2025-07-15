@@ -1,11 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
-@if (ShowNavigation)
-{
-    <div>Nav bar</div>
-}
-
-@Body
+<div class="page-container">
+    @if (ShowNavigation)
+    {
+        <header>
+            <NavBar />
+        </header>
+    }
+   <main>
+        @Body
+    </main>
+</div>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

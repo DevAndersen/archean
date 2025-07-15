@@ -1,0 +1,16 @@
+﻿.navbar
+{
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+.navbar-items
+{
+    display: flex;
+    gap: var(--spacing);
+}
+
+.navbar-items-left
+{
+    flex-direction: row-reverse
+}

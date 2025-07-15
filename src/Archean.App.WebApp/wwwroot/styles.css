@@ -1,5 +1,6 @@
 ﻿:root
 {
+    --spacing: 8px;
     font-family: monospace;
 }
 
@@ -11,23 +12,40 @@ html, body
 
 body
 {
-    display: flex;
-    min-height: 100vh;
-
     --color-grass: #64a140;
     --color-sky: #a9d4ff;
     --color-dirt: #7b5b41;
-
-    background: linear-gradient(180deg,
-        var(--color-sky) 0,
-        var(--color-sky) 128px,
-        var(--color-grass) 128px,
-        var(--color-grass) 192px,
-        var(--color-dirt) 192px,
-        var(--color-dirt) 100%);
+    background: linear-gradient(180deg, var(--color-sky) 0, var(--color-sky) 128px, var(--color-grass) 128px, var(--color-grass) 192px, var(--color-dirt) 192px, var(--color-dirt) 100%);
+    min-height: 100vh;
+    display: flex;
 }
 
 a
 {
     text-decoration: none;
+}
+
+.page-container
+{
+    flex-grow: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--spacing) * 4);
+    gap: var(--spacing);
+}
+
+main
+{
+    flex-grow: 1;
+    display: grid;
+    gap: var(--spacing);
+}
+
+.interface
+{
+    background: #888;
+    border: 1px solid #000;
+    padding: var(--spacing);
 }
