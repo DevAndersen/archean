@@ -1,17 +1,17 @@
 ﻿<div style="display: grid; margin: auto">
-    <div class="interface">
-        <form method="post" action="@WebAppExtensions.LoginApiUrl">
+    <form method="post" action="@WebAppExtensions.LoginApiUrl">
+        <div class="interface interface-dialog">
             <AntiforgeryToken />
+            <div class="interface-dialog-title">Server administration</div>
             <input type="password" name="password" />
             <button type="submit" class="button-green">Sign in</button>
-        </form>
-    </div>
+            @if (LoginFail != null)
+            {
+                <div class="interface-text color-red login-failed">Login failed</div>
+            }
+        </div>
+    </form>
 </div>
-
-@if (LoginFail != null)
-{
-    <div>Login failed</div>
-}
 
 @code
 {

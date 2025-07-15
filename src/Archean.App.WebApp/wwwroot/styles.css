@@ -7,6 +7,7 @@
     --color-green: #56ab56;
     --color-blue: #1c53a8;
     --color-purple: #6b23b1;
+    --color-text: #000e;
     --spacing: 8px;
     font-family: monospace;
 }
@@ -105,6 +106,34 @@ main
     flex-direction: column;
 }
 
+.interface-title
+{
+    color: var(--color-text);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.interface-text
+{
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.interface-dialog
+{
+    min-width: 500px;
+    padding: calc(var(--spacing) * 2);
+}
+
+.interface-dialog-title
+{
+    color: var(--color-text);
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
 button, input[type="button"], input[type="submit"]
 {
     color: #e8e8e8;
@@ -115,7 +144,6 @@ button, input[type="button"], input[type="submit"]
     border: 1px solid #000;
     text-shadow: 1px 1px #000a;
     cursor: pointer;
-
     &:hover
     {
         background-color: hsl(from var(--button-color, #c6cae3) h s calc(l * 0.7));
@@ -153,4 +181,29 @@ button, input[type="button"], input[type="submit"]
 .button-purple
 {
     --button-color: var(--color-purple);
+}
+
+.color-red
+{
+    color: var(--color-red);
+}
+
+.color-yellow
+{
+    color: var(--color-yellow);
+}
+
+.color-green
+{
+    color: var(--color-green);
+}
+
+.color-blue
+{
+    color: var(--color-blue);
+}
+
+.color-purple
+{
+    color: var(--color-purple);
 }
