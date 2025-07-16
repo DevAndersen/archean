@@ -1,0 +1,22 @@
+﻿@page "/httpstatus/{StatusCode:int}"
+@using System.Net
+
+<PageTitle>@ErrorText</PageTitle>
+
+<div style="display: grid; margin: auto">
+    <div class="interface interface-dialog">
+        <div class="interface-title" style="text-align: center">@ErrorText</div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public required HttpStatusCode StatusCode { get; init; }
+
+    private string ErrorText => StatusCode switch
+    {
+        HttpStatusCode.NotFound => "Page not found",
+        _ => StatusCode.ToString()
+    };
+}

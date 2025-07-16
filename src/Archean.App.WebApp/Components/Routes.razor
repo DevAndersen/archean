@@ -1,19 +1,29 @@
 ﻿@using Archean.App.WebApp.Components.Layout
+@using Archean.App.WebApp.Components.Pages
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Net
 
-<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <CascadingAuthenticationState>
-            <AuthorizeView>
-                <Authorized>
+<CascadingAuthenticationState>
+    <AuthorizeView>
+
+        <Authorized>
+            <Router AppAssembly="typeof(Program).Assembly">
+                <Found Context="routeData">
                     <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
-                </Authorized>
-                <NotAuthorized>
-                    <LayoutView Layout="typeof(LoginLayout)">
-                        <Login />
+                </Found>
+                <NotFound>
+                    <LayoutView Layout="typeof(MainLayout)">
+                        <HttpStatusPage StatusCode="HttpStatusCode.NotFound" />
                     </LayoutView>
-                </NotAuthorized>
-            </AuthorizeView>
-        </CascadingAuthenticationState>
-    </Found>
-</Router>
+                </NotFound>
+            </Router>
+        </Authorized>
+
+        <NotAuthorized>
+            <LayoutView Layout="typeof(LoginLayout)">
+                <Login />
+            </LayoutView>
+        </NotAuthorized>
+
+    </AuthorizeView>
+</CascadingAuthenticationState>

@@ -17,6 +17,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
 
+
+app.UseStatusCodePagesWithReExecute("/httpstatus/{0}");
 app.UseCookieAuthentication();
 
 app.UseAntiforgery();
