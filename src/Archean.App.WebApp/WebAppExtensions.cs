@@ -49,7 +49,7 @@ public static class WebAppExtensions
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             return TypedResults.Redirect("/");
-        });
+        }).AllowAnonymous();
 
         app.MapPost(LogoutApiUrl, () => TypedResults.SignOut(new AuthenticationProperties
         {
