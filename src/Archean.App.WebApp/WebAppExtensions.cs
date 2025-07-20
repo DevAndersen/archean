@@ -18,7 +18,6 @@ public static class WebAppExtensions
             options.SlidingExpiration = true;
             options.LoginPath = LoginApiUrl;
             options.LogoutPath = LogoutApiUrl;
-
         });
 
         return builder;
@@ -26,8 +25,8 @@ public static class WebAppExtensions
 
     public static WebApplication UseCookieAuthentication(this WebApplication app)
     {
-        app.UseAuthorization();
         app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCookiePolicy(new CookiePolicyOptions
         {
             MinimumSameSitePolicy = SameSiteMode.Strict,
