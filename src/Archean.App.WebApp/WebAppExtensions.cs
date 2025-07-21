@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace Archean.App.WebApp;
@@ -56,5 +57,37 @@ public static class WebAppExtensions
         }));
 
         return app;
+    }
+
+    /// <summary>
+    /// Creates a group of endpoints, declaring endpoints using <paramref name="endpointBuildingAction"/>.
+    /// </summary>
+    /// <param name="endpoints"></param>
+    /// <param name="prefix"></param>
+    /// <param name="endpointBuildingAction"></param>
+    /// <returns></returns>
+    public static RouteGroupBuilder MapGroup(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string prefix, Action<RouteGroupBuilder> endpointBuildingAction)
+    {
+        RouteGroupBuilder group = endpoints.MapGroup(prefix);
+        endpointBuildingAction(group);
+        return group;
+    }
+
+    /// <summary>
+    /// Adds simple request authentication filtering.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static T RequireAuthentication<T>(this T builder) where T : IEndpointConventionBuilder
+    {
+        return builder.AddEndpointFilter(async (invocationContext, next) =>
+        {
+            if (invocationContext.HttpContext.User.Identity?.IsAuthenticated == true)
+            {
+                return await next(invocationContext);
+            }
+            return TypedResults.Unauthorized();
+        });
     }
 }
