@@ -1,9 +1,17 @@
-﻿<div class="skin-face-wrapper">
-    <div class="skin-face" style="--skin-path: url('api/skin/@(Username).png')"></div>
+﻿@using Archean.Core.Services
+@inject ISkinService SkinService
+
+<div class="skin-face-wrapper">
+    <div class="skin-face" style="background-image: url('api/skin/@GetFileName()'), url('api/skin/@GetFallbackFileName()')"></div>
 </div>
 
 @code
 {
     [Parameter, EditorRequired]
     public required string Username { get; set; }
+
+    private string GetFileName() => SkinService.GetSkinFileName(Username);
+
+    private string GetFallbackFileName() => SkinService.GetSkinFileName(SkinService.GetDefaultSkinFileName());
+
 }

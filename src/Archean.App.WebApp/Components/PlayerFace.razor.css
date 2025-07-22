@@ -9,7 +9,6 @@
 
 .skin-face
 {
-    background-image: var(--skin-path), url('api/skin/_.png');
     image-rendering: pixelated;
     transform: scale(var(--size));
     position: absolute;
