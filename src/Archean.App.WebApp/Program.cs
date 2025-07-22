@@ -15,9 +15,16 @@ builder.AddCookieAuthentication();
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
+    // Changes current working directory to the directory containing the executable (same behavior as for console projects).
+    // This is in order to avoid files created during debugging from showing up in source control,
+    // as the output directory is expected to be defined in the .gitignore file.
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+}
+else
+{
+    // Error handling.
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
 
