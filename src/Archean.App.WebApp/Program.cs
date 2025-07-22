@@ -40,7 +40,7 @@ app.MapGroup("api", group =>
         }
 
         byte[] bytes = File.ReadAllBytes(skinPath);
-        return Results.File(bytes, "image/jpg");
+        return Results.File(bytes, "image/png");
     });
 }).RequireAuthentication();
 
