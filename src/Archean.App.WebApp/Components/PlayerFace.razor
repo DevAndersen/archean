@@ -1,0 +1,9 @@
+﻿<div class="skin-face-wrapper">
+    <div class="skin-face" style="--skin-path: url('api/skin/@(Username).png')"></div>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public required string Username { get; set; }
+}

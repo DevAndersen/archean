@@ -1,0 +1,20 @@
+﻿.skin-face-wrapper
+{
+    --size: 4;
+    width: calc(var(--size) * 8px);
+    height: calc(var(--size) * 8px);
+    position: relative;
+    overflow: hidden;
+}
+
+.skin-face
+{
+    background-image: var(--skin-path), url('api/skin/_.png');
+    image-rendering: pixelated;
+    transform: scale(var(--size));
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+}
