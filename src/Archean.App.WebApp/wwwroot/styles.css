@@ -53,7 +53,6 @@ main
 
 .interface
 {
-    padding: var(--spacing);
     border: 1px solid #000;
     box-shadow: inset 1px 1px #fff8, inset -1px -1px #0008, 4px 4px 8px #0004;
     border-radius: 5px;
