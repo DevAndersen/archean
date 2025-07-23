@@ -1,11 +1,14 @@
 using Archean.App.WebApp;
 using Archean.App.WebApp.Components;
+using Archean.App.WebApp.Settings;
 using Archean.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureArcheanDefaults();
+
+builder.AddConfiguration<WebAppSettings>("WebApp");
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

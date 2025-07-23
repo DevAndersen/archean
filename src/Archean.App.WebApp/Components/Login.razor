@@ -1,18 +1,31 @@
-﻿<PageTitle>Login</PageTitle>
+﻿@using Archean.App.WebApp.Settings
+@using Microsoft.Extensions.Options
+@inject IOptions<WebAppSettings> WebAppSettings
+
+<PageTitle>Login</PageTitle>
 
 <div style="display: grid; margin: auto">
-    <form method="post" action="@WebAppExtensions.LoginApiUrl">
+    @if (string.IsNullOrWhiteSpace(WebAppSettings.Value.SitePassword))
+    {
         <div class="interface interface-dialog">
-            <AntiforgeryToken />
-            <div class="interface-dialog-title">Server administration</div>
-            <input type="password" name="password" />
-            <button type="submit" class="button-green">Sign in</button>
-            @if (LoginFail != null)
-            {
-                <div class="interface-text text-red login-failed">Login failed</div>
-            }
+            <div class="interface-text text-red login-failed">Server website unavailable, server password is not defined</div>
         </div>
-    </form>
+    }
+    else
+    {
+        <form method="post" action="@WebAppExtensions.LoginApiUrl">
+            <div class="interface interface-dialog">
+                <AntiforgeryToken />
+                <div class="interface-dialog-title">Server administration</div>
+                <input type="password" name="password" />
+                <button type="submit" class="button-green">Sign in</button>
+                @if (LoginFail != null)
+                {
+                    <div class="interface-text text-red login-failed">Login failed</div>
+                }
+            </div>
+        </form>
+    }
 </div>
 
 @code

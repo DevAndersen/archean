@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Archean.App.WebApp.Settings;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
@@ -33,9 +35,13 @@ public static class WebAppExtensions
             MinimumSameSitePolicy = SameSiteMode.Strict,
         });
 
-        app.MapPost(LoginApiUrl, async ([FromForm] string password, HttpContext httpContext) =>
+        app.MapPost(LoginApiUrl, async (
+            [FromForm] string password,
+            [FromServices] IOptions<WebAppSettings> webAppSettings,
+            HttpContext httpContext) =>
         {
-            if (!password.Equals("password")) // Todo: Make this configurable. 
+            string serverPassword = webAppSettings.Value.SitePassword;
+            if (!string.IsNullOrWhiteSpace(serverPassword) && !password.Equals(serverPassword))
             {
                 return TypedResults.Redirect("/?loginfail");
             }
