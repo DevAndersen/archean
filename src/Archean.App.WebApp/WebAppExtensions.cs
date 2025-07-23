@@ -5,11 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Archean.App.WebApp;
 
 public static class WebAppExtensions
 {
+    private const string CookieNameClaimValue = "admin";
+    private const string CookiePassClaimType = "passhash";
+
     public const string LoginApiUrl = "/api/login";
     public const string LogoutApiUrl = "/api/logout";
 
@@ -21,6 +26,18 @@ public static class WebAppExtensions
             options.SlidingExpiration = true;
             options.LoginPath = LoginApiUrl;
             options.LogoutPath = LogoutApiUrl;
+            options.Events.OnValidatePrincipal = async principalContext =>
+            {
+                IOptions<WebAppSettings> webAppSettings = principalContext.HttpContext.RequestServices.GetRequiredService<IOptions<WebAppSettings>>();
+                string serverPasswordHash = HashPassword(webAppSettings.Value.SitePassword);
+
+                Claim? passHashClaim = principalContext.Principal?.Claims.FirstOrDefault(x => x.Type == CookiePassClaimType && x.Value == serverPasswordHash);
+                if (passHashClaim == null)
+                {
+                    principalContext.RejectPrincipal();
+                    await principalContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                }
+            };
         });
 
         return builder;
@@ -48,8 +65,12 @@ public static class WebAppExtensions
 
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
+            string serverPasswordHash = HashPassword(serverPassword);
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                [new Claim(ClaimTypes.Name, "admin")],
+                [
+                    new Claim(ClaimTypes.Name, CookieNameClaimValue),
+                    new Claim(CookiePassClaimType, serverPasswordHash)
+                ],
                 CookieAuthenticationDefaults.AuthenticationScheme);
 
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
@@ -95,5 +116,10 @@ public static class WebAppExtensions
             }
             return TypedResults.Unauthorized();
         });
+    }
+
+    private static string HashPassword(string password)
+    {
+        return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
     }
 }
