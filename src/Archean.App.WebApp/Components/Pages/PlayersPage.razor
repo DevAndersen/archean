@@ -1,10 +1,26 @@
 ﻿@page "/players"
+@using Archean.Core.Models
+@using Archean.Core.Services.Networking
+@inject IPlayerRegistry PlayerRegistry
 
 <PageTitle>Players</PageTitle>
 
 <div class="interface" style="overflow: hidden">
     <div class="interface-title">Players</div>
-    <div class="interface-indentation" style="gap: var(--spacing); padding: var(--spacing); overflow: scroll">
+    <div class="interface-indentation" style="gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1">
+        @foreach (IPlayer player in PlayerRegistry.GetAll())
+        {
+            <div class="interface" style="display: flex; flex-direction: row; align-items: center">
+                <PlayerFace Username="@player.Username" />
+                <div class="interface-text">@player.Username</div>
+                <div style="margin-left: auto">
+                    <button>Details</button>
+                    <button class="button-red">Kick</button>
+                    <button class="button-red">Ban</button>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @code
