@@ -108,16 +108,17 @@ public static class WebAppExtensions
     /// <returns></returns>
     public static T RequireAuthentication<T>(this T builder) where T : IEndpointConventionBuilder
     {
-        return builder.AddEndpointFilter(async (invocationContext, next) =>
-        {
-            if (invocationContext.HttpContext.User.Identity?.IsAuthenticated == true)
-            {
-                return await next(invocationContext);
-            }
-            return TypedResults.Unauthorized();
-        });
+        return builder.AddEndpointFilter(async (invocationContext, next)
+            => invocationContext.HttpContext.User.Identity?.IsAuthenticated == true
+                ? await next(invocationContext)
+                : TypedResults.Unauthorized());
     }
 
+    /// <summary>
+    /// Returns the base-64 encoded hash of <paramref name="password"/>.
+    /// </summary>
+    /// <param name="password"></param>
+    /// <returns></returns>
     private static string HashPassword(string password)
     {
         return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
