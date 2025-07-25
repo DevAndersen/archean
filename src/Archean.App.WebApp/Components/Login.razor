@@ -17,7 +17,7 @@
             <div class="interface interface-dialog">
                 <AntiforgeryToken />
                 <div class="interface-dialog-title">Server administration</div>
-                <input type="password" name="password" />
+                <input type="password" name="password" @ref="_passwordRef" />
                 <button type="submit" class="button-green">Sign in</button>
                 @if (LoginFail != null)
                 {
@@ -30,6 +30,16 @@
 
 @code
 {
+    private ElementReference _passwordRef;
+
     [SupplyParameterFromQuery]
     private string? LoginFail { get; init; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _passwordRef.FocusAsync();
+        }
+    }
 }
