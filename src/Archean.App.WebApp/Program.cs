@@ -1,5 +1,6 @@
 using Archean.App.WebApp;
 using Archean.App.WebApp.Components;
+using Archean.App.WebApp.Services;
 using Archean.App.WebApp.Settings;
 using Archean.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureArcheanDefaults();
+
+// Register memory logger.
+MemoryLoggerOutput memoryLoggerOutput = new MemoryLoggerOutput();
+builder.AddLoggerOutput(memoryLoggerOutput);
+builder.Services.AddSingleton(memoryLoggerOutput);
 
 builder.AddConfiguration<WebAppSettings>("WebApp");
 

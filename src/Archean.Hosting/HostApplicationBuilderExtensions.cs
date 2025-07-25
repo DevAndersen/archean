@@ -67,7 +67,7 @@ public static class HostApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// Register a new <see cref="ILoggerOutput"/>.
+    /// Register <typeparamref name="TLoggerOutput"/> a new <see cref="ILoggerOutput"/>.
     /// </summary>
     /// <typeparam name="TLoggerOutput"></typeparam>
     /// <param name="builder"></param>
@@ -76,6 +76,21 @@ public static class HostApplicationBuilderExtensions
         where TLoggerOutput : class, ILoggerOutput
     {
         builder.Services.AddSingleton<ILoggerOutput, TLoggerOutput>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Register <paramref name="instance"/> as new <see cref="ILoggerOutput"/>.
+    /// </summary>
+    /// <typeparam name="TLoggerOutput"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="instance"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder AddLoggerOutput<TLoggerOutput>(this IHostApplicationBuilder builder, TLoggerOutput instance)
+        where TLoggerOutput : class, ILoggerOutput
+    {
+        builder.Services.AddSingleton<ILoggerOutput>(instance);
 
         return builder;
     }
