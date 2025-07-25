@@ -27,6 +27,12 @@ public class FixedSizeQueue<T> : IReadOnlyCollection<T>
     public FixedSizeQueue(int capacity, FixedSizeQueueDirection direction)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity, nameof(capacity));
+
+        if (!Enum.IsDefined(direction))
+        {
+            throw new ArgumentException("Invalid queue direction", nameof(direction));
+        }
+
         Capacity = capacity;
         Direction = direction;
     }
