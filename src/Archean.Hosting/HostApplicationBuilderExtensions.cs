@@ -67,6 +67,20 @@ public static class HostApplicationBuilderExtensions
     }
 
     /// <summary>
+    /// Register a new <see cref="ILoggerOutput"/>.
+    /// </summary>
+    /// <typeparam name="TLoggerOutput"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder AddLoggerOutput<TLoggerOutput>(this IHostApplicationBuilder builder)
+        where TLoggerOutput : class, ILoggerOutput
+    {
+        builder.Services.AddSingleton<ILoggerOutput, TLoggerOutput>();
+
+        return builder;
+    }
+
+    /// <summary>
     /// Register all default services.
     /// </summary>
     /// <param name="builder"></param>

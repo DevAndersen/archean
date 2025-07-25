@@ -7,14 +7,16 @@ namespace Archean.Hosting.Services;
 
 public class ArcheanConsoleLoggerFormatter : ConsoleFormatter, IDisposable
 {
+    private readonly IEnumerable<ILoggerOutput> _loggerOutputs;
     private readonly IDisposable? _optionsReloadToken;
     private ConsoleFormatterOptions _formatterOptions;
 
-    public ArcheanConsoleLoggerFormatter(IOptionsMonitor<ConsoleFormatterOptions> options)
+    public ArcheanConsoleLoggerFormatter(IOptionsMonitor<ConsoleFormatterOptions> options, IEnumerable<ILoggerOutput> loggerOutputs)
         : base(nameof(ArcheanConsoleLoggerFormatter))
     {
         _formatterOptions = options.CurrentValue;
         _optionsReloadToken = options.OnChange(options => _formatterOptions = options);
+        _loggerOutputs = loggerOutputs;
     }
 
     public override void Write<TState>(
@@ -41,6 +43,11 @@ public class ArcheanConsoleLoggerFormatter : ConsoleFormatter, IDisposable
         // Message
         WriteMessage(textWriter, message, logEntry);
         textWriter.WriteLine();
+
+        foreach (ILoggerOutput loggerOutput in _loggerOutputs)
+        {
+            loggerOutput.HandleLogEntry(logEntry);
+        }
     }
 
     private static void WriteTimestamp(TextWriter textWriter, ConsoleFormatterOptions formatterOptions)
