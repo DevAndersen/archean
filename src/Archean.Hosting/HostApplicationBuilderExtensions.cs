@@ -103,11 +103,11 @@ public static class HostApplicationBuilderExtensions
     public static IHostApplicationBuilder RegisterDefaultServices(this IHostApplicationBuilder builder)
     {
         builder
-            .AddConfiguration<ServerSettings>("Server")
-            .AddConfiguration<ChatSettings>("Chat")
-            .AddConfiguration<AliasSettings>("Aliases")
-            .AddConfiguration<WorldSettings>("Worlds")
-            .AddConfiguration<SkinSettings>("Skin");
+            .AddConfiguration<ServerSettings>(HostingConstants.ServerSettingsSection)
+            .AddConfiguration<ChatSettings>(HostingConstants.ChatSettingsSection)
+            .AddConfiguration<AliasSettings>(HostingConstants.AliasesSettingsSection)
+            .AddConfiguration<WorldSettings>(HostingConstants.WorldsSettingsSection)
+            .AddConfiguration<SkinSettings>(HostingConstants.SkinSettingsSection);
 
         builder.Services
 

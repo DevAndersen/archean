@@ -10,12 +10,12 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.ConfigureArcheanDefaults();
 
 // Register memory logger.
-int memoryLoggerCapacity = builder.Configuration.GetValue<int?>($"WebApp:{nameof(WebAppSettings.MemoryLoggerCapacity)}") ?? 1000;
+int memoryLoggerCapacity = builder.Configuration.GetValue<int?>($"{WebAppConstants.WebAppSettingsSection}:{nameof(WebAppSettings.MemoryLoggerCapacity)}") ?? 1000;
 MemoryLoggerOutput memoryLoggerOutput = new MemoryLoggerOutput(memoryLoggerCapacity);
 builder.AddLoggerOutput(memoryLoggerOutput);
 builder.Services.AddSingleton(memoryLoggerOutput);
 
-builder.AddConfiguration<WebAppSettings>("WebApp");
+builder.AddConfiguration<WebAppSettings>(WebAppConstants.WebAppSettingsSection);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
