@@ -10,7 +10,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.ConfigureArcheanDefaults();
 
 // Register memory logger.
-MemoryLoggerOutput memoryLoggerOutput = new MemoryLoggerOutput();
+int memoryLoggerCapacity = builder.Configuration.GetValue<int?>($"WebApp:{nameof(WebAppSettings.MemoryLoggerCapacity)}") ?? 1000;
+MemoryLoggerOutput memoryLoggerOutput = new MemoryLoggerOutput(memoryLoggerCapacity);
 builder.AddLoggerOutput(memoryLoggerOutput);
 builder.Services.AddSingleton(memoryLoggerOutput);
 

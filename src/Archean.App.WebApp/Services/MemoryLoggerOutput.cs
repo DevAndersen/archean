@@ -6,9 +6,14 @@ namespace Archean.App.WebApp.Services;
 
 public class MemoryLoggerOutput : ILoggerOutput
 {
-    private readonly FixedSizeQueue<string> _logMessages = new FixedSizeQueue<string>(5, FixedSizeQueueDirection.LastToFirst);
+    private readonly FixedSizeQueue<string> _logMessages;
 
     public IReadOnlyCollection<string> Messages => _logMessages;
+
+    public MemoryLoggerOutput(int messageCapacity)
+    {
+        _logMessages = new FixedSizeQueue<string>(messageCapacity, FixedSizeQueueDirection.LastToFirst);
+    }
 
     public void HandleLogEntry<TState>(LogEntry<TState> logEntry)
     {

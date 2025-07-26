@@ -1,0 +1,20 @@
+﻿@page "/logs"
+@using Archean.App.WebApp.Services
+@inject MemoryLoggerOutput MemoryLoggerOutput
+
+<PageTitle>Logs - Archean</PageTitle>
+
+<div class="interface" style="overflow: hidden">
+    <div class="interface-title">Logs</div>
+    <div class="interface-indentation" style="background-color: #000; gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
+        @foreach (string message in MemoryLoggerOutput.Messages)
+        {
+            <div>@message</div>
+        }
+    </div>
+</div>
+
+@code
+{
+
+}
