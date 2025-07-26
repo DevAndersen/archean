@@ -137,7 +137,7 @@ public static class HostApplicationBuilderExtensions
             .AddSingleton<IGlobalEventListener, GlobalEventListener>()
 
             // Gameplay
-            .AddScoped<IPlayerService, PlayerService>()
+            .AddScoped<ISessionService, SessionService>()
             .AddSingleton<IBlockDictionary, BlockDictionary>()
 
             // Commands

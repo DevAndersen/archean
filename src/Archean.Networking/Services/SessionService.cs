@@ -2,7 +2,7 @@
 
 namespace Archean.Networking.Services;
 
-public class PlayerService : IPlayerService
+public class SessionService : ISessionService
 {
     private IPlayer? _player;
 

@@ -5,18 +5,18 @@ namespace Archean.Networking.Services;
 public class ClientEventHandler : IClientEventHandler, IDisposable
 {
     private readonly IScopedEventListener _eventListener;
-    private readonly IPlayerService _playerService;
+    private readonly ISessionService _sessionService;
     private readonly ChatSettings _chatSettings;
     private readonly ICommandInvoker _commandInvoker;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
-        IPlayerService playerService,
+        ISessionService sessionService,
         IOptions<ChatSettings> chatSettingsOptions,
         ICommandInvoker commandInvoker)
     {
         _eventListener = eventListener;
-        _playerService = playerService;
+        _sessionService = sessionService;
         _chatSettings = chatSettingsOptions.Value;
         _commandInvoker = commandInvoker;
     }
@@ -34,7 +34,7 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
 
             if (!await _commandInvoker.TryInvokeCommandAsync(commandText, arg.PlayerSender))
             {
-                if (_playerService.TryGetPlayer(out IPlayer? player))
+                if (_sessionService.TryGetPlayer(out IPlayer? player))
                 {
                     await player.Connection.SendAsync(new ServerMessagePacket
                     {
@@ -44,7 +44,7 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
                 }
             }
         }
-        else if (_playerService.TryGetPlayer(out IPlayer? player))
+        else if (_sessionService.TryGetPlayer(out IPlayer? player))
         {
             ServerMessagePacket packet;
 

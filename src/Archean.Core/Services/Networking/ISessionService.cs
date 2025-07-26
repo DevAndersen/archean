@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Archean.Core.Services.Networking;
 
-public interface IPlayerService
+public interface ISessionService
 {
     /// <summary>
     /// Returns the <see cref="IPlayer"/> of the current scope, if one has been set.

@@ -99,8 +99,8 @@ public class ConnectionHandler : IConnectionHandler
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
 
         // Set the player of the current scope.
-        IPlayerService playerService = scope.ServiceProvider.GetRequiredService<IPlayerService>();
-        playerService.SetPlayer(player);
+        ISessionService sessionService = scope.ServiceProvider.GetRequiredService<ISessionService>();
+        sessionService.SetPlayer(player);
 
         // Register event subscriptions.
         IClientEventHandler eventHandler = scope.ServiceProvider.GetRequiredService<IClientEventHandler>();

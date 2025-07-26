@@ -2,7 +2,7 @@
 
 public class ClientPacketHandler : IClientPacketHandler
 {
-    private readonly IPlayerService _playerService;
+    private readonly ISessionService _sessionService;
     private readonly IGlobalEventBus _globalEventBus;
 
     private float _x;
@@ -12,16 +12,16 @@ public class ClientPacketHandler : IClientPacketHandler
     private byte _pitch;
 
     public ClientPacketHandler(
-        IPlayerService playerService,
+        ISessionService sessionService,
         IGlobalEventBus globalEventBus)
     {
-        _playerService = playerService;
+        _sessionService = sessionService;
         _globalEventBus = globalEventBus;
     }
 
     public async Task HandleMessagePacketAsync(ClientMessagePacket packet)
     {
-        if (_playerService.TryGetPlayer(out IPlayer? player))
+        if (_sessionService.TryGetPlayer(out IPlayer? player))
         {
             await _globalEventBus.InvokeEventAsync(new MessageEvent
             {
@@ -33,7 +33,7 @@ public class ClientPacketHandler : IClientPacketHandler
 
     public async Task HandlePositionAndOrientationPacketAsync(ClientPositionAndOrientationPacket packet)
     {
-        if (_playerService.TryGetPlayer(out IPlayer? player))
+        if (_sessionService.TryGetPlayer(out IPlayer? player))
         {
             if (packet.X != _x
                 || packet.Y != _y
@@ -69,7 +69,7 @@ public class ClientPacketHandler : IClientPacketHandler
 
     public async Task HandleSetBlockPacketAsync(ClientSetBlockPacket packet)
     {
-        if (_playerService.TryGetPlayer(out IPlayer? player))
+        if (_sessionService.TryGetPlayer(out IPlayer? player))
         {
             await _globalEventBus.InvokeEventAsync(new SetBlockEvent
             {
