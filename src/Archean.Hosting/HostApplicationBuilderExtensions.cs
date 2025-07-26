@@ -123,7 +123,7 @@ public static class HostApplicationBuilderExtensions
             // Server and connection handling.
             .AddSingleton<ISocketServer, SocketServer>()
             .AddSingleton<IConnectionHandler, ConnectionHandler>()
-            .AddSingleton<IPlayerRegistry, PlayerRegistry>()
+            .AddSingleton<IPlayerService, PlayerService>()
 
             // Skins
             .AddSingleton<ISkinService, SkinService>()

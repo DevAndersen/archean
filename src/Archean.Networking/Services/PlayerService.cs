@@ -1,13 +1,13 @@
 ﻿namespace Archean.Networking.Services;
 
-public class PlayerRegistry : IPlayerRegistry
+public class PlayerService : IPlayerService
 {
     private readonly ServerSettings _serverSettings;
 
     private readonly Lock _lockObject;
     private readonly Dictionary<string, IPlayer> _players;
 
-    public PlayerRegistry(IOptions<ServerSettings> serverSettingsOptions)
+    public PlayerService(IOptions<ServerSettings> serverSettingsOptions)
     {
         _serverSettings = serverSettingsOptions.Value;
 

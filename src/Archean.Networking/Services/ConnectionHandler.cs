@@ -6,7 +6,7 @@ namespace Archean.Networking.Services;
 
 public class ConnectionHandler : IConnectionHandler
 {
-    private readonly IPlayerRegistry _playerRegistry;
+    private readonly IPlayerService _playerService;
     private readonly ILogger<ConnectionHandler> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IWorldRegistry _worldRegistry;
@@ -14,14 +14,14 @@ public class ConnectionHandler : IConnectionHandler
     private readonly IOptions<ServerSettings> _serverSettings;
 
     public ConnectionHandler(
-        IPlayerRegistry playerRegistry,
+        IPlayerService playerService,
         ILogger<ConnectionHandler> logger,
         IServiceScopeFactory serviceScopeFactory,
         IWorldRegistry worldRegistry,
         IGlobalEventBus globalEventBus,
         IOptions<ServerSettings> serverSettingsOptions)
     {
-        _playerRegistry = playerRegistry;
+        _playerService = playerService;
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
         _worldRegistry = worldRegistry;
@@ -71,7 +71,7 @@ public class ConnectionHandler : IConnectionHandler
             clientIdentificationPacket.Username,
             _globalEventBus);
 
-        if (_playerRegistry.TryAdd(player))
+        if (_playerService.TryAdd(player))
         {
             _logger.LogInformation("Player {username} assigned ID {playerId}",
                 player.Username,
@@ -162,7 +162,7 @@ public class ConnectionHandler : IConnectionHandler
         }
         finally
         {
-            _playerRegistry.Remove(connection);
+            _playerService.Remove(connection);
 
             await _globalEventBus.InvokeEventAsync(new PlayerDisconnectEvent
             {

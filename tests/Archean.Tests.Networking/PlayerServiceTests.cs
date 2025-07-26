@@ -7,11 +7,11 @@ using NSubstitute;
 
 namespace Archean.Tests.Networking;
 
-public class PlayerRegistryTests
+public class PlayerServiceTests
 {
     private readonly ServerSettings _defaultServerSettings;
 
-    public PlayerRegistryTests()
+    public PlayerServiceTests()
     {
         _defaultServerSettings = Substitute.For<ServerSettings>();
         _defaultServerSettings.MaxPlayers.Returns((byte)Constants.Players.HighestPlayerId);
@@ -24,15 +24,15 @@ public class PlayerRegistryTests
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
 
-        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
+        IPlayerService playerService = new PlayerService(settings);
         IPlayer player = Substitute.For<IPlayer>();
 
         // Act
-        bool wasPlayerAdded = playerRegistry.TryAdd(player);
+        bool wasPlayerAdded = playerService.TryAdd(player);
 
         // Assert
         Assert.True(wasPlayerAdded);
-        Assert.Equal([player], playerRegistry.GetAll());
+        Assert.Equal([player], playerService.GetAll());
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class PlayerRegistryTests
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
 
-        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
+        IPlayerService playerService = new PlayerService(settings);
         IPlayer playerA = Substitute.For<IPlayer>();
         IPlayer playerB = Substitute.For<IPlayer>();
         IPlayer playerC = Substitute.For<IPlayer>();
@@ -51,9 +51,9 @@ public class PlayerRegistryTests
         playerC.Username.Returns("playerC");
 
         // Act
-        bool wasPlayerAAdded = playerRegistry.TryAdd(playerA);
-        bool wasPlayerBAdded = playerRegistry.TryAdd(playerB);
-        bool wasPlayerCAdded = playerRegistry.TryAdd(playerC);
+        bool wasPlayerAAdded = playerService.TryAdd(playerA);
+        bool wasPlayerBAdded = playerService.TryAdd(playerB);
+        bool wasPlayerCAdded = playerService.TryAdd(playerC);
 
         // Assert
         Assert.True(wasPlayerAAdded);
@@ -77,7 +77,7 @@ public class PlayerRegistryTests
         settings.Value.Returns(_defaultServerSettings);
         _defaultServerSettings.MaxPlayers.Returns(maxPlayerCount);
 
-        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
+        IPlayerService playerService = new PlayerService(settings);
         IPlayer exceedingPlayer = Substitute.For<IPlayer>();
         exceedingPlayer.Username.Returns("ExceedingPlayer");
 
@@ -86,13 +86,13 @@ public class PlayerRegistryTests
         {
             IPlayer player = Substitute.For<IPlayer>();
             player.Username.Returns($"Player{i}");
-            bool wasPlayerAdded = playerRegistry.TryAdd(player);
+            bool wasPlayerAdded = playerService.TryAdd(player);
 
             Assert.True(wasPlayerAdded);
             Assert.Equal(i, player.Id);
         }
 
-        bool wasExceedingPlayerAdded = playerRegistry.TryAdd(exceedingPlayer);
+        bool wasExceedingPlayerAdded = playerService.TryAdd(exceedingPlayer);
 
         // Assert
         Assert.False(wasExceedingPlayerAdded);
@@ -107,19 +107,19 @@ public class PlayerRegistryTests
         IOptions<ServerSettings> settings = Substitute.For<IOptions<ServerSettings>>();
         settings.Value.Returns(_defaultServerSettings);
 
-        IPlayerRegistry playerRegistry = new PlayerRegistry(settings);
+        IPlayerService playerService = new PlayerService(settings);
         IPlayer playerA = Substitute.For<IPlayer>();
         IPlayer playerB = Substitute.For<IPlayer>();
         playerA.Username.Returns(sharedUsername);
         playerB.Username.Returns(sharedUsername);
 
         // Act
-        bool wasPlayerAAdded = playerRegistry.TryAdd(playerA);
-        bool wasPlayerBAdded = playerRegistry.TryAdd(playerB);
+        bool wasPlayerAAdded = playerService.TryAdd(playerA);
+        bool wasPlayerBAdded = playerService.TryAdd(playerB);
 
         // Assert
         Assert.True(wasPlayerAAdded);
         Assert.False(wasPlayerBAdded);
-        Assert.Equal([playerA], playerRegistry.GetAll());
+        Assert.Equal([playerA], playerService.GetAll());
     }
 }

@@ -16,7 +16,7 @@ public class ConnectionHandlerTests
 {
     private readonly ILogger<ConnectionHandler> _loggerSub;
     private readonly IConnection _connectionSub;
-    private readonly IPlayerRegistry _playerRegistrySub;
+    private readonly IPlayerService _playerServiceSub;
     private readonly IOptions<ServerSettings> _serverSettingsSub;
     private readonly IWorldRegistry _worldRegistrySub;
     private readonly ConnectionHandler _connectionHandler;
@@ -25,7 +25,7 @@ public class ConnectionHandlerTests
     {
         _loggerSub = Substitute.For<ILogger<ConnectionHandler>>();
         _connectionSub = Substitute.For<IConnection>();
-        _playerRegistrySub = Substitute.For<IPlayerRegistry>();
+        _playerServiceSub = Substitute.For<IPlayerService>();
         _worldRegistrySub = Substitute.For<IWorldRegistry>();
         _serverSettingsSub = Substitute.For<IOptions<ServerSettings>>();
         _serverSettingsSub.Value.Returns(new ServerSettings
@@ -40,7 +40,7 @@ public class ConnectionHandlerTests
         });
 
         _connectionHandler = new ConnectionHandler(
-            playerRegistry: _playerRegistrySub,
+            playerService: _playerServiceSub,
             logger: _loggerSub,
             serviceScopeFactory: null!,
             worldRegistry: _worldRegistrySub,
@@ -59,7 +59,7 @@ public class ConnectionHandlerTests
             VerificationKey = string.Empty,
         }));
 
-        _playerRegistrySub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
+        _playerServiceSub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
 
         // Act
         await _connectionHandler.HandleNewConnectionAsync(_connectionSub, TestContext.Current.CancellationToken);
@@ -132,7 +132,7 @@ public class ConnectionHandlerTests
             VerificationKey = string.Empty,
         }));
 
-        _playerRegistrySub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
+        _playerServiceSub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
 
         // Act
         await _connectionHandler.HandleNewConnectionAsync(_connectionSub, TestContext.Current.CancellationToken);
@@ -152,7 +152,7 @@ public class ConnectionHandlerTests
             VerificationKey = string.Empty,
         }));
 
-        _playerRegistrySub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
+        _playerServiceSub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
 
         // Act
         await _connectionHandler.HandleNewConnectionAsync(_connectionSub, TestContext.Current.CancellationToken);
@@ -172,7 +172,7 @@ public class ConnectionHandlerTests
             VerificationKey = string.Empty,
         }));
 
-        _playerRegistrySub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
+        _playerServiceSub.TryAdd(Arg.Any<IPlayer>()).Returns(true);
         _worldRegistrySub.GetDefaultWorld().Returns((IWorld?)null);
 
         // Act

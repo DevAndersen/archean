@@ -3,7 +3,7 @@ using Archean.Core.Models.Networking;
 
 namespace Archean.Core.Services.Networking;
 
-public interface IPlayerRegistry
+public interface IPlayerService
 {
     IEnumerable<IPlayer> GetAll();
 
