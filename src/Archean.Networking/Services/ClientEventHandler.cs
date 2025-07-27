@@ -1,4 +1,5 @@
-﻿using Archean.Core.Services.Commands;
+﻿using Archean.Core.Services;
+using Archean.Core.Services.Commands;
 
 namespace Archean.Networking.Services;
 
@@ -6,19 +7,19 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
 {
     private readonly IScopedEventListener _eventListener;
     private readonly ISessionService _sessionService;
-    private readonly ChatSettings _chatSettings;
     private readonly ICommandInvoker _commandInvoker;
+    private readonly IChatService _chatService;
 
     public ClientEventHandler(
         IScopedEventListener eventListener,
         ISessionService sessionService,
-        IOptions<ChatSettings> chatSettingsOptions,
-        ICommandInvoker commandInvoker)
+        ICommandInvoker commandInvoker,
+        IChatService chatService)
     {
         _eventListener = eventListener;
         _sessionService = sessionService;
-        _chatSettings = chatSettingsOptions.Value;
         _commandInvoker = commandInvoker;
+        _chatService = chatService;
     }
 
     public void RegisterEventSubscriptions()
@@ -46,25 +47,13 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
         }
         else if (_sessionService.TryGetPlayer(out IPlayer? player))
         {
-            ServerMessagePacket packet;
-
-            if (arg.PlayerSender != null)
+            await player.Connection.SendAsync(new ServerMessagePacket
             {
-                packet = new ServerMessagePacket
-                {
-                    Message = string.Format(_chatSettings.ChatFormat, arg.Message, arg.PlayerSender.DisplayName),
-                    PlayerId = arg.PlayerSender.Id
-                };
-            }
-            else
-            {
-                packet = new ServerMessagePacket
-                {
-                    Message = string.Format(_chatSettings.ServerChatFormat, arg.Message),
-                    PlayerId = 0 // Todo: Client self ID
-                };
-            }
-            await player.Connection.SendAsync(packet);
+                Message = _chatService.FormatMessageEvent(arg),
+                PlayerId = arg.PlayerSender == null
+                    ? (sbyte)0 // Todo: Client self ID
+                    : arg.PlayerSender.Id
+            });
         }
     }
 

@@ -3,6 +3,7 @@
 @using Archean.Core.Models.Events
 @using Archean.Core.Services.Events
 @inject MemoryLoggerOutput MemoryLoggerOutput
+@inject ChatLogService ChatLogService
 @inject IGlobalEventBus GlobalEventBus
 
 <PageTitle>Chat - Archean</PageTitle>
@@ -10,7 +11,7 @@
 <div class="interface" style="overflow: hidden">
     <div class="interface-title">Chat</div>
     <div class="interface-indentation" style="background-color: #000; gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
-        @foreach (string message in MemoryLoggerOutput.Messages)
+        @foreach (string message in ChatLogService.Messages)
         {
             <div>@message</div>
         }

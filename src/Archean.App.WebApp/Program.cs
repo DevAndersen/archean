@@ -15,6 +15,8 @@ MemoryLoggerOutput memoryLoggerOutput = new MemoryLoggerOutput(memoryLoggerCapac
 builder.AddLoggerOutput(memoryLoggerOutput);
 builder.Services.AddSingleton(memoryLoggerOutput);
 
+builder.Services.AddSingleton<ChatLogService>();
+
 builder.AddConfiguration<WebAppSettings>(WebAppConstants.WebAppSettingsSection);
 
 // Add services to the container.

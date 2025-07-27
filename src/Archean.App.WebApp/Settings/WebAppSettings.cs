@@ -17,4 +17,9 @@ public class WebAppSettings
     /// The number of log entries kept by <see cref="MemoryLoggerOutput"/>, visible on the <see cref="LogsPage"/>.
     /// </summary>
     public required int MemoryLoggerCapacity { get; init; } = 1000;
+
+    /// <summary>
+    /// The number of chat messages kept by <see cref="ChatLogService"/>, visible on the <see cref="ChatPage"/>.
+    /// </summary>
+    public required int ChatLogCapacity { get; init; } = 1000;
 }

@@ -135,6 +135,7 @@ public static class HostApplicationBuilderExtensions
             .AddSingleton<IGlobalEventBus, EventBus>()
             .AddScoped<IScopedEventListener, ScopedEventListener>()
             .AddSingleton<IGlobalEventListener, GlobalEventListener>()
+            .AddSingleton<IChatService, ChatService>()
 
             // Gameplay
             .AddScoped<ISessionService, SessionService>()
