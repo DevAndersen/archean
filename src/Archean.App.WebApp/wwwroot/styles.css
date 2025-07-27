@@ -220,3 +220,8 @@ input[type="search"]
     font-size: 18px;
     box-shadow: inset 2px 2px #0008, inset -2px -2px #fff4;
 }
+
+.message-line
+{
+    text-wrap: nowrap;
+}

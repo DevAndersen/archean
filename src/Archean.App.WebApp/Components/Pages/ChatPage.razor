@@ -18,7 +18,7 @@
     <div class="interface-indentation" style="background-color: #000; gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
         @foreach (string message in ChatLogService.Messages)
         {
-            <div>
+            <div class="message-line">
                 @foreach (Match match in ChatColorRegex().Matches(message))
                 {
                     <span style="color: @GetColor(match.Groups[1].Value)">@match.Groups[2].Value</span>
