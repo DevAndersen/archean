@@ -4,9 +4,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Archean.App.WebApp.Services;
 
-public class MemoryLoggerOutput : ILoggerOutput
+public class MemoryLoggerOutput : ILoggerOutput, IDisposable
 {
     private readonly FixedSizeQueue<string> _logMessages;
+    private readonly List<Func<Task>> _eventListeners = [];
 
     public IReadOnlyCollection<string> Messages => _logMessages;
 
@@ -19,5 +20,25 @@ public class MemoryLoggerOutput : ILoggerOutput
     {
         string message = logEntry.Formatter(logEntry.State, logEntry.Exception);
         _logMessages.Add(message);
+
+        foreach (Func<Task> listener in _eventListeners.ToArray())
+        {
+            _ = Task.Run(listener); // Fire and forget, code invoking the current method cannot run async.
+        }
+    }
+
+    public void SubscribeListener(Func<Task> eventListener)
+    {
+        _eventListeners.Add(eventListener);
+    }
+
+    public void UnsubscribeListener(Func<Task> eventListener)
+    {
+        _eventListeners.Remove(eventListener);
+    }
+
+    public void Dispose()
+    {
+        _eventListeners.Clear();
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/logs"
 @using Archean.App.WebApp.Services
 @inject MemoryLoggerOutput MemoryLoggerOutput
+@implements IDisposable
 
 <PageTitle>Logs - Archean</PageTitle>
 
@@ -16,5 +17,18 @@
 
 @code
 {
+    protected override void OnInitialized()
+    {
+        MemoryLoggerOutput.SubscribeListener(OnLoggerEntryAsync);
+    }
 
+    private async Task OnLoggerEntryAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        MemoryLoggerOutput.UnsubscribeListener(OnLoggerEntryAsync);
+    }
 }
