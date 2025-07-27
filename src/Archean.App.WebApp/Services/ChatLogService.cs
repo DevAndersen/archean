@@ -18,13 +18,13 @@ public class ChatLogService
     public ChatLogService(IOptions<WebAppSettings> webAppSettings, IGlobalEventListener globalEventListener, IChatService chatService)
     {
         _logMessages = new FixedSizeQueue<string>(webAppSettings.Value.ChatLogCapacity, FixedSizeQueueDirection.LastToFirst);
-        globalEventListener.Subscribe<MessageEvent>(DoWork);
+        globalEventListener.Subscribe<MessageEvent>(CollectChatMessages);
         _chatService = chatService;
     }
 
-    private void DoWork(MessageEvent messageEvent)
+    private void CollectChatMessages(MessageEvent messageEvent)
     {
-        string message = _chatService.FormatMessageEvent(messageEvent);
+        string message = _chatService.FormatMessageEvent(messageEvent, out _, out _);
         _logMessages.Add(message);
     }
 }

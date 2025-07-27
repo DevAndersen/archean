@@ -1,11 +1,15 @@
 ﻿@page "/chat"
 @using Archean.App.WebApp.Services
+@using Archean.Core
 @using Archean.Core.Models.Events
+@using Archean.Core.Services
 @using Archean.Core.Services.Events
 @using System.Text.RegularExpressions
 @inject MemoryLoggerOutput MemoryLoggerOutput
 @inject ChatLogService ChatLogService
 @inject IGlobalEventBus GlobalEventBus
+@inject IChatService ChatService
+@implements IDisposable
 
 <PageTitle>Chat - Archean</PageTitle>
 
@@ -15,7 +19,7 @@
         @foreach (string message in ChatLogService.Messages)
         {
             <div>
-                @foreach (Match match in Regex.Matches(message, "(&[0-9a-f]|^)?(.+?)(?=&|$)", RegexOptions.IgnoreCase))
+                @foreach (Match match in ChatColorRegex().Matches(message))
                 {
                     <span style="color: @GetColor(match.Groups[1].Value)">@match.Groups[2].Value</span>
                 }
@@ -23,18 +27,41 @@
         }
     </div>
     <div style="display: flex; gap: var(--spacing)">
-        <input type="text" style="flex-grow: 1" placeholder="Chat as server..." @bind="_message" @onkeyup="(async args => await OnTextboxSubmit(args))" />
-        <button @onclick="(async () => await OnSubmitAsync())">Send message</button>
+            <input type="text"
+                   class="chat-input"
+                   placeholder="Chat as server..."
+                   data-truncated="@_willMessageBeTruncated"
+                   @bind="_message"
+                   @oninput="OnInput"
+                   @onkeyup="(async args => await OnTextboxSubmit(args))" />
+        <button @onclick="(async () => await OnSubmitAsync())" disabled="@_willMessageBeTruncated">
+            @(_willMessageBeTruncated ? $"Message too long ({_messageLength - @Constants.Networking.StringLength})" : "Send message")
+        </button>
     </div>
 </div>
 
 @code
 {
     private string? _message;
+    private int _messageLength;
+    private bool _willMessageBeTruncated;
+
+    protected override void OnInitialized()
+    {
+        GlobalEventBus.Subscribe<MessageEvent>(OnMessageEventAsync, EventPriority.Default);
+    }
+
+    private void OnInput(ChangeEventArgs args)
+    {
+        if (args.Value is string str)
+        {
+            (_messageLength, _willMessageBeTruncated) = AttemptMessageFormatting(str);
+        }
+    }
 
     private async Task OnTextboxSubmit(KeyboardEventArgs args)
     {
-        if (args.Code == "Enter")
+        if (args.Key == "Enter")
         {
             await OnSubmitAsync();
         }
@@ -42,7 +69,7 @@
 
     private async Task OnSubmitAsync()
     {
-        if (string.IsNullOrWhiteSpace(_message))
+        if (string.IsNullOrWhiteSpace(_message) || _willMessageBeTruncated)
         {
             return;
         }
@@ -54,6 +81,8 @@
         });
 
         _message = null;
+        _messageLength = 0;
+        _willMessageBeTruncated = false;
     }
 
     private string GetColor(string colorTag)
@@ -78,5 +107,32 @@
             "&f" => "#FFF",
             _ => "#fff"
         };
+    }
+
+    private (int untruncatedLength, bool willMessageBeTruncated) AttemptMessageFormatting(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            return (0, false);
+        }
+
+        MessageEvent messageEvent = new MessageEvent
+        {
+            PlayerSender = null,
+            Message = message
+        };
+
+        string formattedMessage = ChatService.FormatMessageEvent(messageEvent, out bool wasMessageTruncated, out int untruncatedLength);
+        return (untruncatedLength, wasMessageTruncated);
+    }
+
+    private async Task OnMessageEventAsync(MessageEvent messageEvent)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        GlobalEventBus.Unsubscribe<MessageEvent>(OnMessageEventAsync);
     }
 }

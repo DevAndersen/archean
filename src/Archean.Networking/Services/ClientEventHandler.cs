@@ -49,7 +49,7 @@ public class ClientEventHandler : IClientEventHandler, IDisposable
         {
             await player.Connection.SendAsync(new ServerMessagePacket
             {
-                Message = _chatService.FormatMessageEvent(arg),
+                Message = _chatService.FormatMessageEvent(arg, out _, out _),
                 PlayerId = arg.PlayerSender == null
                     ? (sbyte)0 // Todo: Client self ID
                     : arg.PlayerSender.Id

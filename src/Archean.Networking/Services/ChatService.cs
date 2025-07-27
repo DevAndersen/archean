@@ -11,10 +11,14 @@ public class ChatService : IChatService
         _chatSettings = chatSettings;
     }
 
-    public string FormatMessageEvent(MessageEvent messageEvent)
+    public string FormatMessageEvent(MessageEvent messageEvent, out bool wasMessageTruncated, out int untruncatedLength)
     {
-        return messageEvent.PlayerSender == null
+        string formattedMessage = messageEvent.PlayerSender == null
             ? string.Format(_chatSettings.Value.ServerChatFormat, messageEvent.Message)
             : string.Format(_chatSettings.Value.ChatFormat, messageEvent.Message, messageEvent.PlayerSender.DisplayName);
+
+        wasMessageTruncated = formattedMessage.Length > Constants.Networking.StringLength;
+        untruncatedLength = formattedMessage.Length;
+        return formattedMessage[..int.Min(formattedMessage.Length, Constants.Networking.StringLength)];
     }
 }

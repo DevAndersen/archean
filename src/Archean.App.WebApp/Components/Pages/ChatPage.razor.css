@@ -1,0 +1,9 @@
+﻿.chat-input
+{
+    flex-grow: 1;
+}
+
+.chat-input[data-truncated]
+{
+    color: var(--color-red);
+}
