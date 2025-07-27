@@ -5,6 +5,7 @@
     height: calc(var(--size) * 8px);
     position: relative;
     overflow: hidden;
+    border: 1px solid #000;
 }
 
 .skin-face
