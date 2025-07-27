@@ -49,6 +49,8 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+app.Services.GetRequiredService<ChatLogService>().StartListening(); // Todo: Move to IStartupService.
+
 app.MapGroup("api", group =>
 {
     group.MapGet("skin/{skin}", ([FromRoute] string skin) =>
