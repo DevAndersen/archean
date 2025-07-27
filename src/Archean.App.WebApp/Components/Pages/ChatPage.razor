@@ -1,6 +1,9 @@
 ﻿@page "/chat"
 @using Archean.App.WebApp.Services
+@using Archean.Core.Models.Events
+@using Archean.Core.Services.Events
 @inject MemoryLoggerOutput MemoryLoggerOutput
+@inject IGlobalEventBus GlobalEventBus
 
 <PageTitle>Chat - Archean</PageTitle>
 
@@ -12,13 +15,37 @@
             <div>@message</div>
         }
     </div>
-    <div style="display: flex">
-        <input type="text" style="flex-grow: 1" />
-        <button>Send message</button>
+    <div style="display: flex; gap: var(--spacing)">
+        <input type="text" style="flex-grow: 1" @bind="_message" @onkeyup="(async args => await OnTextboxSubmit(args))" />
+        <button @onclick="(async () => await OnSubmitAsync())">Send message</button>
     </div>
 </div>
 
 @code
 {
+    private string? _message;
 
+    private async Task OnTextboxSubmit(KeyboardEventArgs args)
+    {
+        if (args.Code == "Enter")
+        {
+            await OnSubmitAsync();
+        }
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_message))
+        {
+            return;
+        }
+
+        await GlobalEventBus.InvokeEventAsync(new MessageEvent
+        {
+            PlayerSender = null,
+            Message = _message
+        });
+
+        _message = null;
+    }
 }
