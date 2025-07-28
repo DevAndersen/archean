@@ -13,23 +13,13 @@ public sealed class GlobalEventListener : IGlobalEventListener
         _globalEventBus = globalEventBus;
     }
 
-    public void Subscribe<TEvent>(Action<TEvent> action) where TEvent : Event
-    {
-        Subscribe(action, default);
-    }
-
-    public void Subscribe<TEvent>(Func<TEvent, Task> action) where TEvent : Event
-    {
-        Subscribe(action, default);
-    }
-
-    public void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority) where TEvent : Event
+    public void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority = EventPriority.Default) where TEvent : Event
     {
         _eventDictionary.Add((typeof(TEvent), action));
         _globalEventBus.Subscribe(action, priority);
     }
 
-    public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority) where TEvent : Event
+    public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority = EventPriority.Default) where TEvent : Event
     {
         _eventDictionary.Add((typeof(TEvent), action));
         _globalEventBus.Subscribe(action, priority);
