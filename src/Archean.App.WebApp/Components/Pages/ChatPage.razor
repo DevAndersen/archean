@@ -48,7 +48,7 @@
 
     protected override void OnInitialized()
     {
-        GlobalEventBus.Subscribe<MessageEvent>(OnMessageEventAsync, EventPriority.Default);
+        GlobalEventBus.Subscribe<MessageEvent>(OnMessageEventAsync);
     }
 
     private void OnInput(ChangeEventArgs args)

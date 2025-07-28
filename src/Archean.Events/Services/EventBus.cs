@@ -56,23 +56,21 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
         }
     }
 
-    public void Subscribe<TEvent>(Action<TEvent> action, EventPriority? priority) where TEvent : Event
+    public void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority = EventPriority.Default) where TEvent : Event
     {
         SubscribeDelegate<TEvent>(action, priority);
     }
 
-    public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority? priority) where TEvent : Event
+    public void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority = EventPriority.Default) where TEvent : Event
     {
         SubscribeDelegate<TEvent>(action, priority);
     }
 
-    private void SubscribeDelegate<TEvent>(Delegate del, EventPriority? priority)
+    private void SubscribeDelegate<TEvent>(Delegate del, EventPriority priority)
     {
         try
         {
             _subscriptionSemaphore.Wait();
-
-            EventPriority priorityValue = priority ?? default;
 
             Type eventArgsType = typeof(TEvent);
             if (!_eventDictionary.TryGetValue(eventArgsType, out SortedDictionary<EventPriority, List<Delegate>>? eventLists))
@@ -80,9 +78,9 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
                 eventLists = _eventDictionary[eventArgsType] = new SortedDictionary<EventPriority, List<Delegate>>(_reversePriorityComparer);
             }
 
-            if (!eventLists.TryGetValue(priorityValue, out List<Delegate>? eventsForIndex))
+            if (!eventLists.TryGetValue(priority, out List<Delegate>? eventsForIndex))
             {
-                eventsForIndex = eventLists[priorityValue] = [];
+                eventsForIndex = eventLists[priority] = [];
             }
 
             eventsForIndex.Add(del);

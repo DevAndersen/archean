@@ -23,7 +23,7 @@ public class EventListenerTests
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
-        listener.Subscribe(eventHandle, default);
+        listener.Subscribe(eventHandle);
 
         // Act
         await _bus.InvokeEventAsync(new TestEvent());
@@ -40,7 +40,7 @@ public class EventListenerTests
         IScopedEventListener listener = new ScopedEventListener(_bus, _globalBus);
 
         Action<TestEvent> eventHandle = args => hasEventBeenInvoked = true;
-        listener.Subscribe(eventHandle, default);
+        listener.Subscribe(eventHandle);
         listener.Unsubscribe(eventHandle);
 
         // Act

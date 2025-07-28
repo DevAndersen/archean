@@ -6,9 +6,9 @@ public interface IEventBus
 {
     Task InvokeEventAsync(Event eventArgs);
 
-    void Subscribe<TEvent>(Action<TEvent> action, EventPriority? priority) where TEvent : Event;
+    void Subscribe<TEvent>(Action<TEvent> action, EventPriority priority = EventPriority.Default) where TEvent : Event;
 
-    void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority? priority) where TEvent : Event;
+    void Subscribe<TEvent>(Func<TEvent, Task> action, EventPriority priority = EventPriority.Default) where TEvent : Event;
 
     void Unsubscribe<TEvent>(Delegate del) where TEvent : Event;
 
