@@ -77,7 +77,7 @@ public class CommandInvoker : ICommandInvoker
 
         ReadOnlySpan<char> slice = span[ranges.Current];
 
-        if (parameterType == typeof(int) || parameterType == typeof(int?))
+        if (parameterType.IsAssignableFrom(typeof(int)))
         {
             bool success = int.TryParse(slice, out int parsedValue);
             value = success ? parsedValue : null;
@@ -97,7 +97,7 @@ public class CommandInvoker : ICommandInvoker
             return true;
         }
 
-        if (parameterType == typeof(bool) || parameterType == typeof(bool?))
+        if (parameterType.IsAssignableFrom(typeof(bool)))
         {
             bool success = bool.TryParse(slice, out bool parsedValue);
             value = success ? parsedValue : null;
