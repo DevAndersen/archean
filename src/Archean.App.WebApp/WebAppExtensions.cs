@@ -117,10 +117,21 @@ public static class WebAppExtensions
     /// <summary>
     /// Returns the base-64 encoded hash of <paramref name="password"/>.
     /// </summary>
+    /// <remarks>
+    /// This is not industry standard security, but it should be sufficient for the use case.
+    /// </remarks>
     /// <param name="password"></param>
     /// <returns></returns>
     private static string HashPassword(string password)
     {
-        return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
+        Span<byte> buffer = stackalloc byte[SHA256.HashSizeInBytes];
+        SHA256.HashData(Encoding.UTF8.GetBytes(password), buffer);
+
+        for (int i = 0; i < 100; i++)
+        {
+            SHA256.HashData([.. buffer, .. "static salt"u8, (byte)i], buffer);
+        }
+
+        return Convert.ToBase64String(buffer);
     }
 }
