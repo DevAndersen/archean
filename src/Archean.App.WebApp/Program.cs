@@ -3,7 +3,6 @@ using Archean.App.WebApp.Components;
 using Archean.App.WebApp.Services;
 using Archean.App.WebApp.Settings;
 using Archean.Hosting;
-using Microsoft.AspNetCore.Mvc;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +43,6 @@ app.UseStatusCodePagesWithReExecute("/httpstatus/{0}");
 app.UseCookieAuthentication();
 
 app.UseAntiforgery();
-
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
@@ -53,19 +51,7 @@ app.Services.GetRequiredService<ChatLogService>().StartListening(); // Todo: Mov
 
 app.MapGroup("api", group =>
 {
-    group.MapGet("skin/{skin}", ([FromRoute] string skin) =>
-    {
-        string skinsDirectory = "skins"; // Todo: Get value from configuration.
-        string skinPath = Path.Combine(skinsDirectory, skin);
-
-        if (!File.Exists(skinPath))
-        {
-            return TypedResults.NotFound();
-        }
-
-        byte[] bytes = File.ReadAllBytes(skinPath);
-        return Results.File(bytes, "image/png");
-    });
+    group.MapSkinApi();
 }).RequireAuthentication();
 
 app.Run();

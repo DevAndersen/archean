@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Archean.App.WebApp.Extensions;
 
-public static class WebAppAuthenticationExtensions
+public static class AuthenticationExtensions
 {
     private const string CookieNameClaimValue = "admin";
     private const string CookiePassClaimType = "passhash";
