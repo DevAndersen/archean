@@ -1,4 +1,5 @@
-﻿<div class="interface navbar">
+﻿@using Archean.App.WebApp.Extensions
+<div class="interface navbar">
     <div class="navbar-items">
 
         <NavLink href="/" Match="NavLinkMatch.All">
@@ -23,7 +24,7 @@
 
     </div>
     <div class="navbar-items navbar-items-left">
-        <form method="post" action="@WebAppExtensions.LogoutApiUrl">
+        <form method="post" action="@WebAppAuthenticationExtensions.LogoutApiUrl">
             <button type="submit" class="button-red">Sign out</button>
         </form>
     </div>

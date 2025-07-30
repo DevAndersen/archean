@@ -8,9 +8,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Archean.App.WebApp;
+namespace Archean.App.WebApp.Extensions;
 
-public static class WebAppExtensions
+public static class WebAppAuthenticationExtensions
 {
     private const string CookieNameClaimValue = "admin";
     private const string CookiePassClaimType = "passhash";
