@@ -9,7 +9,7 @@ namespace Archean.App.WebApp.Services;
 
 public class ChatLogService : IDisposable
 {
-    private readonly FixedSizeQueue<string> _logMessages;
+    private readonly RollingQueue<string> _logMessages;
 
     private readonly IChatService _chatService;
     private readonly IGlobalEventListener _globalEventListener;
@@ -18,7 +18,7 @@ public class ChatLogService : IDisposable
 
     public ChatLogService(IOptions<WebAppSettings> webAppSettings, IGlobalEventListener globalEventListener, IChatService chatService)
     {
-        _logMessages = new FixedSizeQueue<string>(webAppSettings.Value.ChatLogCapacity, FixedSizeQueueDirection.LastToFirst);
+        _logMessages = new RollingQueue<string>(webAppSettings.Value.ChatLogCapacity, RollingQueueDirection.LastToFirst);
         _chatService = chatService;
         _globalEventListener = globalEventListener;
     }

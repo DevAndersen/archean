@@ -3,10 +3,10 @@
 namespace Archean.Core;
 
 /// <summary>
-/// A collection of fixed size, which drops items in the order that they were added (FIFO) when the number of items exceeds the capacity.
+/// A fixed-size queue, which drops items in the order that they were added (FIFO) when the number of items exceeds the capacity.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class FixedSizeQueue<T> : IReadOnlyCollection<T>
+public class RollingQueue<T> : IReadOnlyCollection<T>
 {
     private readonly LinkedList<T> _list = [];
 
@@ -18,13 +18,13 @@ public class FixedSizeQueue<T> : IReadOnlyCollection<T>
     /// <summary>
     /// The direction in which the items are arranged when iterating over the collection.
     /// </summary>
-    public FixedSizeQueueDirection Direction { get; }
+    public RollingQueueDirection Direction { get; }
 
-    public FixedSizeQueue(int capacity) : this(capacity, FixedSizeQueueDirection.FirstToLast)
+    public RollingQueue(int capacity) : this(capacity, RollingQueueDirection.FirstToLast)
     {
     }
 
-    public FixedSizeQueue(int capacity, FixedSizeQueueDirection direction)
+    public RollingQueue(int capacity, RollingQueueDirection direction)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity, nameof(capacity));
 
@@ -45,7 +45,7 @@ public class FixedSizeQueue<T> : IReadOnlyCollection<T>
     {
         while (_list.Count >= Capacity)
         {
-            if (Direction == FixedSizeQueueDirection.FirstToLast)
+            if (Direction == RollingQueueDirection.FirstToLast)
             {
                 _list.RemoveFirst();
             }
@@ -55,7 +55,7 @@ public class FixedSizeQueue<T> : IReadOnlyCollection<T>
             }
         }
 
-        if (Direction == FixedSizeQueueDirection.FirstToLast)
+        if (Direction == RollingQueueDirection.FirstToLast)
         {
             _list.AddLast(item);
         }
@@ -101,7 +101,7 @@ public class FixedSizeQueue<T> : IReadOnlyCollection<T>
     }
 }
 
-public enum FixedSizeQueueDirection
+public enum RollingQueueDirection
 {
     FirstToLast,
     LastToFirst

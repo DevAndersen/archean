@@ -6,14 +6,14 @@ namespace Archean.App.WebApp.Services;
 
 public class MemoryLoggerOutput : ILoggerOutput, IDisposable
 {
-    private readonly FixedSizeQueue<string> _logMessages;
+    private readonly RollingQueue<string> _logMessages;
     private readonly List<Func<Task>> _eventListeners = [];
 
     public IReadOnlyCollection<string> Messages => _logMessages;
 
     public MemoryLoggerOutput(int messageCapacity)
     {
-        _logMessages = new FixedSizeQueue<string>(messageCapacity, FixedSizeQueueDirection.LastToFirst);
+        _logMessages = new RollingQueue<string>(messageCapacity, RollingQueueDirection.LastToFirst);
     }
 
     public void HandleLogEntry<TState>(LogEntry<TState> logEntry)
