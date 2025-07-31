@@ -1,10 +1,10 @@
 # Settings
 
-Settings are defined in the `appsettings.json` file, using the [JSON](https://en.wikipedia.org/wiki/JSON) data format. This file should be located in the same directory as the server executable.
+Settings are defined in the `appsettings.json` file, using the [JSON](https://en.wikipedia.org/wiki/JSON) data format. This file should be located in the same directory as the server executable file.
 
 Each of the sections described below can be configured by defining them as a top-level node in the `appsettings.json` file.
 
-Here is example of a simple `appsettings.json` file:
+Example of a simple `appsettings.json` file:
 
 ```json
 {
@@ -31,7 +31,7 @@ For example, to use an environment variable to set the server's name, the name o
 
 ## Server
 
-These settings let you configure the base server setup.
+These settings let you configure the game server.
 
 `appsettings.json` path: `Server`
 
@@ -107,6 +107,49 @@ These settings let you configure the base server setup.
             <td>This is for configuring the underlying socket server itself.</td>
             <td>
                 <code>3</code>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+## WebApp
+
+These settings let you configure the admin website (only relevant if using the web application).
+
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Description</th>
+            <th>Data type</th>
+            <th>Remarks</th>
+            <th>Fallback value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>SitePassword</td>
+            <td>The password used to sign into the web application.</td>
+            <td>String</td>
+            <td>If not specified, the web application cannot be signed into.</td>
+            <td>An empty string</td>
+        </tr>
+        <tr>
+            <td>MemoryLoggerCapacity</td>
+            <td>The maximum number of log entries visible in the web application.</td>
+            <td>Number</td>
+            <td></td>
+            <td>
+                <code>1000</code>
+            </td>
+        </tr>
+        <tr>
+            <td>ChatLogCapacity</td>
+            <td>The maximum number of chat messages visible in the web application.</td>
+            <td>Number</td>
+            <td></td>
+            <td>
+                <code>1000</code>
             </td>
         </tr>
     </tbody>
