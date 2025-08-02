@@ -27,8 +27,8 @@ public class PacketDataReaderStringTests
         ShortStringBuffer = new byte[bufferSize];
         FilledStringBuffer = new byte[bufferSize];
 
-        Encoding.UTF8.GetBytes(ShortString, ShortStringBuffer);
-        Encoding.UTF8.GetBytes(FilledString, FilledStringBuffer);
+        Encoding.ASCII.GetBytes(ShortString, ShortStringBuffer);
+        Encoding.ASCII.GetBytes(FilledString, FilledStringBuffer);
     }
 
     [Theory]
