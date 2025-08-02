@@ -13,20 +13,20 @@
 
 <PageTitle>Chat - Archean</PageTitle>
 
-<div class="interface" style="overflow: hidden">
-    <div class="interface-title">Chat</div>
-    <div class="interface-indentation" style="overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
-        @foreach (string message in ChatLogService.Messages)
-        {
-            <div class="message-line">
-                @foreach (Match match in ChatColorRegex().Matches(message))
-                {
-                    <span style="color: @GetColor(match.Groups[1].Value)">@match.Groups[2].Value</span>
-                }
-            </div>
-        }
-    </div>
-    <div style="display: flex; gap: var(--spacing)">
+<InterfacePanel Title="Logs">
+    <ChildContent>
+        <ScrollableInterfaceIndentation>
+            @foreach (string message in ChatLogService.Messages)
+            {
+                <div class="message-line">
+                    @foreach (Match match in ChatColorRegex().Matches(message))
+                    {
+                        <span style="color: @GetColor(match.Groups[1].Value)">@match.Groups[2].Value</span>
+                    }
+                </div>
+            }
+        </ScrollableInterfaceIndentation>
+        <div style="display: flex; gap: var(--spacing)">
             <input type="text"
                    class="chat-input"
                    placeholder="Chat as server..."
@@ -34,11 +34,12 @@
                    @bind="_message"
                    @oninput="OnInput"
                    @onkeyup="(async args => await OnTextboxSubmit(args))" />
-        <button @onclick="(async () => await OnSubmitAsync())" disabled="@_willMessageBeTruncated">
-            @(_willMessageBeTruncated ? $"Message too long ({_messageLength - @Constants.Networking.StringLength})" : "Send message")
-        </button>
-    </div>
-</div>
+            <button @onclick="(async () => await OnSubmitAsync())" disabled="@_willMessageBeTruncated">
+                @(_willMessageBeTruncated ? $"Message too long ({_messageLength - @Constants.Networking.StringLength})" : "Send message")
+            </button>
+        </div>
+    </ChildContent>
+</InterfacePanel>
 
 @code
 {

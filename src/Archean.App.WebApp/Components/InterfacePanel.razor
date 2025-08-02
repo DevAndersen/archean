@@ -1,0 +1,19 @@
+﻿<div class="interface" style="overflow: hidden">
+    <div style="display: flex">
+        <div class="interface-title" style="flex-grow: 1">@Title</div>
+        @Controls   
+    </div>
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public required string Title { get; init; }
+
+    [Parameter]
+    public RenderFragment? Controls { get; init; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+}

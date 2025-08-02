@@ -113,6 +113,7 @@ main
     color: var(--color-text);
     font-size: 20px;
     font-weight: bold;
+    padding: 0.3em;
 }
 
 .interface-text
@@ -136,7 +137,9 @@ main
     text-align: center;
 }
 
-button, input[type="button"], input[type="submit"]
+button,
+input[type="button"],
+input[type="submit"]
 {
     color: #e8e8e8;
     background-color: var(--button-color, var(--color-gray));
@@ -225,4 +228,6 @@ input[type="search"]
 .message-line
 {
     text-wrap: nowrap;
+    color: #fff;
+    font-size: 14px;
 }

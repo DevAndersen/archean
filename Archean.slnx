@@ -3,6 +3,7 @@
     <Project Path="src/Archean.App.ConsoleApp/Archean.App.ConsoleApp.csproj" />
     <Project Path="src/Archean.App.WebApp/Archean.App.WebApp.csproj" Id="c61b950a-ed59-4410-9aeb-e4e72a036995" />
   </Folder>
+  <Folder Name="/Documentation/" />
   <Folder Name="/Documentation/Server administration/">
     <File Path="docs/admin/settings.md" />
   </Folder>

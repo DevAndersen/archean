@@ -5,15 +5,16 @@
 
 <PageTitle>Logs - Archean</PageTitle>
 
-<div class="interface" style="overflow: hidden">
-    <div class="interface-title">Logs</div>
-    <div class="interface-indentation" style="overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
-        @foreach (string message in MemoryLoggerOutput.Messages)
-        {
-            <div class="message-line">@message</div>
-        }
-    </div>
-</div>
+<InterfacePanel Title="Logs">
+    <ChildContent>
+        <ScrollableInterfaceIndentation>
+            @foreach (string message in MemoryLoggerOutput.Messages)
+            {
+                <div class="message-line">@message</div>
+            }
+        </ScrollableInterfaceIndentation>
+    </ChildContent>
+</InterfacePanel>
 
 @code
 {
