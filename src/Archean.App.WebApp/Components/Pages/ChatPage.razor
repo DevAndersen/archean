@@ -15,7 +15,7 @@
 
 <div class="interface" style="overflow: hidden">
     <div class="interface-title">Chat</div>
-    <div class="interface-indentation" style="background-color: #000; gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
+    <div class="interface-indentation" style="overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
         @foreach (string message in ChatLogService.Messages)
         {
             <div class="message-line">
@@ -97,8 +97,8 @@
             "&5" => "#a0a",
             "&6" => "#aa0",
             "&7" => "#aaa",
-            "&8" => "#555",
-            "&9" => "#55f",
+            "&8" => "#333",
+            "&9" => "#22c",
             "&a" => "#5f5",
             "&b" => "#5ff",
             "&c" => "#f55",

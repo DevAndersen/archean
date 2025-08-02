@@ -34,6 +34,14 @@ a
     text-decoration: none;
 }
 
+main
+{
+    flex-grow: 1;
+    display: grid;
+    gap: var(--spacing);
+    overflow: hidden;
+}
+
 .page-container
 {
     flex-grow: 1;
@@ -45,18 +53,10 @@ a
     gap: var(--spacing);
 }
 
-main
-{
-    flex-grow: 1;
-    display: grid;
-    gap: var(--spacing);
-    overflow: hidden;
-}
-
 .interface
 {
     border: 1px solid #000;
-    box-shadow: inset 1px 1px #fff8, inset -1px -1px #0008, 4px 4px 8px #0004;
+    box-shadow: inset 2px 2px #fff8, inset -2px -2px #0008, 4px 4px 8px #0003;
     border-radius: 5px;
     background-color: color-mix(in srgb, var(--color-light), var(--interface-color, var(--color-light)) 50%);
     display: flex;
@@ -97,7 +97,8 @@ main
 
 .interface-indentation
 {
-    padding: 4px;
+    padding: var(--spacing);
+    gap: var(--spacing);
     background-color: #0008;
     border: 1px solid #000;
     box-shadow: inset 1px 1px #0008,

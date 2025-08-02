@@ -7,7 +7,7 @@
 
 <div class="interface" style="overflow: hidden">
     <div class="interface-title">Logs</div>
-    <div class="interface-indentation" style="background-color: #000; gap: var(--spacing); padding: var(--spacing); overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
+    <div class="interface-indentation" style="overflow: scroll; flex-grow: 1; color: #fff; font-size: 14px">
         @foreach (string message in MemoryLoggerOutput.Messages)
         {
             <div class="message-line">@message</div>
