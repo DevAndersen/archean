@@ -1,4 +1,5 @@
 ﻿using Archean.Core.Models;
+using System.Text;
 
 namespace Archean.Core;
 
@@ -54,6 +55,11 @@ public static class Constants
         /// The version of the networking protocol used by the server, and expected to be used by clients.
         /// </summary>
         public const byte ProtocolVersion = 7;
+
+        /// <summary>
+        /// The text encoding used for chat messages.
+        /// </summary>
+        public static Encoding ChatEncoding { get; } = Encoding.ASCII;
     }
 
     public static class Players

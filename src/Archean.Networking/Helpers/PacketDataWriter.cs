@@ -43,11 +43,11 @@ public static class PacketDataWriter
 
         if (value.Length > Constants.Networking.StringLength)
         {
-            Encoding.ASCII.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], buffer);
+            Constants.Networking.ChatEncoding.GetBytes(value.AsSpan()[..Constants.Networking.StringLength], buffer);
         }
         else
         {
-            Encoding.ASCII.GetBytes(value, buffer);
+            Constants.Networking.ChatEncoding.GetBytes(value, buffer);
             buffer[value.Length..Constants.Networking.StringLength].Fill((byte)' ');
         }
         rest = buffer[Constants.Networking.StringLength..];
