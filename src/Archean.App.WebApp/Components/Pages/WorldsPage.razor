@@ -4,7 +4,7 @@
 
 <InterfacePanel Title="Worlds">
     <Controls>
-        <button class="button-green">Create world</button>
+        <button class="button-green" @onclick="@(() => ShowDialog = !ShowDialog)">Create world</button>
     </Controls>
     <ChildContent>
         <ScrollableInterfaceIndentation>
@@ -13,7 +13,14 @@
     </ChildContent>
 </InterfacePanel>
 
+<Dialog Title="Create new world" IsOpen="ShowDialog">
+    <div style="display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--spacing)">
+        <button class="button-green" @onclick="@(() => ShowDialog = !ShowDialog)">Create</button>
+        <button class="button-red" @onclick="@(() => ShowDialog = !ShowDialog)">Cancel</button>
+    </div>
+</Dialog>
+
 @code
 {
-
+    public bool ShowDialog { get; set; }
 }

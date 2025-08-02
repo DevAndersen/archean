@@ -15,6 +15,7 @@ builder.AddLoggerOutput(memoryLoggerOutput);
 builder.Services.AddSingleton(memoryLoggerOutput);
 
 builder.Services.AddSingleton<ChatLogService>();
+builder.Services.AddScoped<JSInterop>();
 
 builder.AddConfiguration<WebAppSettings>(WebAppConstants.WebAppSettingsSection);
 

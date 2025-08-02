@@ -1,0 +1,16 @@
+﻿dialog
+{
+    border: 0;
+    background: #0000;
+    margin: auto;
+    min-width: 300px;
+    display: grid;
+    position: absolute;
+    inset: 0;
+}
+
+dialog::backdrop
+{
+    background-color: #0004;
+    backdrop-filter: blur(2px);
+}

@@ -1,0 +1,59 @@
+﻿@inject JSInterop JSInterop
+
+<dialog @ref="_dialogRef">
+    @if (IsOpen)
+    {
+        <InterfacePanel Title="@Title">
+            @ChildContent
+        </InterfacePanel>
+    }
+</dialog>
+
+@code
+{
+    private ElementReference _dialogRef;
+    private bool _isOpen;
+
+    [Parameter, EditorRequired]
+    public required string Title { get; init; }
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+
+    public async Task OpenAsync()
+    {
+        if (!_isOpen)
+        {
+            await JSInterop.OpenDialogAsync(_dialogRef);
+            IsOpen = true;
+        }
+    }
+
+    public async Task CloseAsync()
+    {
+        if (_isOpen)
+        {
+            await JSInterop.CloseDialogAsync(_dialogRef);
+            IsOpen = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsOpen != _isOpen)
+        {
+            if (IsOpen)
+            {
+                await OpenAsync();
+            }
+            else
+            {
+                await CloseAsync();
+            }
+            _isOpen = IsOpen;
+        }
+    }
+}
