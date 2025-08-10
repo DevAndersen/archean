@@ -116,7 +116,7 @@ public class EventBus : IGlobalEventBus, IScopedEventBus
         }
     }
 
-    private class ReversePriorityComparer : IComparer<EventPriority>
+    private sealed class ReversePriorityComparer : IComparer<EventPriority>
     {
         public int Compare(EventPriority x, EventPriority y)
         {

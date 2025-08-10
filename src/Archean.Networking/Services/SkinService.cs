@@ -130,15 +130,15 @@ public class SkinService : ISkinService
         }
     }
 
-    private record PlayerUuidResponse(string Id, string Name);
+    private sealed record PlayerUuidResponse(string Id, string Name);
 
-    private record PlayerSkinResponse(string Id, string Name, PlayerSkinPropertyResponse[] Properties);
+    private sealed record PlayerSkinResponse(string Id, string Name, PlayerSkinPropertyResponse[] Properties);
 
-    private record PlayerSkinPropertyResponse(string Name, string Value);
+    private sealed record PlayerSkinPropertyResponse(string Name, string Value);
 
-    private record PlayerSkinDataModel(long Timestamp, string ProfileId, string ProfileName, TexturesModel Textures);
+    private sealed record PlayerSkinDataModel(long Timestamp, string ProfileId, string ProfileName, TexturesModel Textures);
 
-    private record TexturesModel(SkinTextureModel Skin);
+    private sealed record TexturesModel(SkinTextureModel Skin);
 
-    private record SkinTextureModel(string Url);
+    private sealed record SkinTextureModel(string Url);
 }

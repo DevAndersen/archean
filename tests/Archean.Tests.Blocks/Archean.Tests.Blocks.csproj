@@ -17,7 +17,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <WarningsNotAsErrors>NU1901,NU1902,NU1903</WarningsNotAsErrors>
-    <NoWarn>CA1859,IDE0039</NoWarn>
+    <NoWarn>CA1859,IDE0039,CA1852</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
