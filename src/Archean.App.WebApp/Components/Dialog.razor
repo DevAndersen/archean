@@ -14,16 +14,29 @@
     private ElementReference _dialogRef;
     private bool _isOpen;
 
+    /// <summary>
+    /// The title of the dialog.
+    /// </summary>
     [Parameter, EditorRequired]
     public required string Title { get; init; }
 
+    /// <summary>
+    /// Used to set if the dialog should be open (visible) or closed (invisible).
+    /// </summary>
     [Parameter]
     public bool IsOpen { get; set; }
 
+    /// <summary>
+    /// The content of the dialog.
+    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; init; }
 
-    public async Task OpenAsync()
+    /// <summary>
+    /// Opens the dialog and triggers element re-rendering.
+    /// </summary>
+    /// <returns></returns>
+    private async Task OpenAsync()
     {
         if (!_isOpen)
         {
@@ -32,7 +45,11 @@
         }
     }
 
-    public async Task CloseAsync()
+    /// <summary>
+    /// Closes the dialog and triggers element re-rendering.
+    /// </summary>
+    /// <returns></returns>
+    private async Task CloseAsync()
     {
         if (_isOpen)
         {

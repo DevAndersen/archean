@@ -37,6 +37,9 @@ public class MemoryLoggerOutput : ILoggerOutput, IDisposable
         _eventListeners.Remove(eventListener);
     }
 
+    /// <summary>
+    /// Clear the memory log.
+    /// </summary>
     public void Clear()
     {
         _logMessages.Clear();

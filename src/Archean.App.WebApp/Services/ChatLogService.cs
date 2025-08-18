@@ -9,16 +9,16 @@ namespace Archean.App.WebApp.Services;
 
 public class ChatLogService : IDisposable
 {
-    private readonly RollingQueue<string> _logMessages;
+    private readonly RollingQueue<string> _chatMessages;
 
     private readonly IChatService _chatService;
     private readonly IGlobalEventListener _globalEventListener;
 
-    public IReadOnlyCollection<string> Messages => _logMessages;
+    public IReadOnlyCollection<string> Messages => _chatMessages;
 
     public ChatLogService(IOptions<WebAppSettings> webAppSettings, IGlobalEventListener globalEventListener, IChatService chatService)
     {
-        _logMessages = new RollingQueue<string>(webAppSettings.Value.ChatLogCapacity, RollingQueueDirection.LastToFirst);
+        _chatMessages = new RollingQueue<string>(webAppSettings.Value.ChatLogCapacity, RollingQueueDirection.LastToFirst);
         _chatService = chatService;
         _globalEventListener = globalEventListener;
     }
@@ -34,15 +34,22 @@ public class ChatLogService : IDisposable
         _globalEventListener.Subscribe<MessageEvent>(CollectChatMessages);
     }
 
+    /// <summary>
+    /// Format incoming chat messages, and add them to the chat log.
+    /// </summary>
+    /// <param name="messageEvent"></param>
     private void CollectChatMessages(MessageEvent messageEvent)
     {
         string message = _chatService.FormatMessageEvent(messageEvent, out _, out _);
-        _logMessages.Add(message);
+        _chatMessages.Add(message);
     }
 
+    /// <summary>
+    /// Clear the chat message log.
+    /// </summary>
     public void Clear()
     {
-        _logMessages.Clear();
+        _chatMessages.Clear();
     }
 
     public void Dispose()

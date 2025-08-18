@@ -18,6 +18,11 @@ public static class AuthenticationExtensions
     public const string LoginApiUrl = "/api/login";
     public const string LogoutApiUrl = "/api/logout";
 
+    /// <summary>
+    /// Adds cookie authentication middleware.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static WebApplicationBuilder AddCookieAuthentication(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -43,6 +48,11 @@ public static class AuthenticationExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Enables cookie authentication.
+    /// </summary>
+    /// <param name="app"></param>
+    /// <returns></returns>
     public static WebApplication UseCookieAuthentication(this WebApplication app)
     {
         app.UseAuthentication();

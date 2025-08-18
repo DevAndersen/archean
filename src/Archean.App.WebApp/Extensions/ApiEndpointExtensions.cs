@@ -4,6 +4,11 @@ namespace Archean.App.WebApp.Extensions;
 
 public static class ApiEndpointExtensions
 {
+    /// <summary>
+    /// Maps the skin API endpoint, used to retrieve skin textures from the server.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static RouteHandlerBuilder MapSkinApi(this IEndpointRouteBuilder builder)
     {
         return builder.MapGet("skin/{skin}", ([FromRoute] string skin) =>
