@@ -37,9 +37,14 @@
                    @bind="_message"
                    @oninput="OnInput"
                    @onkeyup="(async args => await OnTextboxSubmit(args))" />
-            <button @onclick="(async () => await OnSubmitAsync())" disabled="@_willMessageBeTruncated">
-                @(_willMessageBeTruncated ? $"Message too long ({_messageLength - @Constants.Networking.StringLength})" : "Send message")
-            </button>
+            @if (_willMessageBeTruncated)
+            {
+                <button disabled="true" title="Max 64 characters, including formatting and coloring">Message too long (@(_messageLength - Constants.Networking.StringLength))</button>
+            }
+            else
+            {
+                <button @onclick="(async () => await OnSubmitAsync())">Send message</button>
+            }
         </div>
     </ChildContent>
 </InterfacePanel>
