@@ -40,6 +40,11 @@ public class ChatLogService : IDisposable
         _logMessages.Add(message);
     }
 
+    public void Clear()
+    {
+        _logMessages.Clear();
+    }
+
     public void Dispose()
     {
         _globalEventListener.Unsubscribe<MessageEvent>(CollectChatMessages);
