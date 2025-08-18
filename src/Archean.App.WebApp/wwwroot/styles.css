@@ -24,8 +24,8 @@ body
     --color-sky: #a9d4ff;
     --color-dirt: #7b5b41;
     background: linear-gradient(180deg, var(--color-sky) 0, var(--color-sky) 128px, var(--color-grass) 128px, var(--color-grass) 192px, var(--color-dirt) 192px, var(--color-dirt) 100%);
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100svh;
+    max-height: 100svh;
     display: flex;
 }
 
