@@ -1,4 +1,7 @@
 ﻿@page "/worlds"
+@using Archean.Core.Models.Worlds
+@using Archean.Core.Services.Worlds
+@inject IWorldRegistry WorldRegistry
 
 <PageTitle>Worlds - Archean</PageTitle>
 
@@ -8,7 +11,18 @@
     </Controls>
     <ChildContent>
         <ScrollableInterfaceIndentation>
-
+            @foreach (IWorld world in WorldRegistry.GetWorlds())
+            {
+                <div class="interface" style="display: flex; flex-direction: row; align-items: center">
+                    <div class="interface-text">@world.Name</div>
+                    <div class="interface-text">@(world.IsLoaded ? "Loaded" : "Unloaded")</div>
+                    <div class="interface-text">@world.Players.Count players</div>
+                    <div style="margin-left: auto">
+                        <button>Details</button>
+                        <button class="button-red">Unload</button>
+                    </div>
+                </div>
+            }
         </ScrollableInterfaceIndentation>
     </ChildContent>
 </InterfacePanel>
